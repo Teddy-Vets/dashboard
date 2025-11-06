@@ -1,0 +1,74 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.7.1';
+
+Deno.serve(async (req) => {
+  try {
+    const base44 = createClientFromRequest(req);
+    const { token, form_data } = await req.json();
+
+    if (!token || !form_data) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'חסרים נתונים נדרשים' 
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    // Validate the token and get form info
+    const linkRecord = await base44.asServiceRole.entities.FormLinks.filter({ token });
+    
+    if (!linkRecord || linkRecord.length === 0) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'טוקן לא תקף' 
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    const link = linkRecord[0];
+    
+    // Make sure this is a rabies declaration
+    if (link.form_type !== 'rabies_declaration') {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'סוג טופס לא תואם' 
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    // Update the rabies declaration with signature data
+    const updatedDeclaration = await base44.asServiceRole.entities.RabiesDeclaration.update(link.form_id, {
+      ...form_data,
+      signed_at: new Date().toISOString(),
+      status: 'signed'
+    });
+
+    // Mark the link as used/expired (optional)
+    await base44.asServiceRole.entities.FormLinks.update(link.id, {
+      used_at: new Date().toISOString()
+    });
+
+    return new Response(JSON.stringify({ 
+      success: true, 
+      declaration: updatedDeclaration 
+    }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    });
+
+  } catch (error) {
+    console.error('Error submitting rabies declaration:', error);
+    return new Response(JSON.stringify({ 
+      success: false, 
+      error: 'שגיאה בשליחת ההצהרה' 
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+});
