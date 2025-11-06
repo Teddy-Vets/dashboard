@@ -1,4 +1,4 @@
-import { getCurrentUser, getUserClinicId, isAdmin, safeApiCall } from '@/components/utils/apiHelpers';
+import { base44 } from '@/api/base44Client';
 
 /**
  * שירות ניהול משתמשים
@@ -40,8 +40,7 @@ class UserService {
 
   async _loadUser() {
     try {
-      const { User } = await import('@/entities/User');
-      const user = await User.me();
+      const user = await base44.auth.me();
       return user;
     } catch (error) {
       // אם זו שגיאת 401 (לא מחובר), נחזיר null
@@ -92,8 +91,7 @@ class UserService {
    */
   async logout() {
     try {
-      const { User } = await import('@/entities/User');
-      await User.logout();
+      await base44.auth.logout();
       this.clearUserCache();
     } catch (error) {
       console.error('[userService] Error during logout:', error);
@@ -107,8 +105,7 @@ class UserService {
    * התחברות עם redirect
    */
   async loginWithRedirect(callbackUrl) {
-    const { User } = await import('@/entities/User');
-    return User.loginWithRedirect(callbackUrl);
+    return base44.auth.redirectToLogin(callbackUrl);
   }
 }
 

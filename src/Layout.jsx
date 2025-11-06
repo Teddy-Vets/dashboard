@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/components/utils/urlHelpers";
@@ -22,7 +23,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import userService from "@/components/services/userService";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { User } from "@/entities/User";
+import { base44 } from "@/api/base44Client";
+import { User } from "@/entities/User"; // Keep User import for other potential uses if any, although redirectToLogin is now from base44
 import TestEnvBanner from "@/components/common/TestEnvBanner";
 
 const GlobalStyles = () => (
@@ -225,7 +227,7 @@ export default function Layout({ children, currentPageName }) {
   const handleLogin = async () => {
     try {
       const callbackUrl = window.location.origin + '/Dashboard';
-      await User.loginWithRedirect(callbackUrl);
+      await base44.auth.redirectToLogin(callbackUrl);
     } catch (error) {
       console.error('Login failed', error);
     }

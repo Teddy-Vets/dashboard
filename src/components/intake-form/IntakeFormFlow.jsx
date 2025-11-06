@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { IntakeForm, Client, Pet, User, Clinic } from "@/entities/all";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import ErrorMessage from "@/components/common/ErrorMessage";
 import { getEntityList, createEntity } from "@/components/utils/apiHelpers";
 import { copyToClipboard, shareViaWhatsApp, shareViaEmail } from "@/components/utils/urlHelpers";
 import userService from "@/components/services/userService";
+import { base44 } from '@/api/base44Client';
 
 export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {} }) {
   const [formData, setFormData] = useState({
@@ -39,7 +41,7 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
       
       if (!user) {
         console.log('[IntakeFormFlow] User not authenticated, redirecting to login');
-        await User.loginWithRedirect(window.location.href);
+        await base44.auth.redirectToLogin(window.location.href);
         return;
       }
       

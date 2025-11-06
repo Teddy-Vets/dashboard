@@ -1,3 +1,5 @@
+import { base44 } from '@/api/base44Client';
+
 /**
  * API Helpers - ניהול שגיאות ופונקציות עזר לעבודה עם Base44 SDK
  */
@@ -146,8 +148,7 @@ export const deleteEntity = async (Entity, id, errorContext = 'Entity') => {
  */
 export const getCurrentUser = async () => {
   try {
-    const { User } = await import('@/entities/User');
-    const user = await User.me();
+    const user = await base44.auth.me();
     return user;
   } catch (error) {
     // אם המשתמש לא מחובר, נחזיר null במקום לזרוק שגיאה
