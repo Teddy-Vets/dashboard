@@ -146,8 +146,8 @@ export const deleteEntity = async (Entity, id, errorContext = 'Entity') => {
  */
 export const getCurrentUser = async () => {
   try {
-    const { User } = await import('@/entities/User');
-    const user = await User.me();
+    const { base44 } = await import('@/api/base44Client');
+    const user = await base44.auth.me();
     return user;
   } catch (error) {
     // אם המשתמש לא מחובר, נחזיר null במקום לזרוק שגיאה
