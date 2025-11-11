@@ -75,9 +75,9 @@ const StepLayout = ({ children, onBack }) => (
 // Step 1: Hero Section
 const HeroSection = ({ onStart }) => (
   <div className="min-h-screen relative overflow-hidden">
-    {/* רקע תמונה */}
+    {/* רקע תמונה - עדכון positioning למובייל */}
     <div
-      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+      className="absolute inset-0 bg-cover bg-top md:bg-center bg-no-repeat"
       style={{
         backgroundImage: `url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/1382b2e26_Prz_8.jpg')`
       }}
