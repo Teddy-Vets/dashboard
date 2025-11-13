@@ -90,15 +90,15 @@ export default function MedicalHistoryStep({ formData, updateFormData }) {
       {/* בעיות רפואיות ידועות */}
       <div className="space-y-3">
         <Label className="text-base font-medium text-slate-800">
-          בעיות רפואיות ידועות
+          בעיות רפואיות/התנהגותיות ידועות
         </Label>
         <p className="text-sm text-slate-500">
-          לדוגמה: אלרגיות, מחלות כרוניות, מצבים רפואיים מיוחדים
+          לדוגמה: אלרגיות, מחלות כרוניות, נביחות, מצבים רפואיים מיוחדים
         </p>
         <Textarea
           value={formData.knownMedicalIssues}
           onChange={(e) => updateFormData('knownMedicalIssues', e.target.value)}
-          placeholder="אנא פרטו על בעיות רפואיות ידועות..."
+          placeholder="אנא פרטו..."
           className="h-24 border-slate-200 focus:border-blue-400 focus:ring-blue-400"
         />
       </div>
@@ -119,22 +119,7 @@ export default function MedicalHistoryStep({ formData, updateFormData }) {
         />
       </div>
 
-      {/* בעיות התנהגותיות */}
-      <div className="space-y-3">
-        <Label className="text-base font-medium text-slate-800">
-          בעיות התנהגותיות
-        </Label>
-        <p className="text-sm text-slate-500">
-          לדוגמה: נביחות, מרכיב שיניים, מפחד משינויים, מסוגל שווייתי, מסוגה מיוחדת
-        </p>
-        <Textarea
-          value={formData.behavioralIssues}
-          onChange={(e) => updateFormData('behavioralIssues', e.target.value)}
-          placeholder="אנא תארו בעיות התנהגותיות..."
-          className="h-24 border-slate-200 focus:border-blue-400 focus:ring-blue-400"
-        />
-      </div>
-
+    
       {/* רמת חרדה אצל הווטרינר */}
       <div className="space-y-4 bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
