@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -277,7 +276,7 @@ export default function PublicIntakeFormFlow({ token, formId, initialData = {} }
               </h1>
               
               <p className="text-xs md:text-sm lg:text-base max-w-3xl mx-auto leading-tight drop-shadow-md">
-                תהליך ההיכרות קצר ימשיך לנו להכין עבורכם ועבור חיית המחמד שלכם ביקור נעים ומותאם אישית
+                תהליך ההיכרות קצר ויסייע לנו להכין עבורכם ועבור חיית המחמד שלכם ביקור נעים ומותאם אישית
               </p>
             </div>
 
