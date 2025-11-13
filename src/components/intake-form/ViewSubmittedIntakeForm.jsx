@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { User, PawPrint, Stethoscope, Heart, FileText } from 'lucide-react';
+import { User, PawPrint, Stethoscope, Heart, FileText, Shield } from 'lucide-react';
 
 // Helper to determine badge color for neutered status
 const getStatusColor = (status) => {
@@ -185,9 +185,8 @@ export default function ViewSubmittedIntakeForm({ formData }) {
               </>
             )}
 
-            <DetailItem label="בעיות רפואיות ידועות" value={formData.known_medical_issues} />
+            <DetailItem label="בעיות רפואיות/התנהגותיות ידועות" value={formData.known_medical_issues} />
             <DetailItem label="סוג מזון" value={formData.diet_food_type} />
-            <DetailItem label="בעיות התנהגותיות" value={formData.behavioral_issues} />
             <DetailItem
               label="רמת חרדה במרפאה"
               value={formData.vet_anxiety_level ? `${formData.vet_anxiety_level}/10` : undefined}
@@ -203,13 +202,30 @@ export default function ViewSubmittedIntakeForm({ formData }) {
 
       {/* Visit Info */}
       <Card className="bg-white/80 backdrop-blur-sm border-blue-100 shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-slate-800"><Heart className="text-purple-500" /> פרטי הביקור</CardTitle>
+        <CardHeader className="border-b border-blue-100">
+          <CardTitle className="flex items-center gap-2 text-slate-800">
+            <Heart className="w-6 h-6 text-purple-500" /> 
+            פרטי הביקור
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="p-0">
+          <div className="divide-y divide-gray-100">
             <DetailItem label="סיבת הביקור העיקרית" value={formData.visit_reason_main} />
             <DetailItem label="פירוט נוסף על סיבת הביקור" value={formData.visit_reason_details} />
+            
+            {/* ביטוח */}
+            <DetailItem
+              label="יש ביטוח"
+              value={formData.has_insurance === 'yes' ? 'כן' : formData.has_insurance === 'no' ? 'לא' : undefined}
+              isBadge
+              badgeClass={formData.has_insurance === 'yes' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}
+            />
+            {formData.has_insurance === 'yes' && formData.insurance_company_name && (
+              <DetailItem label="חברת ביטוח" value={formData.insurance_company_name} />
+            )}
+            
             <DetailItem label="נושאים נוספים לדיון" value={formData.other_topics} />
+          </div>
         </CardContent>
       </Card>
 
