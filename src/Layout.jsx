@@ -187,6 +187,7 @@ function Navigation({ currentPath, onNavigate, currentUser, isLoadingUser, handl
 }
 
 export default function Layout({ children, currentPageName }) {
+  console.log("Layout - Current page name:", currentPageName); // הוסף את השורה הזו כאן
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
