@@ -74,7 +74,6 @@ const navItems = [
 ];
 
 function NavItem({ item, isActive, onNavigate }) {
-  console.log("Current page name:", currentPageName);
   return (
     <Link to={item.href} onClick={onNavigate}>
       <Button
