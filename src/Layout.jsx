@@ -52,16 +52,13 @@ const AccessibilityStyles = () => (
   `}</style>
 );
 
-// Updated navigation items - removed RabiesDeclarations
+// Updated navigation items - removed surgery, spay/neuter, and dental care instructions
 const navItems = [
   { href: "/Dashboard", icon: LayoutDashboard, label: "דשבורד", roles: ['admin', 'user'] },
   { href: "/ManageAppointments", icon: Calendar, label: "ניהול תורים", roles: ['admin', 'user'] },
   { type: 'divider', label: 'טפסים והנחיות' },
   { href: "/IntakeFormsList", icon: ClipboardCheck, label: "טפסי היכרות", roles: ['admin', 'user'] },
   { href: "/ConsentForms", icon: ClipboardCheck, label: "טפסי הסכמה", roles: ['admin', 'user'] },
-  { href: "/PostSurgeryInstructions", icon: Stethoscope, label: "הנחיות לאחר ניתוח", roles: ['admin', 'user'] },
-  { href: "/SpayNeuterInstructions", icon: HeartPulse, label: "הנחיות עיקור/סירוס", roles: ['admin', 'user'] },
-  { href: "/DentalCareInstructions", icon: Smile, label: "הנחיות טיפול שיניים", roles: ['admin', 'user'] },
   { type: 'divider', label: 'ניהול' },
   { href: "/SystemManagement", icon: TrendingUp, label: "ניהול המערכת", roles: ['admin'] },
   { href: "/Clinics", icon: ClinicIcon, label: "מרפאות", roles: ['admin'] },
@@ -231,7 +228,7 @@ export default function Layout({ children, currentPageName }) {
     }
   }, [currentUser, isLoadingUser, location.pathname, navigate]);
 
-  // Public pages - removed PublicRabiesDeclaration
+  // Public pages
   const publicPages = ['PublicForm', 'PublicConsentForm', 'PublicViewIntakeForm', 'AppointmentBooking', 'PublicAnxietyQuestionnaire', 'PublicEmergencyTriage'];
   const publicPaths = ['/PublicForm', '/PublicConsentForm', '/PublicViewIntakeForm', '/AppointmentBooking', '/PublicAnxietyQuestionnaire', '/PublicEmergencyTriage'];
 
