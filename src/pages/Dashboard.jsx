@@ -473,7 +473,7 @@ export default function DashboardPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 md:p-6">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
               <Link to={createPageUrl("IntakeForm")} className="w-full">
                 <Button className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 h-auto py-4 flex flex-col gap-2">
                   <FileText className="w-5 h-5" />
@@ -485,27 +485,6 @@ export default function DashboardPage() {
                 <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 h-auto py-4 flex flex-col gap-2">
                   <FileText className="w-5 h-5" />
                   <span className="text-xs font-medium">טופס הסכמה</span>
-                </Button>
-              </Link>
-              
-              <Link to={createPageUrl("CreatePostSurgeryInstructions")} className="w-full">
-                <Button className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 h-auto py-4 flex flex-col gap-2">
-                  <Stethoscope className="w-5 h-5" />
-                  <span className="text-xs font-medium">הנחיות ניתוח</span>
-                </Button>
-              </Link>
-              
-              <Link to={createPageUrl("CreateAnxietyQuestionnaire")} className="w-full">
-                <Button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 h-auto py-4 flex flex-col gap-2">
-                  <FileText className="w-5 h-5" />
-                  <span className="text-xs font-medium">טופס חרדה</span>
-                </Button>
-              </Link>
-
-              <Link to={createPageUrl("PublicEmergencyTriage")} className="w-full">
-                <Button className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 h-auto py-4 flex flex-col gap-2">
-                  <AlertCircle className="w-5 h-5" />
-                  <span className="text-xs font-medium">טריאז' חירום</span>
                 </Button>
               </Link>
 
