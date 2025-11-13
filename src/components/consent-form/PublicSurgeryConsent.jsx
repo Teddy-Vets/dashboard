@@ -162,7 +162,7 @@ export default function PublicSurgeryConsent({ linkData, token }) {
               טופס הסכמה מדעת להליך רפואי
             </CardTitle>
             <p className="text-slate-500 mt-2">
-              אנו פועלים במלוא המקצועיות והמסירות כדי להבטיח את שלומו ובריאותו של חיית המחמד שלכם
+              אנו פועלים במלוא המקצועיות והמסירות כדי להבטיח את שלום ובריאות חיית המחמד שלכם.
             </p>
           </CardHeader>
 
@@ -209,7 +209,7 @@ export default function PublicSurgeryConsent({ linkData, token }) {
               <h3 className="text-xl font-bold text-slate-700 mb-4">2. הרדמה כללית והסיכונים הכרוכים בה</h3>
               <div className="bg-white p-4 rounded-lg border border-green-100/50">
                 <p className="text-slate-600 leading-relaxed">
-                  אני מבינ/ה כי הליך יבוצע בהרדמה כללית. הוסבר לי כי הצוות הרפואי משתמש בחומרי הרדמה וניטור, עם זאת, אני מודע/ת לכך שבכל הרדמה, בדומה לרפואת אדם, קיים סיכון מוגבה לסיבוכים, לרבות תגובה בלתי צפויה לחומרי ההרדמה, ובמקרים נדירים ביותר אף מוות.
+                  אנו מבינים כי ההליך יבוצע בהרדמה כללית. הוסבר לנו כי הצוות הרפואי משתמש בחומרי הרדמה וניטור. עם זאת, אנו מודעים לכך שבכל הרדמה, בדומה לרפואת אדם, קיים סיכון מוגבר לסיבוכים, לרבות תגובה בלתי צפויה לחומרי ההרדמה, ובמקרים נדירים ביותר אף מוות.
                 </p>
               </div>
               
@@ -233,7 +233,7 @@ export default function PublicSurgeryConsent({ linkData, token }) {
               
               <div className="bg-orange-50/40 p-4 rounded-lg border border-orange-100/50 mb-4">
                 <p className="text-slate-600 leading-relaxed">
-                  בנוסף לסיכונים הכרוכים בהרדמה, אני מבין/ה כי לכל הליך כירורגי, פשוט או מורכב, ישנם סיכונים וסיבוכים אפשריים. הצוות הרפואי נוקט בכל האמצעים המקובלים כדי למזער סיכונים אלו, אך חשוב לי להכיר בקיומם:
+                  בנוסף לסיכונים הכרוכים בהרדמה, אנו מבינים כי לכל הליך כירורגי, פשוט או מורכב, ישנם סיכונים וסיבוכים אפשריים. הצוות הרפואי נוקט בכל האמצעים המקובלים כדי למזער סיכונים אלו, אך חשוב לנו להכיר בקיומם:
                 </p>
               </div>
 
@@ -241,21 +241,21 @@ export default function PublicSurgeryConsent({ linkData, token }) {
                 <div className="bg-white p-4 rounded-lg border border-gray-100">
                   <h4 className="font-bold text-slate-700 mb-2">סיבוכים במהלך או לאחר הניתוח:</h4>
                   <p className="text-slate-600 leading-relaxed">
-                    אני מודע/ת לאפשרות של טבעכים כגון דימום, זיהום בפצע הניתוח, תגובה לחומרי החפיפה, פתיחה של התפרים, או היווצרות בקצור ופתיחות באזור המנותח.
+                    אנו מודעים לאפשרות של סיכונים כגון דימום, זיהום בפצע הניתוח, תגובה לחומרי התפירה, פתיחה של התפרים, או היווצרות בקעים ופתיחה באזור המנותח.
                   </p>
                 </div>
 
                 <div className="bg-white p-4 rounded-lg border border-gray-100">
                   <h4 className="font-bold text-slate-700 mb-2">תוצאות ההליך:</h4>
                   <p className="text-slate-600 leading-relaxed">
-                    הוסבר לי כי בעוד שהמטרה היא להשיג תוצאה רפואית מיטבית, הרפואה אינה מדע מדויק, ייתכנו מקרים בהם ההליך לא ישא את מלוא התוצאה המקווה (לדוגמה: המשך צליעה מסוימת לאחר ניתוח אורטופדי, חזרה של גידול שהוסר חלקית, או צורך בהליכים נוספים בעתיד).
+                    הוסבר לנו כי בעוד שהמטרה היא להשיג תוצאה רפואית מיטבית, הרפואה אינה מדע מדויק. ייתכנו מקרים בהם ההליך לא יישא את מלוא התוצאה המקווה (לדוגמה: המשך צליעה מסוימת לאחר ניתוח אורתופדי, חזרה של גידול שהוסר חלקית, או צורך בהליכים נוספים בעתיד).
                   </p>
                 </div>
 
                 <div className="bg-white p-4 rounded-lg border border-gray-100">
                   <h4 className="font-bold text-slate-700 mb-2">טיפול לאחר הניתוח:</h4>
                   <p className="text-slate-600 leading-relaxed">
-                    אני מבין/ה כי הצלחת הניתוח תלויה גם בטיפול שאנעניק בבית לאחר השחרור, בהתאם להנחיות המדויקות שאקבל מהצוות הרפואי.
+                    אנו מבינים כי הצלחת הניתוח תלויה גם בטיפול שנעניק בבית לאחר השחרור, בהתאם להנחיות המדויקות שנקבל מהצוות הרפואי.
                   </p>
                 </div>
               </div>
@@ -278,10 +278,31 @@ export default function PublicSurgeryConsent({ linkData, token }) {
             <div className="bg-indigo-50/20 p-6 rounded-xl border border-indigo-100/50">
               <h3 className="text-xl font-bold text-slate-700 mb-4">4. בדיקות והכנות מקדימות</h3>
               <div className="bg-white p-4 rounded-lg border border-indigo-100/50">
-                <p className="text-slate-600 leading-relaxed">
-                  <strong className="text-slate-700">בדיקות דם לפני הרדמה:</strong> אני מסכימ/ה לביצוע בדיקות דם לפני ההליך, ידוע לי כי הקף הבדיקות מותאם אישית לגילו, גזעו ומצבו הרפואי של בעל החיים, ויתכן שילול פאנל בדיקות מורחב בהתאם להמלצת הצוות הרפואי.
+                <p className="text-slate-600 leading-relaxed mb-3">
+                  <strong className="text-slate-700">בדיקות דם לפני הרדמה:</strong> אנו מסכימים לביצוע בדיקות דם לפני ההליך. ידוע לנו כי היקף הבדיקות מותאם אישית לגיל, לגזע ולמצב הרפואי של בעל החיים, וייתכן שיכלול פאנל בדיקות מורחב בהתאם להמלצת הצוות הרפואי.
                 </p>
               </div>
+              
+              {/* Quote PDF Download - MOVED HERE */}
+              {consentDetails.quote_pdf_url && (
+                <div className="mt-4 bg-white p-4 rounded-lg border border-indigo-100/50">
+                  <p className="text-slate-600 mb-3 font-semibold">
+                    הצעת מחיר מפורטת
+                  </p>
+                  <p className="text-slate-600 text-sm mb-3">
+                    המרפאה צירפה קובץ PDF עם הצעת מחיר מפורטת עבור ההליך
+                  </p>
+                  <a
+                    href={consentDetails.quote_pdf_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    הורד הצעת מחיר PDF
+                  </a>
+                </div>
+              )}
               
               {/* Checkbox for Pre-operative Tests */}
               <div className="mt-4 flex items-start space-x-3 space-x-reverse bg-blue-50/30 p-4 rounded-lg border border-blue-100/50">
@@ -297,30 +318,6 @@ export default function PublicSurgeryConsent({ linkData, token }) {
               </div>
             </div>
 
-            {/* Quote PDF Download - MOVED HERE BEFORE FINANCIAL AGREEMENT */}
-            {consentDetails.quote_pdf_url && (
-              <div className="bg-blue-50/30 p-6 rounded-xl border border-blue-100/50">
-                <h3 className="text-xl font-bold text-slate-700 mb-4 flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-blue-500" />
-                  הצעת מחיר מפורטת
-                </h3>
-                <div className="bg-white p-4 rounded-lg border border-blue-100/50">
-                  <p className="text-slate-600 mb-4">
-                    המרפאה צירפה קובץ PDF עם הצעת מחיר מפורטת עבור ההליך
-                  </p>
-                  <a
-                    href={consentDetails.quote_pdf_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-                  >
-                    <Download className="w-4 h-4" />
-                    הורד הצעת מחיר PDF
-                  </a>
-                </div>
-              </div>
-            )}
-
             {/* Financial Agreement */}
             <div className="bg-yellow-50/30 p-6 rounded-xl border border-yellow-100/50">
               <h3 className="text-xl font-bold text-slate-700 mb-4 flex items-center gap-2">
@@ -330,7 +327,7 @@ export default function PublicSurgeryConsent({ linkData, token }) {
               
               <div className="bg-yellow-50/50 p-4 rounded-lg border border-yellow-100/50 mb-4">
                 <p className="text-slate-600 leading-relaxed">
-                  הוסבר לי הערכת העלות להליך המתוכנן. אני מבינ/ה כי העלות עשויה להשתנות בהתאם למצאים במהלך ההליך ולטיפולים נוספים שיידרשו.
+                  הוסברה לנו הערכת העלות להליך המתוכנן. אנו מבינים כי העלות עשויה להשתנות בהתאם לממצאים במהלך ההליך ולטיפולים נוספים שיידרשו.
                 </p>
               </div>
 
@@ -343,7 +340,7 @@ export default function PublicSurgeryConsent({ linkData, token }) {
                     className="mt-1"
                   />
                   <Label htmlFor="financial" className="text-sm text-slate-700 cursor-pointer leading-relaxed font-medium">
-                    אני מתחייב/ת לשאת במלוא העלות של ההליך וכל הטיפולים הנלווים שיידרשו. <span className="text-red-500 font-bold">*</span>
+                    אנו מתחייבים לשאת במלוא העלות של ההליך וכל הטיפולים הנלווים שיידרשו. <span className="text-red-500 font-bold">*</span>
                   </Label>
                 </div>
               </div>
@@ -379,7 +376,7 @@ export default function PublicSurgeryConsent({ linkData, token }) {
                 {/* Consent Statement */}
                 <div className="bg-white p-4 rounded-lg border border-blue-100/50">
                   <p className="text-slate-600 leading-relaxed">
-                    אני מאשר/ת כי קראתי והבנתי את כל הפרטים הרפואיים והטיפוליים, והנני מסכים/ה לבצע את ההליך המתואר לעיל. <span className="text-red-500 font-bold">*</span>
+                    אנו מאשרים כי קראנו והבנו את כל הפרטים הרפואיים והטיפוליים, ואנו מסכימים לבצע את ההליך המתואר לעיל. <span className="text-red-500 font-bold">*</span>
                   </p>
                 </div>
 
