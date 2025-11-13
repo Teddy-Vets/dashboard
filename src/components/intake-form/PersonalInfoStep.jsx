@@ -113,7 +113,7 @@ export default function PersonalInfoStep({ formData, updateFormData }) {
               htmlFor="first-pet-no"
               className="cursor-pointer font-normal flex-1 text-right"
             >
-              לא, יש לנו עוד חבר פרוותי 💚
+              לא, יש/היה לנו עוד חבר פרוותי בבית 💚
             </Label>
             <RadioGroupItem value="no" id="first-pet-no" />
           </div>
@@ -149,7 +149,7 @@ export default function PersonalInfoStep({ formData, updateFormData }) {
             <Textarea
               value={formData.notFirstPetInfo}
               onChange={(e) => updateFormData("notFirstPetInfo", e.target.value)}
-              placeholder="למשל: אני מטפל בעיקר, הילדים עוזרים..."
+              placeholder="ספרו לנו קצת..."
               className="h-24 bg-white border-slate-200 focus:border-purple-400 focus:ring-purple-400"
             />
           </div>
