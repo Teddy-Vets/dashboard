@@ -250,6 +250,30 @@ export default function PublicSurgeryConsent({ linkData, token }) {
               </div>
             </div>
 
+            {/* Quote PDF Download - MOVED HERE BEFORE FINANCIAL AGREEMENT */}
+            {consentDetails.quote_pdf_url && (
+              <div className="bg-blue-50/30 p-6 rounded-xl border border-blue-100/50">
+                <h3 className="text-xl font-bold text-slate-700 mb-4 flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-blue-500" />
+                  הצעת מחיר מפורטת
+                </h3>
+                <div className="bg-white p-4 rounded-lg border border-blue-100/50">
+                  <p className="text-slate-600 mb-4">
+                    המרפאה צירפה קובץ PDF עם הצעת מחיר מפורטת עבור ההליך
+                  </p>
+                  <a
+                    href={consentDetails.quote_pdf_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    הורד הצעת מחיר PDF
+                  </a>
+                </div>
+              </div>
+            )}
+
             {/* Financial Agreement */}
             <div className="bg-yellow-50/30 p-6 rounded-xl border border-yellow-100/50">
               <h3 className="text-xl font-bold text-slate-700 mb-4 flex items-center gap-2">
@@ -296,30 +320,6 @@ export default function PublicSurgeryConsent({ linkData, token }) {
                     <span className="text-lg font-bold text-gray-700">סה״כ:</span>
                     <span className="text-2xl font-bold text-green-600">₪{consentDetails.total_cost?.toLocaleString()}</span>
                   </div>
-                </div>
-              </div>
-            )}
-
-            {/* Quote PDF Download */}
-            {consentDetails.quote_pdf_url && (
-              <div className="bg-blue-50/30 p-6 rounded-xl border border-blue-100/50">
-                <h3 className="text-xl font-bold text-slate-700 mb-4 flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-blue-500" />
-                  הצעת מחיר מפורטת
-                </h3>
-                <div className="bg-white p-4 rounded-lg border border-blue-100/50">
-                  <p className="text-slate-600 mb-4">
-                    המרפאה צירפה קובץ PDF עם הצעת מחיר מפורטת עבור ההליך
-                  </p>
-                  <a
-                    href={consentDetails.quote_pdf_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-                  >
-                    <Download className="w-4 h-4" />
-                    הורד הצעת מחיר PDF
-                  </a>
                 </div>
               </div>
             )}
