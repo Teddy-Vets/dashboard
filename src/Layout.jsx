@@ -6,7 +6,6 @@ import {
   ClipboardCheck,
   HeartPulse,
   Smile,
-  Shield,
   Stethoscope,
   BookUser,
   LogOut,
@@ -15,8 +14,7 @@ import {
   Building2 as ClinicIcon,
   Calendar,
   Megaphone,
-  TrendingUp,
-  AlertCircle
+  TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -54,7 +52,7 @@ const AccessibilityStyles = () => (
   `}</style>
 );
 
-// Updated navigation items - removed EmergencyTriageDashboard, Clients, and Pets
+// Updated navigation items - removed RabiesDeclarations
 const navItems = [
   { href: "/Dashboard", icon: LayoutDashboard, label: "דשבורד", roles: ['admin', 'user'] },
   { href: "/ManageAppointments", icon: Calendar, label: "ניהול תורים", roles: ['admin', 'user'] },
@@ -64,7 +62,6 @@ const navItems = [
   { href: "/PostSurgeryInstructions", icon: Stethoscope, label: "הנחיות לאחר ניתוח", roles: ['admin', 'user'] },
   { href: "/SpayNeuterInstructions", icon: HeartPulse, label: "הנחיות עיקור/סירוס", roles: ['admin', 'user'] },
   { href: "/DentalCareInstructions", icon: Smile, label: "הנחיות טיפול שיניים", roles: ['admin', 'user'] },
-  { href: "/RabiesDeclarations", icon: Shield, label: "הצהרות כלבת", roles: ['admin', 'user'] },
   { type: 'divider', label: 'ניהול' },
   { href: "/SystemManagement", icon: TrendingUp, label: "ניהול המערכת", roles: ['admin'] },
   { href: "/Clinics", icon: ClinicIcon, label: "מרפאות", roles: ['admin'] },
@@ -92,26 +89,19 @@ function NavItem({ item, isActive, onNavigate }) {
 
 // Navigation component now accepts user-related props from Layout
 function Navigation({ currentPath, onNavigate, currentUser, isLoadingUser, handleLogin, handleLogout }) {
-  // Removed internal useState for currentUser and isLoadingUser, and loadCurrentUser useEffect
-
   const getVisibleNavItems = () => {
     if (!currentUser) return [];
     
     const isAdmin = currentUser.role === 'admin';
     
     return navItems.filter(item => {
-      // If it's a divider, always show it
       if (item.type === 'divider') return true;
-
-      // If item has no explicit roles, it shouldn't be shown unless it's a divider (handled above)
       if (!item.roles || item.roles.length === 0) return false;
       
-      // Admin users see all items assigned to either 'admin' or 'user' roles
       if (isAdmin) {
         return item.roles.includes('admin') || item.roles.includes('user');
       }
       
-      // Regular users only see items assigned to the 'user' role
       return item.roles.includes('user');
     });
   };
@@ -200,7 +190,6 @@ export default function Layout({ children, currentPageName }) {
         setCurrentUser(user);
       } catch (error) {
         console.error('[Layout] Error loading user:', error);
-        // במקרה של שגיאה, נגדיר את המשתמש כ-null
         setCurrentUser(null);
       } finally {
         setIsLoadingUser(false);
@@ -209,7 +198,6 @@ export default function Layout({ children, currentPageName }) {
     loadCurrentUser();
   }, []);
 
-  // Centralized logout handler
   const handleLogout = async () => {
     try {
       await userService.logout();
@@ -221,7 +209,6 @@ export default function Layout({ children, currentPageName }) {
     }
   };
 
-  // Centralized login handler
   const handleLogin = async () => {
     try {
       const callbackUrl = window.location.origin + '/Dashboard';
@@ -231,11 +218,9 @@ export default function Layout({ children, currentPageName }) {
     }
   };
 
-  // Access control for admin-only pages
   useEffect(() => {
     const adminOnlyPages = ["/MarketingMaterials", "/SystemManagement", "/Clinics"];
     
-    // Only enforce access control if user data has finished loading
     if (!isLoadingUser) {
       if (adminOnlyPages.includes(location.pathname)) {
         if (!currentUser || currentUser.role !== "admin") {
@@ -246,11 +231,10 @@ export default function Layout({ children, currentPageName }) {
     }
   }, [currentUser, isLoadingUser, location.pathname, navigate]);
 
-  // Public pages - checking both by page name and by URL path
-  const publicPages = ['PublicForm', 'PublicConsentForm', 'PublicViewIntakeForm', 'AppointmentBooking', 'PublicAnxietyQuestionnaire', 'PublicRabiesDeclaration', 'PublicEmergencyTriage'];
-  const publicPaths = ['/PublicForm', '/PublicConsentForm', '/PublicViewIntakeForm', '/AppointmentBooking', '/PublicAnxietyQuestionnaire', '/PublicRabiesDeclaration', '/PublicEmergencyTriage'];
+  // Public pages - removed PublicRabiesDeclaration
+  const publicPages = ['PublicForm', 'PublicConsentForm', 'PublicViewIntakeForm', 'AppointmentBooking', 'PublicAnxietyQuestionnaire', 'PublicEmergencyTriage'];
+  const publicPaths = ['/PublicForm', '/PublicConsentForm', '/PublicViewIntakeForm', '/AppointmentBooking', '/PublicAnxietyQuestionnaire', '/PublicEmergencyTriage'];
 
-  // Check if current page is public by either page name or URL path
   const isPublicPage = publicPages.includes(currentPageName) || publicPaths.includes(location.pathname);
 
   if (isPublicPage) {
@@ -276,7 +260,6 @@ export default function Layout({ children, currentPageName }) {
           {/* Desktop Sidebar */}
           <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
             <div className="flex flex-col h-full bg-white/90 backdrop-blur-md border-l border-blue-100 shadow-xl">
-              {/* Logo */}
               <div className="p-6 border-b border-blue-100 flex-shrink-0">
                 <Link to="/Dashboard" className="flex items-center gap-3">
                   <div className="w-full flex items-center justify-center">
@@ -289,7 +272,6 @@ export default function Layout({ children, currentPageName }) {
                 </Link>
               </div>
 
-              {/* Navigation - with scroll */}
               <div className="flex-1 p-6 overflow-y-auto">
                 <Navigation
                   currentPath={location.pathname}
@@ -305,10 +287,8 @@ export default function Layout({ children, currentPageName }) {
 
           {/* Main Content */}
           <div className="lg:mr-64 flex-1">
-            {/* Mobile Header */}
             <header className="lg:hidden bg-white/90 backdrop-blur-md border-b border-blue-100 px-4 py-4 shadow-sm sticky top-0 z-50">
               <div className="flex items-center justify-between">
-                {/* Logo */}
                 <Link to="/Dashboard" className="flex items-center gap-3">
                   <div className="flex items-center justify-center">
                     <img
@@ -319,7 +299,6 @@ export default function Layout({ children, currentPageName }) {
                   </div>
                 </Link>
 
-                {/* Mobile Menu Button */}
                 <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                   <SheetTrigger asChild>
                     <Button
@@ -361,7 +340,6 @@ export default function Layout({ children, currentPageName }) {
               </div>
             </header>
 
-            {/* Page Content */}
             <main className="flex-1">
               {children}
             </main>

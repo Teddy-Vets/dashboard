@@ -13,13 +13,10 @@ import ViewIntakeForm from './pages/ViewIntakeForm';
 import PostSurgeryInstructions from './pages/PostSurgeryInstructions';
 import CreatePostSurgeryInstructions from './pages/CreatePostSurgeryInstructions';
 import PuppyAdoptionGuide from './pages/PuppyAdoptionGuide';
-import RabiesDeclarations from './pages/RabiesDeclarations';
-import CreateRabiesDeclaration from './pages/CreateRabiesDeclaration';
 import SpayNeuterInstructions from './pages/SpayNeuterInstructions';
 import DentalCareInstructions from './pages/DentalCareInstructions';
 import CreateSpayNeuterInstructions from './pages/CreateSpayNeuterInstructions';
 import ViewSpayNeuterInstructions from './pages/ViewSpayNeuterInstructions';
-import PublicRabiesDeclaration from './pages/PublicRabiesDeclaration';
 import CreateDentalCareInstructions from './pages/CreateDentalCareInstructions';
 import AppointmentBooking from './pages/AppointmentBooking';
 import VaccinationForm from './pages/VaccinationForm';
@@ -32,7 +29,6 @@ import ViewAnxietyQuestionnaire from './pages/ViewAnxietyQuestionnaire';
 import ViewDentalCareInstructions from './pages/ViewDentalCareInstructions';
 import ManageAppointments from './pages/ManageAppointments';
 import PublicSpayNeuterInstructions from './pages/PublicSpayNeuterInstructions';
-import ViewRabiesDeclaration from './pages/ViewRabiesDeclaration';
 import UserManual from './pages/UserManual';
 import MarketingMaterials from './pages/MarketingMaterials';
 import ViewConsentForm from './pages/ViewConsentForm';
@@ -59,13 +55,10 @@ export const PAGES = {
     "PostSurgeryInstructions": PostSurgeryInstructions,
     "CreatePostSurgeryInstructions": CreatePostSurgeryInstructions,
     "PuppyAdoptionGuide": PuppyAdoptionGuide,
-    "RabiesDeclarations": RabiesDeclarations,
-    "CreateRabiesDeclaration": CreateRabiesDeclaration,
     "SpayNeuterInstructions": SpayNeuterInstructions,
     "DentalCareInstructions": DentalCareInstructions,
     "CreateSpayNeuterInstructions": CreateSpayNeuterInstructions,
     "ViewSpayNeuterInstructions": ViewSpayNeuterInstructions,
-    "PublicRabiesDeclaration": PublicRabiesDeclaration,
     "CreateDentalCareInstructions": CreateDentalCareInstructions,
     "AppointmentBooking": AppointmentBooking,
     "VaccinationForm": VaccinationForm,
@@ -78,7 +71,6 @@ export const PAGES = {
     "ViewDentalCareInstructions": ViewDentalCareInstructions,
     "ManageAppointments": ManageAppointments,
     "PublicSpayNeuterInstructions": PublicSpayNeuterInstructions,
-    "ViewRabiesDeclaration": ViewRabiesDeclaration,
     "UserManual": UserManual,
     "MarketingMaterials": MarketingMaterials,
     "ViewConsentForm": ViewConsentForm,
