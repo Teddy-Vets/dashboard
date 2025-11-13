@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Plus, FileCheck, User, PawPrint, Stethoscope, Copy, Check, Trash2, DollarSign, Upload, FileText } from "lucide-react";
+import { ArrowLeft, Plus, FileCheck, User, PawPrint, Stethoscope, Copy, Check, DollarSign, Upload, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/components/utils/urlHelpers";
 import { createFormLink } from "@/functions/createFormLink";
@@ -33,8 +33,6 @@ export default function CreateConsentFormPage() {
     procedureDate: "",
     procedureType: "",
     clinicNotes: "חשוב לשמור על צום של 8-12 שעות (אוכל בלבד, מים מותר) לפני ההגעה למרפאה.",
-    treatmentCosts: [],
-    totalCost: 0,
     quotePdfUrl: ""
   });
 
@@ -142,39 +140,6 @@ export default function CreateConsentFormPage() {
     }
   };
 
-  // ניהול הצעת מחיר
-  const addTreatment = () => {
-    setFormData(prev => ({
-      ...prev,
-      treatmentCosts: [...prev.treatmentCosts, { treatment_name: "", cost: 0 }]
-    }));
-  };
-
-  const removeTreatment = (index) => {
-    setFormData(prev => {
-      const newTreatments = prev.treatmentCosts.filter((_, i) => i !== index);
-      const newTotal = newTreatments.reduce((sum, t) => sum + (Number(t.cost) || 0), 0);
-      return {
-        ...prev,
-        treatmentCosts: newTreatments,
-        totalCost: newTotal
-      };
-    });
-  };
-
-  const updateTreatment = (index, field, value) => {
-    setFormData(prev => {
-      const newTreatments = [...prev.treatmentCosts];
-      newTreatments[index] = { ...newTreatments[index], [field]: value };
-      const newTotal = newTreatments.reduce((sum, t) => sum + (Number(t.cost) || 0), 0);
-      return {
-        ...prev,
-        treatmentCosts: newTreatments,
-        totalCost: newTotal
-      };
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -210,8 +175,6 @@ export default function CreateConsentFormPage() {
         procedure_type: formData.procedureType,
         procedure_date: formData.procedureDate,
         clinic_notes: formData.clinicNotes,
-        treatment_costs: formData.treatmentCosts,
-        total_cost: formData.totalCost,
         quote_pdf_url: formData.quotePdfUrl,
         status: 'pending'
       };
@@ -483,70 +446,6 @@ export default function CreateConsentFormPage() {
                 </div>
               )}
             </CardHeader>
-
-            <CardContent className="p-8 space-y-6">
-              <div className="flex items-center justify-between">
-                <p className="text-slate-600">הוסף טיפולים ומחירים שיוצגו בטופס ההסכמה</p>
-                <Button
-                  type="button"
-                  onClick={addTreatment}
-                  variant="outline"
-                  className="border-yellow-300 text-yellow-700 hover:bg-yellow-50"
-                  aria-label="הוסף טיפול חדש להצעת המחיר"
-                >
-                  <Plus className="w-4 h-4 ml-2" />
-                  הוסף טיפול
-                </Button>
-              </div>
-
-              {formData.treatmentCosts.length > 0 && (
-                <div className="space-y-3">
-                  {formData.treatmentCosts.map((treatment, index) => (
-                    <div key={index} className="flex gap-3 items-start p-4 bg-gray-50 rounded-lg border border-gray-200">
-                      <div className="flex-1">
-                        <Input
-                          placeholder="שם הטיפול (לדוגמה: ניקוי שיניים)"
-                          value={treatment.treatment_name}
-                          onChange={(e) => updateTreatment(index, 'treatment_name', e.target.value)}
-                          className="mb-2"
-                          aria-label={`שם טיפול ${index + 1}`}
-                        />
-                        <Input
-                          type="number"
-                          placeholder="עלות (₪)"
-                          value={treatment.cost}
-                          onChange={(e) => updateTreatment(index, 'cost', e.target.value)}
-                          aria-label={`עלות טיפול ${index + 1}`}
-                        />
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeTreatment(index)}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                        aria-label={`מחק טיפול ${index + 1}`}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  ))}
-
-                  <div className="flex justify-between items-center p-4 bg-green-50 rounded-lg border-2 border-green-300 mt-4" role="status" aria-live="polite">
-                    <span className="text-lg font-bold text-gray-900">סה״כ:</span>
-                    <span className="text-2xl font-bold text-green-700">₪{formData.totalCost.toLocaleString()}</span>
-                  </div>
-                </div>
-              )}
-
-              {formData.treatmentCosts.length === 0 && (
-                <div className="text-center py-8 text-slate-500">
-                  <DollarSign className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-                  <p>לא הוספת טיפולים עדיין</p>
-                  <p className="text-sm">לחץ על "הוסף טיפול" כדי להתחיל</p>
-                </div>
-              )}
-            </CardContent>
           </Card>
 
           {/* כפתורי פעולה */}
