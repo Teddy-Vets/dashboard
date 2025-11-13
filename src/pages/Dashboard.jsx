@@ -431,13 +431,13 @@ export default function DashboardPage() {
       link: "IntakeFormsList"
     },
     {
-      title: "פניות חירום",
-      description: "פניות דחופות הדורשות טיפול מיידי",
-      value: stats.totalEmergencyTriage,
-      change: `+${stats.todayEmergencyTriage} היום`,
-      icon: AlertCircle,
-      color: "bg-red-500",
-      link: "EmergencyTriageDashboard"
+      title: "טפסי הסכמה",
+      description: "טפסי הסכמה לניתוחים והליכים רפואיים",
+      value: stats.totalConsentForms,
+      change: `+${stats.todayConsentForms} היום`,
+      icon: ClipboardCheck,
+      color: "bg-purple-500",
+      link: "ConsentForms"
     },
     {
       title: "בקשות תור",
