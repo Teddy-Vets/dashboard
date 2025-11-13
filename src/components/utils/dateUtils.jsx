@@ -3,7 +3,8 @@
  * כל התאריכים והשעות במערכת יתנהגו באופן עקבי באזור הזמן של ישראל
  */
 
-import { format, parseISO, formatDistanceToNow } from 'date-fns';
+import { format, parseISO, formatDistanceToNow, toDate } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { he } from 'date-fns/locale';
 
 // אזור הזמן הקבוע של המערכת
@@ -20,7 +21,8 @@ export const formatDateInIsrael = (isoDateString, formatPattern = 'dd/MM/yyyy') 
   
   try {
     const date = parseISO(isoDateString);
-    return format(date, formatPattern, { locale: he });
+    const israelDate = toZonedTime(date, ISRAEL_TIMEZONE);
+    return format(israelDate, formatPattern, { locale: he });
   } catch (error) {
     console.warn('Error formatting date:', error);
     return '';
@@ -38,7 +40,8 @@ export const formatDateTimeInIsrael = (isoDateString, formatPattern = 'dd/MM/yyy
   
   try {
     const date = parseISO(isoDateString);
-    return format(date, formatPattern, { locale: he });
+    const israelDate = toZonedTime(date, ISRAEL_TIMEZONE);
+    return format(israelDate, formatPattern, { locale: he });
   } catch (error) {
     console.warn('Error formatting datetime:', error);
     return '';
@@ -55,7 +58,8 @@ export const formatRelativeDate = (isoDateString) => {
   
   try {
     const date = parseISO(isoDateString);
-    return formatDistanceToNow(date, { addSuffix: true, locale: he });
+    const israelDate = toZonedTime(date, ISRAEL_TIMEZONE);
+    return formatDistanceToNow(israelDate, { addSuffix: true, locale: he });
   } catch (error) {
     console.warn('Error formatting relative date:', error);
     return '';
@@ -90,8 +94,9 @@ export const isToday = (isoDateString) => {
   
   try {
     const date = parseISO(isoDateString);
-    const today = new Date();
-    return format(date, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd');
+    const israelDate = toZonedTime(date, ISRAEL_TIMEZONE);
+    const today = toZonedTime(new Date(), ISRAEL_TIMEZONE);
+    return format(israelDate, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd');
   } catch (error) {
     console.warn('Error checking if date is today:', error);
     return false;
@@ -108,9 +113,10 @@ export const isTomorrow = (isoDateString) => {
   
   try {
     const date = parseISO(isoDateString);
-    const tomorrow = new Date();
+    const israelDate = toZonedTime(date, ISRAEL_TIMEZONE);
+    const tomorrow = toZonedTime(new Date(), ISRAEL_TIMEZONE);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    return format(date, 'yyyy-MM-dd') === format(tomorrow, 'yyyy-MM-dd');
+    return format(israelDate, 'yyyy-MM-dd') === format(tomorrow, 'yyyy-MM-dd');
   } catch (error) {
     console.warn('Error checking if date is tomorrow:', error);
     return false;
@@ -146,7 +152,8 @@ export const convertISOToHtmlDate = (isoDateString) => {
   
   try {
     const date = parseISO(isoDateString);
-    return format(date, 'yyyy-MM-dd');
+    const israelDate = toZonedTime(date, ISRAEL_TIMEZONE);
+    return format(israelDate, 'yyyy-MM-dd');
   } catch (error) {
     console.warn('Error converting ISO to HTML date:', error);
     return '';
@@ -166,5 +173,6 @@ export const getCurrentDateISO = () => {
  * @returns {string} תאריך נוכחי בפורמט YYYY-MM-DD
  */
 export const getCurrentDateHTML = () => {
-  return format(new Date(), 'yyyy-MM-dd');
+  const israelDate = toZonedTime(new Date(), ISRAEL_TIMEZONE);
+  return format(israelDate, 'yyyy-MM-dd');
 };
