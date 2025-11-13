@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Plus, FileCheck, User, PawPrint, Stethoscope, Copy, Check, Trash2, DollarSign } from "lucide-react";
+import { ArrowLeft, Plus, FileCheck, User, PawPrint, Stethoscope, Copy, Check, Trash2, DollarSign, Upload, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/components/utils/urlHelpers";
 import { createFormLink } from "@/functions/createFormLink";
@@ -14,6 +14,7 @@ import { getEntityList, createEntity } from "@/components/utils/apiHelpers";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import userService from "@/components/services/userService";
+import { base44 } from "@/api/base44Client";
 
 export default function CreateConsentFormPage() {
   const navigate = useNavigate();
@@ -33,13 +34,15 @@ export default function CreateConsentFormPage() {
     procedureType: "",
     clinicNotes: "חשוב לשמור על צום של 8-12 שעות (אוכל בלבד, מים מותר) לפני ההגעה למרפאה.",
     treatmentCosts: [],
-    totalCost: 0
+    totalCost: 0,
+    quotePdfUrl: ""
   });
 
   const [clinics, setClinics] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [isUploadingPdf, setIsUploadingPdf] = useState(false);
 
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [publicUrl, setPublicUrl] = useState('');
@@ -97,6 +100,45 @@ export default function CreateConsentFormPage() {
           variant: "destructive",
         });
       }
+    }
+  };
+
+  const handlePdfUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== 'application/pdf') {
+      toast({
+        title: "שגיאה בהעלאה",
+        description: "יש להעלות קובץ PDF בלבד",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploadingPdf(true);
+
+    try {
+      const response = await base44.integrations.Core.UploadFile({ file });
+      
+      if (response && response.file_url) {
+        updateFormData('quotePdfUrl', response.file_url);
+        toast({
+          title: "הקובץ הועלה בהצלחה!",
+          description: "קובץ ההצעת מחיר יצורף לטופס",
+        });
+      } else {
+        throw new Error("לא התקבל URL מהשרת");
+      }
+    } catch (error) {
+      console.error('Error uploading PDF:', error);
+      toast({
+        title: "שגיאה בהעלאת הקובץ",
+        description: error.message || 'אנא נסה שנית',
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploadingPdf(false);
     }
   };
 
@@ -170,6 +212,7 @@ export default function CreateConsentFormPage() {
         clinic_notes: formData.clinicNotes,
         treatment_costs: formData.treatmentCosts,
         total_cost: formData.totalCost,
+        quote_pdf_url: formData.quotePdfUrl,
         status: 'pending'
       };
 
@@ -398,10 +441,47 @@ export default function CreateConsentFormPage() {
           {/* הצעת מחיר */}
           <Card className="bg-white/90 backdrop-blur-sm border-yellow-100 shadow-xl mb-6">
             <CardHeader className="border-b border-yellow-100 bg-gradient-to-r from-yellow-50 to-orange-50">
-              <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                <DollarSign className="w-6 h-6 text-yellow-600" />
-                הצעת מחיר (אופציונלי)
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                  <DollarSign className="w-6 h-6 text-yellow-600" />
+                  הצעת מחיר
+                </CardTitle>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handlePdfUpload}
+                    className="hidden"
+                    id="pdf-upload"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => document.getElementById('pdf-upload').click()}
+                    disabled={isUploadingPdf}
+                    className="border-yellow-300 text-yellow-700 hover:bg-yellow-50"
+                  >
+                    {isUploadingPdf ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-yellow-600 border-t-transparent rounded-full animate-spin ml-2" />
+                        מעלה...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4 ml-2" />
+                        העלה PDF
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+              {formData.quotePdfUrl && (
+                <div className="mt-2 flex items-center gap-2 text-sm text-green-700">
+                  <FileText className="w-4 h-4" />
+                  <span>קובץ PDF צורף בהצלחה</span>
+                </div>
+              )}
             </CardHeader>
 
             <CardContent className="p-8 space-y-6">
