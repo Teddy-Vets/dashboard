@@ -141,17 +141,14 @@ export default function PersonalInfoStep({ formData, updateFormData }) {
         {formData.firstEverPet === "no" && (
           <div className="mt-4 space-y-3 bg-gradient-to-br from-purple-50 to-pink-50 p-5 rounded-lg border border-purple-200 shadow-sm">
             <Label className="text-base font-medium text-slate-800">
-              מי דואג לחבר הפרוותי?
+              ספרו לנו קצת
             </Label>
             <p className="text-sm text-slate-600">
-              ספרו לנו קצת על מי מטפל בעיקר בחיות המחמד שלכם
             </p>
             <Textarea
               value={formData.notFirstPetInfo}
               onChange={(e) => updateFormData("notFirstPetInfo", e.target.value)}
-              placeholder="ספרו לנו קצת..."
-              className="h-24 bg-white border-slate-200 focus:border-purple-400 focus:ring-purple-400"
-            />
+                          />
           </div>
         )}
       </div>
