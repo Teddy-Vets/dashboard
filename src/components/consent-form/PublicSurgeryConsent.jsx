@@ -11,7 +11,10 @@ export default function PublicSurgeryConsent({ linkData, token }) {
   const [formData, setFormData] = useState({
     ownerName: linkData?.metadata?.owner_name || '',
     ownerSignature: '',
-    agreedToFinancial: false
+    agreedToFinancial: false,
+    confirmedAnesthesia: false,
+    confirmedSurgicalRisks: false,
+    confirmedPreOperativeTests: false
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,6 +75,11 @@ export default function PublicSurgeryConsent({ linkData, token }) {
     
     if (!formData.agreedToFinancial) {
       setSubmitError("יש לאשר את ההסכמה הכספית לפני המשך.");
+      return;
+    }
+
+    if (!formData.confirmedAnesthesia || !formData.confirmedSurgicalRisks || !formData.confirmedPreOperativeTests) {
+      setSubmitError("יש לאשר שקראת והבנת את כל הסעיפים לפני המשך.");
       return;
     }
 
@@ -204,6 +212,19 @@ export default function PublicSurgeryConsent({ linkData, token }) {
                   אני מבינ/ה כי הליך יבוצע בהרדמה כללית. הוסבר לי כי הצוות הרפואי משתמש בחומרי הרדמה וניטור, עם זאת, אני מודע/ת לכך שבכל הרדמה, בדומה לרפואת אדם, קיים סיכון מוגבה לסיבוכים, לרבות תגובה בלתי צפויה לחומרי ההרדמה, ובמקרים נדירים ביותר אף מוות.
                 </p>
               </div>
+              
+              {/* Checkbox for Anesthesia */}
+              <div className="mt-4 flex items-start space-x-3 space-x-reverse bg-blue-50/30 p-4 rounded-lg border border-blue-100/50">
+                <Checkbox
+                  id="confirm-anesthesia"
+                  checked={formData.confirmedAnesthesia}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, confirmedAnesthesia: checked }))}
+                  className="mt-1"
+                />
+                <Label htmlFor="confirm-anesthesia" className="text-sm text-slate-700 cursor-pointer leading-relaxed font-medium">
+                  אני מאשר/ת שקראתי והבנתי את הסיכונים הכרוכים בהרדמה כללית <span className="text-red-500 font-bold">*</span>
+                </Label>
+              </div>
             </div>
 
             {/* Surgical Risks and Complications */}
@@ -238,6 +259,19 @@ export default function PublicSurgeryConsent({ linkData, token }) {
                   </p>
                 </div>
               </div>
+              
+              {/* Checkbox for Surgical Risks */}
+              <div className="mt-4 flex items-start space-x-3 space-x-reverse bg-blue-50/30 p-4 rounded-lg border border-blue-100/50">
+                <Checkbox
+                  id="confirm-surgical-risks"
+                  checked={formData.confirmedSurgicalRisks}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, confirmedSurgicalRisks: checked }))}
+                  className="mt-1"
+                />
+                <Label htmlFor="confirm-surgical-risks" className="text-sm text-slate-700 cursor-pointer leading-relaxed font-medium">
+                  אני מאשר/ת שקראתי והבנתי את הסיכונים והסיבוכים האפשריים בהליך הכירורגי <span className="text-red-500 font-bold">*</span>
+                </Label>
+              </div>
             </div>
 
             {/* Pre-operative Tests and Preparations */}
@@ -247,6 +281,19 @@ export default function PublicSurgeryConsent({ linkData, token }) {
                 <p className="text-slate-600 leading-relaxed">
                   <strong className="text-slate-700">בדיקות דם לפני הרדמה:</strong> אני מסכימ/ה לביצוע בדיקות דם לפני ההליך, ידוע לי כי הקף הבדיקות מותאם אישית לגילו, גזעו ומצבו הרפואי של בעל החיים, ויתכן שילול פאנל בדיקות מורחב בהתאם להמלצת הצוות הרפואי.
                 </p>
+              </div>
+              
+              {/* Checkbox for Pre-operative Tests */}
+              <div className="mt-4 flex items-start space-x-3 space-x-reverse bg-blue-50/30 p-4 rounded-lg border border-blue-100/50">
+                <Checkbox
+                  id="confirm-preoperative"
+                  checked={formData.confirmedPreOperativeTests}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, confirmedPreOperativeTests: checked }))}
+                  className="mt-1"
+                />
+                <Label htmlFor="confirm-preoperative" className="text-sm text-slate-700 cursor-pointer leading-relaxed font-medium">
+                  אני מאשר/ת שקראתי והבנתי את הצורך בבדיקות והכנות מקדימות <span className="text-red-500 font-bold">*</span>
+                </Label>
               </div>
             </div>
 
@@ -295,7 +342,7 @@ export default function PublicSurgeryConsent({ linkData, token }) {
                     onCheckedChange={(checked) => setFormData(prev => ({ ...prev, agreedToFinancial: checked }))}
                     className="mt-1"
                   />
-                  <Label htmlFor="financial" className="text-sm text-slate-600 cursor-pointer leading-relaxed">
+                  <Label htmlFor="financial" className="text-sm text-slate-700 cursor-pointer leading-relaxed font-medium">
                     אני מתחייב/ת לשאת במלוא העלות של ההליך וכל הטיפולים הנלווים שיידרשו. <span className="text-red-500 font-bold">*</span>
                   </Label>
                 </div>
@@ -390,8 +437,8 @@ export default function PublicSurgeryConsent({ linkData, token }) {
 
               <Button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-lg py-6"
+                disabled={isSubmitting || !formData.confirmedAnesthesia || !formData.confirmedSurgicalRisks || !formData.confirmedPreOperativeTests || !formData.agreedToFinancial}
+                className="w-full bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-lg py-6 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
