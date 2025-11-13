@@ -1,0 +1,108 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+
+// פונקציה ליצירת Hash SHA-256
+async function createContentHash(data) {
+    const encoder = new TextEncoder();
+    const dataBuffer = encoder.encode(JSON.stringify(data));
+    const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+Deno.serve(async (req) => {
+    try {
+        console.log('[submitConsentForm] Starting submission process');
+        
+        const body = await req.json();
+        const { token, signature_data, signature_verification_data } = body;
+        
+        console.log('[submitConsentForm] Received token:', token);
+        
+        if (!token || !signature_data) {
+            console.error('[submitConsentForm] Missing required fields');
+            return Response.json({ error: 'Bad request: missing token or signature' }, { status: 400 });
+        }
+
+        const base44 = createClientFromRequest(req);
+
+        // 1. אימות הקישור וקבלת פרטי הטופס
+        console.log('[submitConsentForm] Validating link...');
+        const validationResponse = await base44.functions.invoke('validateLink', { t: token });
+        
+        if (!validationResponse.data?.valid) {
+            console.error('[submitConsentForm] Link validation failed:', validationResponse.data?.error);
+            return Response.json({ error: validationResponse.data?.error || 'Invalid or expired link' }, { status: 410 });
+        }
+        
+        const form = validationResponse.data.form;
+        if (!form || !form.id) {
+            console.error('[submitConsentForm] Form not found');
+            return Response.json({ error: 'Consent form not found' }, { status: 404 });
+        }
+
+        console.log('[submitConsentForm] Form loaded:', form.id, 'Status:', form.status);
+
+        // בדיקה אם הטופס כבר נחתם
+        if (form.status === 'legally_sealed' || form.status === 'signed' || form.status === 'completed') {
+            console.error('[submitConsentForm] Form already processed:', form.status);
+            return Response.json({ 
+                error: 'טופס זה כבר נחתם ונשלח. לא ניתן לשלוח אותו שוב.',
+                status: form.status
+            }, { status: 409 });
+        }
+
+        const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || 'unknown';
+        const userAgent = req.headers.get('user-agent') || 'unknown';
+
+        // 2. חישוב Hashes
+        console.log('[submitConsentForm] Calculating hashes...');
+        const formContentToHash = {
+            id: form.id,
+            owner_name: form.owner_name,
+            pet_name: form.pet_name,
+            procedure_type: form.procedure_type,
+            procedure_date: form.procedure_date,
+            clinic_notes: form.clinic_notes,
+            treatment_costs: form.treatment_costs,
+            total_cost: form.total_cost
+        };
+        const form_content_hash = await createContentHash(formContentToHash);
+        const signature_hash = await createContentHash(signature_data);
+
+        // 3. עדכון הטופס עם כל פרטי החתימה
+        console.log('[submitConsentForm] Updating form with signature and sealing...');
+        const signed_at = new Date().toISOString();
+        const signature_timestamp = Date.now();
+        
+        const updatedForm = await base44.asServiceRole.entities.ConsentForm.update(form.id, {
+            status: 'legally_sealed',
+            signed_at,
+            signature_data,
+            signature_hash,
+            form_content_hash,
+            signature_ip: clientIp,
+            signature_user_agent: userAgent,
+            signature_timestamp,
+            signature_verification_data,
+            immutable_record: true
+        });
+
+        console.log(`[submitConsentForm] Form ${form.id} was legally sealed successfully`);
+
+        return Response.json({
+            success: true,
+            form_id: updatedForm.id,
+            status: updatedForm.status,
+            message: "Consent form has been securely signed and sealed."
+        });
+
+    } catch (error) {
+        console.error('[submitConsentForm] Error:', error);
+        console.error('[submitConsentForm] Error message:', error.message);
+        console.error('[submitConsentForm] Error stack:', error.stack);
+        return Response.json({ 
+            error: 'Server error', 
+            details: error.message || 'Unknown error'
+        }, { status: 500 });
+    }
+});
