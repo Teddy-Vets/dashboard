@@ -25,6 +25,7 @@ export default function PublicIntakeFormFlow({ token, formId, initialData = {} }
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     ownerName: initialData.owner_name || "",
+    ownerIdNumber: "",
     phone: initialData.owner_phone || "",
     email: initialData.owner_email || "",
     address: "",
@@ -98,6 +99,7 @@ export default function PublicIntakeFormFlow({ token, formId, initialData = {} }
       case 1: // Personal Info
         return (
           formData.ownerName?.trim() !== "" &&
+          formData.ownerIdNumber?.trim() !== "" &&
           formData.phone?.trim() !== "" &&
           formData.firstEverPet?.trim() !== ""
         );
@@ -107,11 +109,11 @@ export default function PublicIntakeFormFlow({ token, formId, initialData = {} }
           formData.petType?.trim() !== ""
         );
       case 3: // Medical History
-        return formData.vetAnxietyLevel > 0; // Assuming 0 is not a valid anxiety level, or 1-10 scale
+        return formData.vetAnxietyLevel > 0;
       case 4: // Visit Info
         return formData.visitReasonMain?.trim() !== "";
       case 5: // Review Step
-        return true; // No specific validation for review step to proceed
+        return true;
       default:
         return true;
     }
@@ -140,10 +142,10 @@ export default function PublicIntakeFormFlow({ token, formId, initialData = {} }
         throw new Error("מזהה הטופס חסר");
       }
 
-      // בניית אובייקט הנתונים לשליחה
       const submissionData = {
         id: formId,
         owner_name: formData.ownerName,
+        owner_id_number: formData.ownerIdNumber,
         owner_phone: formData.phone,
         owner_email: formData.email,
         address: formData.address,
@@ -370,7 +372,7 @@ export default function PublicIntakeFormFlow({ token, formId, initialData = {} }
 
               {/* Navigation Buttons */}
               <div className="flex justify-between gap-4 pb-8">
-                {currentStep > 1 ? ( // Only show Previous button if not on the first step
+                {currentStep > 1 ? (
                   <Button
                     onClick={prevStep}
                     variant="outline"
@@ -380,7 +382,7 @@ export default function PublicIntakeFormFlow({ token, formId, initialData = {} }
                     הקודם
                   </Button>
                 ) : (
-                  <div></div> // On the first step, render an empty div to maintain justify-between layout
+                  <div></div>
                 )}
 
                 {currentStep < STEPS.length ? (

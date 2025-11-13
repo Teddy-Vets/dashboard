@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { User, Phone, Mail, Home, PawPrint } from "lucide-react";
+import { User, Phone, Mail, Home, PawPrint, CreditCard } from "lucide-react";
 
 export default function PersonalInfoStep({ formData, updateFormData }) {
   return (
@@ -21,6 +21,23 @@ export default function PersonalInfoStep({ formData, updateFormData }) {
           placeholder="מניה נמי"
           className="border-slate-200 focus:border-blue-400 focus:ring-blue-400"
           required
+        />
+      </div>
+
+      {/* תעודת זהות */}
+      <div className="space-y-3">
+        <Label className="text-base font-medium text-slate-700 flex items-center gap-2">
+          <CreditCard className="w-4 h-4 text-indigo-500" />
+          <span className="text-red-500">*</span>
+          תעודת זהות
+        </Label>
+        <Input
+          value={formData.ownerIdNumber}
+          onChange={(e) => updateFormData("ownerIdNumber", e.target.value)}
+          placeholder="123456789"
+          className="border-slate-200 focus:border-blue-400 focus:ring-blue-400"
+          required
+          maxLength={9}
         />
       </div>
 
