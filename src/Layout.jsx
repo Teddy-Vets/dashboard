@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/components/utils/urlHelpers";
@@ -23,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import userService from "@/components/services/userService";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { base44 } from "@/api/base44Client"; // Added this import
+import { base44 } from "@/api/base44Client";
 import TestEnvBanner from "@/components/common/TestEnvBanner";
 
 const GlobalStyles = () => (
@@ -187,7 +186,6 @@ function Navigation({ currentPath, onNavigate, currentUser, isLoadingUser, handl
 }
 
 export default function Layout({ children, currentPageName }) {
-  console.log("Layout - Current page name:", currentPageName); // הוסף את השורה הזו כאן
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -227,7 +225,7 @@ export default function Layout({ children, currentPageName }) {
   const handleLogin = async () => {
     try {
       const callbackUrl = window.location.origin + '/Dashboard';
-      await base44.auth.redirectToLogin(callbackUrl); // Modified this line
+      await base44.auth.redirectToLogin(callbackUrl);
     } catch (error) {
       console.error('Login failed', error);
     }
@@ -235,27 +233,27 @@ export default function Layout({ children, currentPageName }) {
 
   // Access control for admin-only pages
   useEffect(() => {
-    const adminOnlyPages = ["/MarketingMaterials", "/SystemManagement", "/Clinics"]; // Add new admin pages here
+    const adminOnlyPages = ["/MarketingMaterials", "/SystemManagement", "/Clinics"];
     
     // Only enforce access control if user data has finished loading
     if (!isLoadingUser) {
       if (adminOnlyPages.includes(location.pathname)) {
         if (!currentUser || currentUser.role !== "admin") {
           console.warn(`User tried to access ${location.pathname}. Redirecting.`);
-          navigate("/Dashboard"); // Redirect unauthorized users to dashboard
-          // Optionally, display a toast or alert message to the user
-          // alert("אין לך הרשאה לגשת לעמוד זה.");
+          navigate("/Dashboard");
         }
       }
     }
   }, [currentUser, isLoadingUser, location.pathname, navigate]);
 
-
-  // Note: createPageUrl is used here to get the literal page name from URL for publicPages array matching.
-  // The navItems now use direct path strings like "/Dashboard", not page names.
+  // Public pages - checking both by page name and by URL path
   const publicPages = ['PublicForm', 'PublicConsentForm', 'PublicViewIntakeForm', 'AppointmentBooking', 'PublicAnxietyQuestionnaire', 'PublicRabiesDeclaration', 'PublicEmergencyTriage'];
+  const publicPaths = ['/PublicForm', '/PublicConsentForm', '/PublicViewIntakeForm', '/AppointmentBooking', '/PublicAnxietyQuestionnaire', '/PublicRabiesDeclaration', '/PublicEmergencyTriage'];
 
-  if (publicPages.includes(currentPageName)) {
+  // Check if current page is public by either page name or URL path
+  const isPublicPage = publicPages.includes(currentPageName) || publicPaths.includes(location.pathname);
+
+  if (isPublicPage) {
     return (
       <>
         <TestEnvBanner />
