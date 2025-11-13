@@ -159,7 +159,7 @@ export default function MedicalHistoryStep({ formData, updateFormData }) {
           />
           
           <div className="flex justify-between items-center text-sm font-medium">
-            <span className="text-rose-600">בחרדה גבוהה(10)</span>
+            <span className="text-rose-600">בחרדה גבוהה (10)</span>
             <span className="text-2xl font-bold text-amber-600">{formData.vetAnxietyLevel}</span>
             <span className="text-emerald-600">רגוע (1)</span>
           </div>
