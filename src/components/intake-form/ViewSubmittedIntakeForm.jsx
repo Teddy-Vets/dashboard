@@ -220,8 +220,8 @@ export default function ViewSubmittedIntakeForm({ formData }) {
               isBadge
               badgeClass={formData.has_insurance === 'yes' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}
             />
-            {formData.has_insurance === 'yes' && formData.insurance_company_name && (
-              <DetailItem label="חברת ביטוח" value={formData.insurance_company_name} />
+            {formData.has_insurance === 'yes' && formData.insurance_company && (
+              <DetailItem label="חברת ביטוח" value={formData.insurance_company} />
             )}
             
             <DetailItem label="נושאים נוספים לדיון" value={formData.other_topics} />
