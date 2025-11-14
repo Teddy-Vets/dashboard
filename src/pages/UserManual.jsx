@@ -45,11 +45,9 @@ export default function UserManualPage() {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h3 className="font-semibold text-blue-900 mb-2">תכונות עיקריות:</h3>
               <ul className="list-disc list-inside space-y-1 text-slate-700">
-                <li>ניהול טפסי היכרות דיגיטליים</li>
-                <li>טפסי הסכמה לניתוחים והליכים רפואיים</li>
-                <li>מערכת קביעת תורים מתקדמת עם תזכורות אוטומטיות</li>
-                <li>טריאז' חירום לסינון פניות דחופות</li>
-                <li>שאלוני חרדה להערכת חרדה וטרינרית</li>
+                <li>ניהול טפסי היכרות דיגיטליים ללקוחות חדשים</li>
+                <li>טפסי הסכמה לניתוחים והליכים רפואיים עם חתימה דיגיטלית</li>
+                <li>מערכת קביעת תורים חכמה לחיסונים וביקורים רפואיים</li>
                 <li>יצירת קישורים מאובטחים לשיתוף עם לקוחות</li>
                 <li>ממשק ניהול מרכזי עם דשבורד מתקדם</li>
               </ul>
@@ -73,19 +71,18 @@ export default function UserManualPage() {
                 <h4 className="font-semibold text-slate-800 mb-2">📊 כרטיסיות סטטיסטיקה</h4>
                 <p className="text-slate-700">3 כרטיסיות עם נתונים מרכזיים:</p>
                 <ul className="list-disc list-inside mt-2 text-slate-600 space-y-1">
-                  <li><strong>טפסי היכרות</strong> - סה"כ טפסים + כמה הגיעו היום</li>
-                  <li><strong>פניות חירום</strong> - סה"כ פניות + כמה הגיעו היום</li>
-                  <li><strong>בקשות תור</strong> - סה"כ בקשות תורים פעילות</li>
+                  <li><strong>טפסי היכרות</strong> - טפסים שהתקבלו מלקוחות חדשים (סה"כ + כמה הגיעו היום)</li>
+                  <li><strong>טפסי הסכמה</strong> - טפסי הסכמה לניתוחים והליכים רפואיים (סה"כ + כמה הגיעו היום)</li>
+                  <li><strong>בקשות תור</strong> - תורים שמחכים לאישור ותיאום</li>
                 </ul>
               </div>
 
               <div className="bg-slate-50 p-4 rounded-lg">
                 <h4 className="font-semibold text-slate-800 mb-2">⚡ פעולות מהירות</h4>
                 <ul className="list-disc list-inside text-slate-600 space-y-1">
-                  <li><strong>שליחת טפסים</strong> - יצירת קישורים מאובטחים לשליחה ללקוחות</li>
-                  <li><strong>בקשת תור חדשה</strong> - מעבר לעמוד קביעת תורים</li>
-                  <li><strong>טופס היכרות חדש</strong> - יצירת טופס היכרות חדש</li>
-                  <li><strong>טופס הסכמה חדש</strong> - יצירת טופס הכנה לניתוח</li>
+                  <li><strong>טופס היכרות</strong> - יצירת טופס היכרות חדש ללקוח</li>
+                  <li><strong>טופס הסכמה</strong> - יצירת טופס הסכמה לניתוח</li>
+                  <li><strong>ניהול תורים</strong> - מעבר לעמוד ניהול התורים</li>
                 </ul>
               </div>
 
@@ -106,200 +103,6 @@ export default function UserManualPage() {
         <Card className="mb-6 bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
           <CardHeader className="border-b border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50">
             <CardTitle className="flex items-center gap-2 text-slate-800">
-              <Share2 className="w-5 h-5 text-purple-500" />
-              יצירת קישורים מאובטחים לטפסים
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-4">
-            <p className="text-slate-700">
-              המערכת מאפשרת יצירת קישורים ייחודיים ומאובטחים לשליחה ללקוחות:
-            </p>
-
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200">
-              <h3 className="font-semibold text-purple-900 mb-3">תהליך יצירת קישור:</h3>
-              <ol className="list-decimal list-inside space-y-2 text-slate-700">
-                <li>לחצו על <strong>"שליחת טפסים"</strong> בדשבורד</li>
-                <li>בחרו את סוג הטופס: היכרות / הסכמה / שאלון חרדה / טריאז' חירום</li>
-                <li>בחרו את סניף המרפאה</li>
-                <li>מלאו פרטי הלקוח (אופציונלי אבל מומלץ):
-                  <ul className="list-disc list-inside mr-6 mt-1 space-y-1">
-                    <li>שם הבעלים ושם חיית המחמד</li>
-                    <li>טלפון (לשליחה בוואטסאפ)</li>
-                    <li>אימייל (לשליחה במייל)</li>
-                  </ul>
-                </li>
-                <li>לחצו על <strong>"צור קישור"</strong></li>
-                <li>בחרו באפשרות שליחה:
-                  <ul className="list-disc list-inside mr-6 mt-1">
-                    <li>📋 העתק קישור</li>
-                    <li>💚 שלח בוואטסאפ (הודעה מוכנה)</li>
-                    <li>📧 שלח באימייל (הודעה מוכנה)</li>
-                  </ul>
-                </li>
-              </ol>
-            </div>
-
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-900 mb-2">⏰ תוקף הקישור:</h4>
-              <p className="text-slate-700">
-                כל קישור תקף ל-<strong>72 שעות</strong> בלבד מרגע היצירה, לאבטחה מקסימלית.
-              </p>
-            </div>
-
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <h4 className="font-semibold text-amber-900 mb-2">🔐 אבטחה:</h4>
-              <p className="text-slate-700">
-                כל קישור מוגן באמצעות טוקן ייחודי שנוצר במערכת. הנתונים מוצפנים ומאובטחים.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* קביעת תורים */}
-        <Card className="mb-6 bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
-          <CardHeader className="border-b border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50">
-            <CardTitle className="flex items-center gap-2 text-slate-800">
-              <Calendar className="w-5 h-5 text-green-500" />
-              מערכת קביעת תורים
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-4">
-            <p className="text-slate-700">
-              מערכת מתקדמת לניהול בקשות תורים עם תזכורות אוטומטיות ומעקב מלא.
-            </p>
-
-            <div className="space-y-3">
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <h4 className="font-semibold text-green-900 mb-2">🌐 קישור ציבורי לקביעת תור:</h4>
-                <p className="text-slate-700 mb-2">
-                  ניתן לשתף קישור ישיר עם לקוחות לקביעת תור עצמית:
-                </p>
-                <code className="block bg-white p-2 rounded text-sm text-slate-700 border">
-                  https://[כתובת-האפליקציה]/AppointmentBooking
-                </code>
-                <p className="text-slate-600 text-sm mt-2">
-                  ⭐ הקישור הזה אינו מצריך אימות ופתוח לציבור הרחב
-                </p>
-              </div>
-
-              <div className="bg-slate-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-slate-800 mb-2">תהליך קביעת תור:</h4>
-                <ol className="list-decimal list-inside space-y-2 text-slate-700">
-                  <li>הלקוח בוחר האם הוא לקוח חדש או חוזר</li>
-                  <li>מזין פרטים אישיים: שם, טלפון, אימייל, פרטי חיית המחמד</li>
-                  <li>בוחר סוג השירות: חיסון או ביקור רפואי</li>
-                  <li><strong>עבור חיסון:</strong> בוחר את סוגי החיסונים הנדרשים</li>
-                  <li><strong>עבור ביקור רפואי:</strong> מתאר את סיבת הביקור</li>
-                  <li>בוחר תאריך ושעה מועדפים</li>
-                  <li>מאשר ושולח את הבקשה</li>
-                </ol>
-              </div>
-
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h4 className="font-semibold text-blue-900 mb-2">🔔 תזכורות אוטומטיות:</h4>
-                <p className="text-slate-700 mb-2">
-                  המערכת שולחת תזכורות אוטומטיות ללקוחות עם תור מאושר:
-                </p>
-                <ul className="list-disc list-inside text-slate-600 space-y-1">
-                  <li><strong>24 שעות לפני התור</strong> - תזכורת ראשונה במייל ובSMS</li>
-                  <li><strong>2 שעות לפני התור</strong> - תזכורת שנייה לפני הגעה</li>
-                  <li>התזכורות כוללות: תאריך, שעה, כתובת המרפאה ופרטי התור</li>
-                </ul>
-              </div>
-
-              <div className="bg-slate-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-slate-800 mb-2">ניהול תורים מהמערכת:</h4>
-                <p className="text-slate-700 mb-2">
-                  צוות המרפאה יכול לנהל את כל התורים דרך <strong>ניהול תורים</strong>:
-                </p>
-                <ul className="list-disc list-inside text-slate-600 space-y-1">
-                  <li>צפייה בכל בקשות התורים</li>
-                  <li>סינון לפי סטטוס (ממתין/מאושר/בוטל)</li>
-                  <li>אישור תור וקביעת תאריך סופי</li>
-                  <li>עדכון סטטוס ומעקב</li>
-                  <li>הוספת הערות פנימיות</li>
-                </ul>
-              </div>
-
-              <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                <h4 className="font-semibold text-purple-900 mb-2">✨ מסע לקוח אוטומטי:</h4>
-                <p className="text-slate-700">
-                  כאשר לקוח חדש מבקש תור, המערכת:
-                </p>
-                <ol className="list-decimal list-inside text-slate-600 space-y-1 mt-2">
-                  <li>יוצרת טופס היכרות טיוטה עבורו</li>
-                  <li>שולחת לו מייל אוטומטי עם קישור למילוי טופס ההיכרות</li>
-                  <li>מזכירה לו להשלים את הטופס לפני התור</li>
-                </ol>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* טריאז' חירום */}
-        <Card className="mb-6 bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
-          <CardHeader className="border-b border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50">
-            <CardTitle className="flex items-center gap-2 text-slate-800">
-              <AlertCircle className="w-5 h-5 text-red-500" />
-              מערכת טריאז' חירום
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-4">
-            <p className="text-slate-700">
-              מערכת חכמה להערכת דחיפות פניות חירום וניתוב אוטומטי למרפאה המתאימה.
-            </p>
-
-            <div className="space-y-3">
-              <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-                <h4 className="font-semibold text-red-900 mb-2">🚨 קישור ציבורי לטריאז' חירום:</h4>
-                <p className="text-slate-700 mb-2">
-                  קישור ציבורי שניתן לשתף באתר, ברשתות חברתיות או בקוד QR:
-                </p>
-                <code className="block bg-white p-2 rounded text-sm text-slate-700 border">
-                  https://[כתובת-האפליקציה]/PublicEmergencyTriage
-                </code>
-              </div>
-
-              <div className="bg-slate-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-slate-800 mb-2">איך זה עובד?</h4>
-                <ol className="list-decimal list-inside space-y-2 text-slate-700">
-                  <li>הלקוח ממלא פרטים בסיסיים על החיה והבעיה</li>
-                  <li>המערכת מציגה שאלות סינון לפי דגלונים צבעוניים</li>
-                  <li>המערכת מחשבת רמת דחיפות (אדום/כתום/צהוב/ירוק)</li>
-                  <li>הלקוח מקבל המלצה מיידית:
-                    <ul className="list-disc list-inside mr-6 mt-1 space-y-1">
-                      <li className="text-red-600"><strong>🔴 אדום:</strong> הגיעו מיד למרפאה/חירום!</li>
-                      <li className="text-orange-600"><strong>🟠 כתום:</strong> פנו בהקדם האפשרי היום</li>
-                      <li className="text-yellow-600"><strong>🟡 צהוב:</strong> מעקב ביתי וקביעת תור</li>
-                      <li className="text-green-600"><strong>🟢 ירוק:</strong> ניתן לקבוע תור רגיל</li>
-                    </ul>
-                  </li>
-                  <li>המערכת מציגה את המרפאה הקרובה ביותר הפתוחה (עם מפה וכיוונים)</li>
-                  <li>הלקוח יכול לשלוח את הטופס למערכת לצורך מעקב</li>
-                </ol>
-              </div>
-
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h4 className="font-semibold text-blue-900 mb-2">ממשק ניהול פניות חירום:</h4>
-                <p className="text-slate-700">
-                  צוות המרפאה רואה את כל הפניות ב<strong>פניות חירום</strong> עם:
-                </p>
-                <ul className="list-disc list-inside text-slate-600 space-y-1 mt-2">
-                  <li>סינון לפי רמת דחיפות (אדום/כתום/צהוב/ירוק)</li>
-                  <li>תגיות סיכון (FLUTD, ברכיצפלי, חזה עמוק וכו')</li>
-                  <li>פרטי הבעלים והחיה</li>
-                  <li>תמונות וסרטונים שהועלו</li>
-                  <li>עדכון סטטוס (הוגש/נוצר קשר/הגיע/בוטל)</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* טפסי היכרות */}
-        <Card className="mb-6 bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
-          <CardHeader className="border-b border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50">
-            <CardTitle className="flex items-center gap-2 text-slate-800">
               <FileText className="w-5 h-5 text-blue-500" />
               טפסי היכרות
             </CardTitle>
@@ -312,25 +115,129 @@ export default function UserManualPage() {
             <div className="bg-slate-50 p-4 rounded-lg">
               <h4 className="font-semibold text-slate-800 mb-2">איך ליצור טופס היכרות?</h4>
               <ol className="list-decimal list-inside space-y-2 text-slate-700">
-                <li>לחצו על <strong>"טופס היכרות חדש"</strong> בדשבורד</li>
-                <li>מלאו פרטי בסיס (שם בעלים, טלפון, אימייל)</li>
-                <li>מלאו פרטי חיית המחמד</li>
+                <li>לחצו על <strong>"טופס היכרות"</strong> בפעולות המהירות בדשבורד</li>
+                <li>מלאו פרטי בסיס של הלקוח (שם, טלפון, אימייל)</li>
+                <li>מלאו פרטי חיית המחמד הבסיסיים</li>
                 <li>הטופס יישמר כטיוטה במערכת</li>
-                <li>יווצר קישור מאובטח שניתן לשלוח ללקוח</li>
+                <li>ניתן לשלוח קישור ללקוח להשלמת הטופס המלא</li>
               </ol>
             </div>
 
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
               <h4 className="font-semibold text-blue-900 mb-2">מה הלקוח ממלא בטופס?</h4>
               <ul className="list-disc list-inside text-slate-600 space-y-1">
-                <li>פרטים אישיים מלאים</li>
-                <li>פרטי חיית המחמד (גזע, גיל, מין, משקל)</li>
-                <li>ביטוח רפואי (אם יש)</li>
-                <li>היסטוריה רפואית ותרופות</li>
-                <li>אופי התנהגותי</li>
-                <li>סיבת הביקור הנוכחית</li>
-                <li>העלאת תמונות ומסמכים</li>
+                <li>פרטים אישיים מלאים ואיש קשר לחירום</li>
+                <li>פרטי חיית המחמד (גזע, גיל, מין, משקל, צבע וסימנים)</li>
+                <li>מידע על ביטוח רפואי (אם קיים)</li>
+                <li>היסטוריה רפואית, תרופות ואלרגיות</li>
+                <li>מידע התנהגותי ורמת חרדה אצל וטרינר</li>
+                <li>סיבת הביקור הנוכחית ונושאים נוספים לדיון</li>
+                <li>העלאת פנקס חיסונים וסיכום טיפולים קודמים</li>
+                <li>תמונה של חיית המחמד</li>
               </ul>
+            </div>
+
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <h4 className="font-semibold text-green-900 mb-2">✨ יצירת לקוח וחיה אוטומטית:</h4>
+              <p className="text-slate-700">
+                לאחר שהלקוח שולח את הטופס המלא, ניתן ללחוץ על <strong>"צור לקוח וחיית מחמד"</strong> ו:
+              </p>
+              <ul className="list-disc list-inside text-slate-600 space-y-1 mt-2">
+                <li>המערכת תיצור אוטומטית רשומת לקוח חדשה</li>
+                <li>תיצור רשומת חיית מחמד חדשה</li>
+                <li>תקשר את הטופס ללקוח ולחיה</li>
+                <li>כל הטפסים הבאים של הלקוח יתקשרו אוטומטית לפרופיל שלו</li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* קביעת תורים */}
+        <Card className="mb-6 bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
+          <CardHeader className="border-b border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50">
+            <CardTitle className="flex items-center gap-2 text-slate-800">
+              <Calendar className="w-5 h-5 text-green-500" />
+              מערכת ניהול תורים
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            <p className="text-slate-700">
+              מערכת מתקדמת לניהול בקשות תורים מלקוחות, עם תזכורות אוטומטיות ומעקב מלא.
+            </p>
+
+            <div className="space-y-3">
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <h4 className="font-semibold text-green-900 mb-2">🌐 קישור ציבורי לקביעת תור:</h4>
+                <p className="text-slate-700 mb-2">
+                  שתפו את הקישור הזה עם לקוחות לקביעת תור עצמאית:
+                </p>
+                <code className="block bg-white p-2 rounded text-sm text-slate-700 border">
+                  https://[כתובת-האפליקציה]/AppointmentBooking
+                </code>
+                <p className="text-slate-600 text-sm mt-2">
+                  ⭐ הקישור אינו מצריך אימות ופתוח לציבור הרחב - שתפו אותו באתר, בפייסבוק או בוואטסאפ
+                </p>
+              </div>
+
+              <div className="bg-slate-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-slate-800 mb-2">מה הלקוח עושה בקישור?</h4>
+                <ol className="list-decimal list-inside space-y-2 text-slate-700">
+                  <li>בוחר האם הוא לקוח חדש או חוזר</li>
+                  <li>בוחר מרפאה מהרשימה (תל אביב/רעננה/בקרוב)</li>
+                  <li>בוחר סוג חיית המחמד (כלב/חתול)</li>
+                  <li>ממלא פרטים: שם החיה, שם הבעלים, טלפון ואימייל (חובה)</li>
+                  <li>בוחר סוג שירות: <strong>חיסון שגרתי</strong> או <strong>ביקור רפואי</strong></li>
+                  <li><strong>עבור חיסון:</strong> בוחר את סוגי החיסונים (משושה, כלבת, שעלת, תולעת הפארק, תילוע, טיפול ראשון לגורים)</li>
+                  <li><strong>עבור ביקור רפואי:</strong> בוחר את הסיבה (חירום, בדיקה שגרתית, בעיות עיכול, עור, שיניים, פציעה, נשימה, אחר)</li>
+                  <li>בוחר תאריך ושעה מועדפים</li>
+                  <li>מאשר ושולח - התור נשמר במערכת!</li>
+                </ol>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <h4 className="font-semibold text-blue-900 mb-2">📱 מה קורה אחרי שהלקוח שולח?</h4>
+                <p className="text-slate-700 mb-2"><strong>לקוח חדש:</strong></p>
+                <ul className="list-disc list-inside text-slate-600 space-y-1 mb-3">
+                  <li>המערכת יוצרת טופס היכרות אוטומטי</li>
+                  <li>הלקוח מקבל מייל עם קישור למילוי טופס ההיכרות</li>
+                  <li>הלקוח מקבל מידע מותאם אישית (טיפים לחיסון או לביקור רפואי)</li>
+                </ul>
+                <p className="text-slate-700 mb-2"><strong>לקוח חוזר:</strong></p>
+                <ul className="list-disc list-inside text-slate-600 space-y-1">
+                  <li>הלקוח מקבל אישור קבלה למייל</li>
+                  <li>מקבל מידע מותאם אישית על הביקור</li>
+                </ul>
+              </div>
+
+              <div className="bg-slate-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-slate-800 mb-2">ניהול תורים מהמערכת:</h4>
+                <p className="text-slate-700 mb-2">
+                  צוות המרפאה יכול לנהל תורים דרך עמוד <strong>"ניהול תורים"</strong>:
+                </p>
+                <ul className="list-disc list-inside text-slate-600 space-y-1">
+                  <li>צפייה בכל בקשות התורים</li>
+                  <li>חיפוש לפי שם בעלים, שם חיה או טלפון</li>
+                  <li>סינון לפי סטטוס (הוגש/מאושר/הושלם/בוטל)</li>
+                  <li>עריכת פרטי תור (תאריך, שעה, הערות)</li>
+                  <li>אישור תור - שולח למערכת התזכורות האוטומטיות</li>
+                  <li>הוספת הערות פנימיות לצוות</li>
+                </ul>
+              </div>
+
+              <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                <h4 className="font-semibold text-purple-900 mb-2">🔔 תזכורות אוטומטיות:</h4>
+                <p className="text-slate-700 mb-2">
+                  כאשר תור מאושר ויש לו תאריך ושעה מדויקים, המערכת שולחת:
+                </p>
+                <ul className="list-disc list-inside text-slate-600 space-y-1">
+                  <li><strong>24 שעות לפני התור</strong> - תזכורת ראשונה במייל</li>
+                  <li><strong>2 שעות לפני התור</strong> - תזכורת שנייה סמוך להגעה</li>
+                  <li>התזכורות כוללות: שם החיה, תאריך, שעה, כתובת המרפאה ופרטי התור</li>
+                </ul>
+                <p className="text-slate-600 text-sm mt-2">
+                  💡 התזכורות נשלחות אוטומטית באמצעות Cron Job שרץ כל שעה
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -339,85 +246,66 @@ export default function UserManualPage() {
         <Card className="mb-6 bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
           <CardHeader className="border-b border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50">
             <CardTitle className="flex items-center gap-2 text-slate-800">
-              <ClipboardCheck className="w-5 h-5 text-rose-500" />
-              טפסי הכנה לניתוח (הסכמה)
+              <ClipboardCheck className="w-5 h-5 text-purple-500" />
+              טפסי הסכמה לניתוחים
             </CardTitle>
           </CardHeader>
+
           <CardContent className="p-6 space-y-4">
             <p className="text-slate-700">
-              טופס דיגיטלי מאובטח להסכמת בעלים לפני ניתוחים והליכים רפואיים.
+              טופס דיגיטלי מאובטח להסכמת בעלים לפני ניתוחים והליכים רפואיים, עם חתימה דיגיטלית מאובטחת.
             </p>
 
             <div className="bg-slate-50 p-4 rounded-lg">
               <h4 className="font-semibold text-slate-800 mb-2">יצירת טופס הסכמה:</h4>
               <ol className="list-decimal list-inside space-y-2 text-slate-700">
-                <li>לחצו על <strong>"טופס הסכמה חדש"</strong></li>
-                <li>בחרו: <strong>לקוח קיים</strong> (מתוך המערכת) או <strong>לקוח חדש</strong></li>
-                <li>מלאו פרטי ההליך: תאריך, סוג ניתוח, הערות</li>
-                <li>המערכת תיצור טופס מלא עם כל הנהלים והסיכונים</li>
-                <li>קישור מאובטח יישלח ללקוח לחתימה דיגיטלית</li>
+                <li>לחצו על <strong>"טופס הסכמה"</strong> בפעולות המהירות בדשבורד</li>
+                <li>בחרו: <strong>לקוח קיים</strong> (מהמערכת) או <strong>לקוח חדש</strong></li>
+                <li>מלאו פרטי הבעלים וחיית המחמד</li>
+                <li>הזינו פרטי ההליך הרפואי: סוג הניתוח, תאריך, הערות קליניות</li>
+                <li>(אופציונלי) העלו PDF של הצעת מחיר עם פירוט טיפולים ועלויות</li>
+                <li>המערכת תיצור קישור מאובטח לשיתוף עם הלקוח</li>
               </ol>
+            </div>
+
+            <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+              <h4 className="font-semibold text-purple-900 mb-2">מה הלקוח רואה ומאשר?</h4>
+              <p className="text-slate-700 mb-2">הטופס כולל:</p>
+              <ul className="list-disc list-inside text-slate-600 space-y-1">
+                <li>פרטי הניתוח המלאים והתאריך</li>
+                <li>הסכמה להרדמה כללית והסבר על הסיכונים</li>
+                <li>הסכמה לניתוח והסברים על הסיכונים הכירורגיים</li>
+                <li>הסכמה לבדיקות טרום ניתוחיות (דם, לב, אקו-קרדיוגרפיה)</li>
+                <li>הסכמה כספית ותצוגה של הצעת מחיר (אם הועלתה)</li>
+                <li>אזור חתימה דיגיטלית בסוף הטופס</li>
+              </ul>
             </div>
 
             <div className="bg-rose-50 p-4 rounded-lg border border-rose-200">
               <h4 className="font-semibold text-rose-900 mb-2">🔐 אבטחה משפטית:</h4>
               <p className="text-slate-700 mb-2">
-                הטופס כולל אמצעי אבטחה מתקדמים:
+                הטופס כולל אמצעי אבטחה מתקדמים לעמידה בתקנות:
               </p>
               <ul className="list-disc list-inside text-slate-600 space-y-1">
-                <li>חתימה דיגיטלית עם hash SHA-256</li>
-                <li>רישום IP וזמן החתימה המדויקים</li>
-                <li>PDF חתום ומוצפן לאחר השלמת התהליך</li>
-                <li>הטופס נעול לשינויים לאחר חתימה (immutable)</li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* שאלוני חרדה */}
-        <Card className="mb-6 bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
-          <CardHeader className="border-b border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50">
-            <CardTitle className="flex items-center gap-2 text-slate-800">
-              <Shield className="w-5 h-5 text-indigo-500" />
-              שאלוני חרדה וטרינרית
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-4">
-            <p className="text-slate-700">
-              שאלון מקצועי להערכת רמת החרדה של חיות מחמד בביקורים וטרינריים.
-            </p>
-
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-slate-800 mb-2">מתי להשתמש?</h4>
-              <ul className="list-disc list-inside text-slate-600 space-y-1">
-                <li>לקוחות חדשים עם חיות חרדתיות</li>
-                <li>חיות עם היסטוריה של התנגדות בבדיקות</li>
-                <li>הכנה לניתוחים או הליכים מורכבים</li>
-                <li>משפחות שמתלבטות האם להגיע לבדיקה</li>
-              </ul>
-            </div>
-
-            <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
-              <h4 className="font-semibold text-indigo-900 mb-2">מה השאלון מעריך?</h4>
-              <ul className="list-disc list-inside text-slate-600 space-y-1">
-                <li>תגובת החיה בבית כשמדברים על ביקור וטרינר</li>
-                <li>התנהגות בדרך למרפאה ובכניסה</li>
-                <li>שיתוף פעולה במהלך בדיקות</li>
-                <li>רמת החרדה של הבעלים עצמם</li>
-                <li>הצעות לשיפור החוויה</li>
+                <li>חתימה דיגיטלית עם hash SHA-256 של החתימה והטופס</li>
+                <li>רישום IP, User-Agent וזמן החתימה המדויקים</li>
+                <li>PDF חתום ומוצפן נוצר אוטומטית ונשמר בצורה מאובטחת</li>
+                <li>הטופס נעול לשינויים לאחר חתימה (immutable_record = true)</li>
+                <li>ניתן להוריד את ה-PDF החתום בכל עת</li>
               </ul>
             </div>
 
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-2">תוצאות והמלצות:</h4>
-              <p className="text-slate-700">
-                המערכת מחשבת ציון חרדה (1-10) ומציעה:
+              <h4 className="font-semibold text-blue-900 mb-2">📋 צפייה וניהול:</h4>
+              <p className="text-slate-700 mb-2">
+                מסך <strong>"טפסי הסכמה"</strong> מאפשר:
               </p>
-              <ul className="list-disc list-inside text-slate-600 space-y-1 mt-2">
-                <li>בקשת חדר מתנה שקט</li>
-                <li>שימוש בתרופות הרגעה קלות</li>
-                <li>ביקורי היכרות קצרים (Victory Visits)</li>
-                <li>הדרכה מיוחדת לבעלים</li>
+              <ul className="list-disc list-inside text-slate-600 space-y-1">
+                <li>צפייה בכל טפסי ההסכמה של המרפאה</li>
+                <li>סינון לפי סטטוס (ממתין/נחתם/הושלם)</li>
+                <li>חיפוש לפי שם בעלים או שם חיית מחמד</li>
+                <li>צפייה בטופס המלא כולל החתימה</li>
+                <li>הורדת PDF חתום לתיעוד וארכיון</li>
               </ul>
             </div>
           </CardContent>
@@ -511,43 +399,46 @@ export default function UserManualPage() {
           </CardHeader>
           <CardContent className="p-6 space-y-4">
             <div className="space-y-4">
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <h4 className="font-semibold text-green-900 mb-2">✅ לקוחות חדשים:</h4>
-                <ol className="list-decimal list-inside text-slate-700 space-y-1">
-                  <li>שלחו טופס היכרות לפני הביקור הראשון</li>
-                  <li>בקשו מהלקוח למלא עד 24 שעות לפני הגעה</li>
-                  <li>בדקו את הטופס לפני הביקור להכנה מוקדמת</li>
-                  <li>שמרו על קשר עין עם הנתונים במהלך הבדיקה</li>
-                </ol>
-              </div>
-
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h4 className="font-semibold text-blue-900 mb-2">✅ ניתוחים:</h4>
+                <h4 className="font-semibold text-blue-900 mb-2">✅ לקוחות חדשים:</h4>
                 <ol className="list-decimal list-inside text-slate-700 space-y-1">
-                  <li>צרו טופס הסכמה מיד עם קביעת תאריך הניתוח</li>
-                  <li>שלחו את הקישור עד 48-72 שעות לפני</li>
-                  <li>וודאו שהטופס נחתם לפחות 24 שעות לפני</li>
-                  <li>הדפיסו עותק לתיק הרפואי</li>
+                  <li>כאשר לקוח חדש מבקש תור, המערכת שולחת לו אוטומטית טופס היכרות</li>
+                  <li>בקשו מהלקוח למלא את הטופס עד 24 שעות לפני הביקור</li>
+                  <li>בדקו את הטופס לפני הביקור להכנה מוקדמת</li>
+                  <li>צרו אוטומטית לקוח וחיה במערכת מתוך הטופס</li>
                 </ol>
-              </div>
-
-              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                <h4 className="font-semibold text-amber-900 mb-2">✅ חירום:</h4>
-                <ul className="list-disc list-inside text-slate-700 space-y-1">
-                  <li>פרסמו את קישור הטריאז' באתר ובפייסבוק</li>
-                  <li>הדביקו קוד QR בכניסה למרפאה</li>
-                  <li>בדקו את לוח פניות החירום מספר פעמים ביום</li>
-                  <li>התקשרו לפניות אדומות מיד!</li>
-                </ul>
               </div>
 
               <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                <h4 className="font-semibold text-purple-900 mb-2">✅ ארגון יומי:</h4>
+                <h4 className="font-semibold text-purple-900 mb-2">✅ ניתוחים והליכים:</h4>
+                <ol className="list-decimal list-inside text-slate-700 space-y-1">
+                  <li>צרו טופס הסכמה מיד עם קביעת תאריך הניתוח</li>
+                  <li>שלחו את הקישור ללקוח עד 48-72 שעות לפני</li>
+                  <li>העלו הצעת מחיר PDF לטופס (אופציונלי)</li>
+                  <li>וודאו שהטופס נחתם לפחות 24 שעות לפני הניתוח</li>
+                  <li>הורידו והדפיסו את ה-PDF החתום לתיק הרפואי</li>
+                </ol>
+              </div>
+
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <h4 className="font-semibold text-green-900 mb-2">✅ תורים וזימונים:</h4>
                 <ul className="list-disc list-inside text-slate-700 space-y-1">
-                  <li>התחילו את היום בבדיקת הדשבורד</li>
-                  <li>בדקו טפסים חדשים שהגיעו בלילה</li>
-                  <li>אשרו תורים ועדכנו סטטוסים</li>
-                  <li>שלחו קישורים לטפסים למחר</li>
+                  <li>שתפו את קישור קביעת התור באתר, בפייסבוק ובוואטסאפ</li>
+                  <li>בדקו את עמוד <strong>"ניהול תורים"</strong> מספר פעמים ביום</li>
+                  <li>אשרו תורים חדשים ועדכנו תאריך/שעה סופיים</li>
+                  <li>התקשרו ללקוחות לאישור סופי לפני התור</li>
+                  <li>המערכת תשלח תזכורות אוטומטיות 24 שעות ו-2 שעות לפני</li>
+                </ul>
+              </div>
+
+              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                <h4 className="font-semibold text-amber-900 mb-2">✅ ארגון יומי:</h4>
+                <ul className="list-disc list-inside text-slate-700 space-y-1">
+                  <li>התחילו את היום בבדיקת הדשבורד - ראו טפסים חדשים שהגיעו</li>
+                  <li>בדקו בקשות תורים חדשות ואשרו אותן</li>
+                  <li>צרו לקוחות וחיות מחמד חדשים מטפסי היכרות שהושלמו</li>
+                  <li>צרו טפסי הסכמה לניתוחים המתוכננים</li>
+                  <li>עדכנו סטטוסים של תורים שהתקיימו</li>
                 </ul>
               </div>
             </div>
