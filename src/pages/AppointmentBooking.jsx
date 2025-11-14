@@ -55,7 +55,7 @@ const WhatsAppButton = () =>
 
 // Layout for inner steps - 1) הסרת הלוגו והמשפט
 const StepLayout = ({ children, onBack }) =>
-<div className="min-h-screen bg-gray-50">
+<div className="bg-violet-50 rounded min-h-screen">
     <header className="bg-white shadow-sm p-4 sticky top-0 z-20">
       <div className="flex items-center justify-between max-w-md mx-auto">
         <Button variant="ghost" size="icon" onClick={onBack}>
@@ -64,7 +64,7 @@ const StepLayout = ({ children, onBack }) =>
         <div className="w-10"></div>
       </div>
     </header>
-    <main className="p-6 max-w-md mx-auto">
+    <main className="mx-64 my-6 px-6 py-6 max-w-md">
       {children}
     </main>
   </div>;
@@ -119,7 +119,7 @@ const HeroSection = ({ onStart }) =>
         size="lg"
         className="bg-red-100 text-blue-600 px-12 py-6 text-xl font-semibold inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-11 hover:bg-gray-50 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
 
-          לקביעת תור לשקט הנפשי שלכם
+          לקבוע תור לשקט הנפשי שלכם
         </Button>
       </motion.div>
     </div>
@@ -135,9 +135,9 @@ const CustomerTypeScreen = ({ formData, setFormData, onNext, onBack }) =>
     exit={{ opacity: 0 }}
     className="text-center">
 
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-        כיף לראות אתכם!<br />האם זו הפעם הראשונה שלנו יחד?
-      </h2>
+      <h2 className="text-gray-800 mb-6 text-2xl font-semibold text-center">כיף לראות אתכם 🐶😻
+האם זו הפעם הראשונה שלנו יחד או שאנחנו כבר חברים?
+    </h2>
       <div className="space-y-4">
         <Card
         onClick={() => {
