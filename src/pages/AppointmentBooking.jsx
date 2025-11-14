@@ -40,16 +40,15 @@ import { getEntityList, createEntity } from "@/components/utils/apiHelpers";
 
 // --- Reusable Components ---
 
-// Floating WhatsApp Button - עדכון מספר
+// Floating WhatsApp Button - עדכון מספר והגדלה
 const WhatsAppButton = () =>
 <a
   href="https://wa.me/972548959176?text=היי%20מרפאת%20טדי%20וטס,%20אני%20צריך/ה%20עזרה%20עם%20קביעת%20התור"
   target="_blank"
-  rel="noopener noreferrer" className="bg-green-500 text-white mx-10 my-20 rounded-full fixed bottom-6 left-6 z-50 w-14 h-14 flex items-center justify-center shadow-lg hover:bg-green-600 transition-transform hover:scale-110"
-
-  aria-label="Contact us on WhatsApp">דברו איתנו בוואטסאפ
-
-
+  rel="noopener noreferrer"
+  className="fixed bottom-6 left-6 z-50 bg-green-500 text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg hover:bg-green-600 transition-transform hover:scale-110 text-sm font-semibold px-3"
+  aria-label="Contact us on WhatsApp">
+  <MessageSquare className="w-8 h-8" />
 </a>;
 
 
@@ -64,7 +63,7 @@ const StepLayout = ({ children, onBack }) =>
         <div className="w-10"></div>
       </div>
     </header>
-    <main className="mx-64 my-6 px-6 py-6 max-w-md">
+    <main className="p-6 max-w-md mx-auto">
       {children}
     </main>
   </div>;
@@ -86,8 +85,8 @@ const HeroSection = ({ onStart }) =>
     {/* שכבה כהה לטקסט קריא יותר - הבהרת ה-overlay עוד יותר */}
     <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/30" />
 
-    {/* תוכן */}
-    <div className="relative z-10 min-h-screen flex items-center justify-center text-center text-white px-4">
+    {/* תוכן - ממורכז בחלק העליון */}
+    <div className="relative z-10 flex items-start justify-center text-center text-white px-4 pt-20">
       <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
