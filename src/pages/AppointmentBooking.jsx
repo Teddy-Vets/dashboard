@@ -356,9 +356,9 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
 const ServiceSelectionScreen = ({ formData, setFormData, onNext, onBack }) =>
 <StepLayout onBack={onBack}>
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-        איך נוכל לעזור לחבר הפרוותי היום?
-      </h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">איך נוכל לעזור לחבר הפרוותי?
+
+    </h2>
       <div className="space-y-4">
         <Card
         onClick={() => {
