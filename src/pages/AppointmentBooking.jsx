@@ -45,12 +45,12 @@ const WhatsAppButton = () =>
 <a
   href="https://wa.me/972548959176?text=היי%20מרפאת%20טדי%20וטס,%20אני%20צריך/ה%20עזרה%20עם%20קביעת%20התור"
   target="_blank"
-  rel="noopener noreferrer"
-  className="fixed bottom-6 left-6 z-50 bg-green-500 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg hover:bg-green-600 transition-transform hover:scale-110"
-  aria-label="Contact us on WhatsApp">
+  rel="noopener noreferrer" className="bg-green-500 text-white mx-10 my-20 rounded-full fixed bottom-6 left-6 z-50 w-14 h-14 flex items-center justify-center shadow-lg hover:bg-green-600 transition-transform hover:scale-110"
 
-    <MessageSquare className="w-7 h-7" />
-  </a>;
+  aria-label="Contact us on WhatsApp">דברו איתנו בוואטסאפ
+
+
+</a>;
 
 
 // Layout for inner steps - 1) הסרת הלוגו והמשפט
