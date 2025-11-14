@@ -195,6 +195,14 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
   return (
     <StepLayout onBack={onBack}>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        
+        {/* כותרת מעל הכל */}
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            שמחים מאוד שבחרתם להגיע עם החבר הפרוותי אלינו
+          </h2>
+        </div>
+
         <div className="space-y-6">
           {/* 2) בחירת מרפאה - עם גודל אחיד */}
           <div>
