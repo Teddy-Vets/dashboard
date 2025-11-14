@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { IntakeForm } from "@/entities/IntakeForm";
 import { ConsentForm } from "@/entities/ConsentForm";
@@ -293,12 +294,6 @@ export default function DashboardPage() {
 
   const renderFormsSection = (forms, title = null) => (
     <div className="mb-6">
-      {title && (
-        <h3 className="text-lg font-bold text-slate-800 mb-4 px-4 md:px-0">
-          {title}
-        </h3>
-      )}
-      
       {/* Desktop View - Hidden on mobile */}
       <Card className="hidden md:block bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
         {title && (
