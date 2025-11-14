@@ -724,9 +724,7 @@ const DateTimeSelectionScreen = ({ formData, setFormData, onNext, onBack }) => {
 
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-3">
-            {formData.request_type === 'vaccination' ?
-            'מעולה! בואו נקבע את התור - הוא יהיה סופי ומאושר' :
-            'תודה ששיתפתם. בואו נמצא לכם תור'}
+            מעולה! בחרו מועד מועדף
           </h2>
           <p className="text-gray-600 leading-relaxed">
             {formData.request_type === 'vaccination' ?
