@@ -63,7 +63,7 @@ const StepLayout = ({ children, onBack }) =>
         <div className="w-10"></div>
       </div>
     </header>
-    <main className="p-6 max-w-md mx-auto">
+    <main className="mx-auto pt-6 pr-6 pb-6 pl-6 max-w-md">
       {children}
     </main>
   </div>;
@@ -449,8 +449,8 @@ const VaccinationDetailsScreen = ({ formData, setFormData, onNext, onBack }) => 
           <h2 className="text-2xl font-bold text-gray-800 mb-3">
             אילו חיסונים נדרשים?
           </h2>
-          <p className="text-gray-600">
-            בחרו את הח חיסונים שחיית המחמד שלכם צריכה
+          <p className="text-gray-600 px-3 py-1 text-sm">בחרו את החיסונים שחיית המחמד שלכם צריכה, אם אינכם בטוחים, המשיכו לתאום המועד הרצוי ואנו נחזור אליכם בהקדם
+
           </p>
         </div>
 
@@ -472,7 +472,7 @@ const VaccinationDetailsScreen = ({ formData, setFormData, onNext, onBack }) => 
 
                 <CardContent className="p-4 flex flex-col items-center justify-between h-full">
                   <div className="flex items-center gap-2 mb-2">
-                    <Icon className={`w-5 h-5 ${isSelected ? 'text-blue-600' : 'text-gray-400'}`} />
+                    <Icon className="text-red-100 lucide lucide-shield-check w-5 h-5" />
                     {/* 6) אייקון גור */}
                     {vaccine.hasPuppyIcon &&
                     <Baby className={`w-4 h-4 ${isSelected ? 'text-blue-500' : 'text-gray-400'}`} />
