@@ -3,25 +3,43 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const appointmentData = await req.json();
+        
+        // קבלת הנתונים מהבקשה
+        let appointmentData;
+        try {
+            appointmentData = await req.json();
+            console.log('[handleAppointmentBooking] Received appointment data:', JSON.stringify(appointmentData, null, 2));
+        } catch (parseError) {
+            console.error('[handleAppointmentBooking] Failed to parse request body:', parseError);
+            return Response.json({
+                success: false,
+                error: 'Invalid request body'
+            }, { status: 400 });
+        }
+
+        if (!appointmentData || !appointmentData.clinic_id) {
+            console.error('[handleAppointmentBooking] Missing clinic_id in appointment data');
+            return Response.json({
+                success: false,
+                error: 'Missing required field: clinic_id'
+            }, { status: 400 });
+        }
 
         console.log('[handleAppointmentBooking] Processing appointment:', appointmentData.id);
 
         // טעינת פרטי המרפאה (כולל מייל)
         let clinicInfo = null;
-        if (appointmentData.clinic_id) {
-            try {
-                const clinics = await base44.asServiceRole.entities.Clinic.filter({ id: appointmentData.clinic_id });
-                clinicInfo = clinics?.[0];
-                console.log('[handleAppointmentBooking] Clinic loaded:', clinicInfo?.name);
-            } catch (error) {
-                console.warn('[handleAppointmentBooking] Could not load clinic info:', error);
-            }
+        try {
+            const clinics = await base44.asServiceRole.entities.Clinic.filter({ id: appointmentData.clinic_id });
+            clinicInfo = clinics?.[0];
+            console.log('[handleAppointmentBooking] Clinic loaded:', clinicInfo?.name);
+        } catch (error) {
+            console.warn('[handleAppointmentBooking] Could not load clinic info:', error);
         }
 
         // פונקציה לבחירת תוכן מותאם אישית
         const getCustomizedContent = (appointmentData) => {
-            const { request_type, pet_type, customer_type, owner_name, pet_name } = appointmentData;
+            const { request_type, pet_type, owner_name, pet_name } = appointmentData;
             
             // תכנים בסיסיים לכל סוגי השירותים
             const baseContent = {
@@ -44,18 +62,12 @@ Deno.serve(async (req) => {
 🛡️ **מידע חשוב על החיסון:**
 • החיסון מגן על ${pet_name} מפני מחלות מסוכנות ופוטנציאליות קטלניות
 • התהליך קצר ובטוח - בדרך כלל לוקח כ-15 דקות
-• ${pet_name === pet_name.toLowerCase() ? pet_name : pet_name} עלול/ה להרגיש קצת עייף/ה ביום הראשון - זה נורמלי לחלוטין
+• ${pet_name} עלול/ה להרגיש קצת עייף/ה ביום הראשון - זה נורמלי לחלוטין
 
 🎯 **הכנה לחיסון:**
 • הביאו את פנקס החיסונים הקודם (אם יש)
 • וודאו ש-${pet_name} בבריאות טובה ביום החיסון
-• אם יש לכם שאלות על החיסון - נענה עליהן במרפאה
-
-${pet_type === 'גור' || pet_type?.includes('גור') ? 
-`🐕 **טיפים לגור:**
-• זהו חיסון חשוב במיוחד לגורים צעירים
-• לאחר החיסון, המתינו 10-14 יום לפני יציאה לטיולים ברחוב
-• שמרו על ${pet_name} במקום חמים ונוח לאחר החיסון` : ''}`;
+• אם יש לכם שאלות על החיסון - נענה עליהן במרפאה`;
 
                 whatsappMessage = `שלום ${owner_name}! 👋
 
@@ -80,16 +92,7 @@ ${pet_type === 'גור' || pet_type?.includes('גור') ?
 📝 **מידע שיעזור לנו לעזור לכם:**
 • מתי הסימפטומים החלו?
 • האם יש שינוי בתיאבון או בהתנהגות?
-• האם ${pet_name} נחשף/ה למשהו חדש לאחרונה?
-
-${pet_type === 'חתול' ? 
-`🐱 **טיפ לבעלי חתולים:**
-• הביאו את ${pet_name} בקרייר נוח ומאוורר
-• חתולים יכולים להיות מתוחים ברכב - נסיכה קצרה לפני היציאה תעזור` : 
-pet_type === 'כלב' ?
-`🐕 **טיפ לבעלי כלבים:**
-• הביאו רצועה איכותית ונוחה
-• אם ${pet_name} לא אוהב/ת זרים, הזכירו לנו בהגעה` : ''}`;
+• האם ${pet_name} נחשף/ה למשהו חדש לאחרונה?`;
 
                 whatsappMessage = `שלום ${owner_name}! 👋
 
@@ -111,6 +114,7 @@ pet_type === 'כלב' ?
         // פונקציית עזר לשליחת מייל באמצעות SendGrid
         const sendEmail = async (to, subject, body, clinicId, from_name = 'טדי וטס - מרפאה וטרינרית') => {
             try {
+                console.log(`[handleAppointmentBooking] Attempting to send email to: ${to}`);
                 const emailResult = await base44.asServiceRole.functions.invoke('sendEmailWithSendGrid', {
                     to, subject, body, from_name, clinic_id: clinicId
                 });
@@ -180,7 +184,6 @@ ${appointmentData.notes ? `📝 **הערות נוספות:**\n${appointmentData.
             
             const customized = getCustomizedContent(appointmentData);
             
-            // הודעת אישור ללקוח חוזר
             const returningCustomerSubject = `✅ אישור תור - ${appointmentData.pet_name} במרפאת טדי וטס`;
             
             let returningCustomerEmail = `שלום ${appointmentData.owner_name},
@@ -216,7 +219,6 @@ ${appointmentData.notes ? `📝 **הערות נוספות:**\n${appointmentData.
 
 ${customized.baseContent.signature}`;
 
-            // שליחת מייל ללקוח חוזר מיד
             if (appointmentData.owner_email) {
                 await sendEmail(
                     appointmentData.owner_email,
@@ -236,7 +238,6 @@ ${customized.baseContent.signature}`;
         // עבור לקוח חדש - נתחיל את מסע הלקוח המלא
         console.log('[handleAppointmentBooking] New customer detected - starting customized customer journey');
 
-        // יצירת טופס היכרות חדש
         const intakeFormData = {
             clinic_id: appointmentData.clinic_id,
             owner_name: appointmentData.owner_name,
@@ -254,13 +255,10 @@ ${customized.baseContent.signature}`;
         const intakeForm = await base44.asServiceRole.entities.IntakeForm.create(intakeFormData);
         console.log('[handleAppointmentBooking] Created IntakeForm:', intakeForm.id);
 
-        // יצירת קישור מאובטח לטופס ההיכרות
         const publicFormUrl = `${Deno.env.get('FRONTEND_URL') || 'https://your-app-url.com'}/PublicForm?id=${intakeForm.id}`;
 
-        // קבלת תוכן מותאם אישית
         const customized = getCustomizedContent(appointmentData);
 
-        // בניית המייל המותאם אישית
         let customEmailContent = `${customized.content}
 
 📋 **טופס היכרות חשוב:**
@@ -298,23 +296,19 @@ ${appointmentData.preferred_time ? `🕐 שעה מועדפת: ${appointmentData.
 
 ${customized.baseContent.signature}`;
 
-        // הודעת וואטסאפ מותאמת אישית
         const customWhatsAppMessage = `${customized.whatsapp}
 
 🔗 טופס היכרות: ${publicFormUrl}
 
 צוות טדי וטס 🏥`;
 
-        // שליחת המייל המותאם אישית
         if (appointmentData.owner_email) {
-            const emailSent = await sendEmail(
+            await sendEmail(
                 appointmentData.owner_email,
                 customized.subject,
                 customEmailContent,
                 appointmentData.clinic_id
             );
-
-            console.log('[handleAppointmentBooking] Email sending result:', emailSent);
         }
 
         return Response.json({
@@ -329,11 +323,13 @@ ${customized.baseContent.signature}`;
 
     } catch (error) {
         console.error('[handleAppointmentBooking] Error:', error);
+        console.error('[handleAppointmentBooking] Error stack:', error.stack);
         
         return Response.json({
             success: false,
             error: 'שגיאה בעיבוד מסע הלקוח המותאם אישית',
-            details: error.message
+            details: error.message,
+            stack: error.stack
         }, { status: 500 });
     }
 });

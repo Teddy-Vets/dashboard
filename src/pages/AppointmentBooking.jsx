@@ -960,22 +960,27 @@ export default function AppointmentBookingPage() {
         status: 'submitted'
       };
 
+      console.log('[AppointmentBooking] Creating appointment with payload:', payload);
       const appointmentRequest = await createEntity(AppointmentRequest, payload, 'AppointmentRequest');
+      console.log('[AppointmentBooking] Appointment created:', appointmentRequest);
 
-      if (formData.ownerEmail && appointmentRequest) {
+      // שליחת מיילים והתחלת מסע לקוח מותאם אישית
+      if (appointmentRequest && appointmentRequest.id) {
         try {
           const { base44 } = await import('@/api/base44Client');
+          console.log('[AppointmentBooking] Invoking handleAppointmentBooking function...');
           const journeyResult = await base44.functions.invoke('handleAppointmentBooking', appointmentRequest);
-          console.log('Customized customer journey initiated successfully:', journeyResult);
+          console.log('[AppointmentBooking] Journey result:', journeyResult);
         } catch (journeyError) {
-          console.warn('Customized customer journey failed, but appointment was saved:', journeyError);
+          console.error('[AppointmentBooking] Journey error:', journeyError);
+          // לא נעצור את התהליך - התור נשמר, רק המיילים לא נשלחו
         }
       }
 
       handleNext();
     } catch (error) {
-      console.error('Error submitting appointment request:', error);
-      alert('אירעה שגיאה בשליחת הבקשה. אנא נסו שוב.');
+      console.error('[AppointmentBooking] Error submitting appointment:', error);
+      alert('אירעה שגיאה בשליחת הבקשה. אנא נסו שוב או צרו קשר טלפוני.');
     } finally {
       setIsSubmitting(false);
     }
