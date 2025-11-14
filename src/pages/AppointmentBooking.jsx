@@ -345,7 +345,7 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
           disabled={!isFormValid}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-full text-lg font-semibold mt-10">
 
-          המשך לבחירת שירות
+          לחצו לבחירת שירות
         </Button>
       </motion.div>
     </StepLayout>);
@@ -739,7 +739,7 @@ const DateTimeSelectionScreen = ({ formData, setFormData, onNext, onBack }) => {
           {/* בחירת תאריך */}
           <div>
             <Label className="text-base font-medium text-gray-700 mb-3 block">
-              <Calendar className="inline-block w-5 h-5 ml-1 text-gray-500" /> תאריך מועדף
+              <Calendar className="inline-block w-5 h-5 ml-1 text-gray-50" /> תאריך מועדף
             </Label>
             <Input
               type="date"
