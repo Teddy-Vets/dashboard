@@ -956,7 +956,7 @@ export default function AppointmentBookingPage() {
         preferred_date: formData.preferred_date,
         preferred_time: formData.preferred_time,
         notes: formData.notes || null,
-        signature: formData.signature || null, // `signature` is no longer collected on the review screen, but might exist in formData if added elsewhere or previously.
+        signature: formData.signature || null,
         status: 'submitted'
       };
 
@@ -964,15 +964,15 @@ export default function AppointmentBookingPage() {
 
       if (formData.ownerEmail && appointmentRequest) {
         try {
-          const { handleAppointmentBooking } = await import('@/functions/handleAppointmentBooking');
-          const journeyResult = await handleAppointmentBooking(appointmentRequest);
+          const { base44 } = await import('@/api/base44Client');
+          const journeyResult = await base44.functions.invoke('handleAppointmentBooking', appointmentRequest);
           console.log('Customized customer journey initiated successfully:', journeyResult);
         } catch (journeyError) {
           console.warn('Customized customer journey failed, but appointment was saved:', journeyError);
         }
       }
 
-      handleNext(); // Move to thank you screen (SuccessScreen)
+      handleNext();
     } catch (error) {
       console.error('Error submitting appointment request:', error);
       alert('אירעה שגיאה בשליחת הבקשה. אנא נסו שוב.');
