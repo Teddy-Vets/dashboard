@@ -41,21 +41,21 @@ import { getEntityList, createEntity } from "@/components/utils/apiHelpers";
 // --- Reusable Components ---
 
 // Floating WhatsApp Button - עדכון מספר
-const WhatsAppButton = () => (
-  <a
-    href="https://wa.me/972548959176?text=היי%20מרפאת%20טדי%20וטס,%20אני%20צריך/ה%20עזרה%20עם%20קביעת%20התור"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="fixed bottom-6 left-6 z-50 bg-green-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-green-600 transition-transform hover:scale-110"
-    aria-label="Contact us on WhatsApp"
-  >
+const WhatsAppButton = () =>
+<a
+  href="https://wa.me/972548959176?text=היי%20מרפאת%20טדי%20וטס,%20אני%20צריך/ה%20עזרה%20עם%20קביעת%20התור"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="fixed bottom-6 left-6 z-50 bg-green-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-green-600 transition-transform hover:scale-110"
+  aria-label="Contact us on WhatsApp">
+
     <MessageSquare className="w-7 h-7" />
-  </a>
-);
+  </a>;
+
 
 // Layout for inner steps - 1) הסרת הלוגו והמשפט
-const StepLayout = ({ children, onBack }) => (
-  <div className="min-h-screen bg-gray-50">
+const StepLayout = ({ children, onBack }) =>
+<div className="min-h-screen bg-gray-50">
     <header className="bg-white shadow-sm p-4 sticky top-0 z-20">
       <div className="flex items-center justify-between max-w-md mx-auto">
         <Button variant="ghost" size="icon" onClick={onBack}>
@@ -67,21 +67,21 @@ const StepLayout = ({ children, onBack }) => (
     <main className="p-6 max-w-md mx-auto">
       {children}
     </main>
-  </div>
-);
+  </div>;
+
 
 // --- Screen Components ---
 
 // Step 1: Hero Section
-const HeroSection = ({ onStart }) => (
-  <div className="min-h-screen relative overflow-hidden">
+const HeroSection = ({ onStart }) =>
+<div className="min-h-screen relative overflow-hidden">
     {/* רקע תמונה - עדכון positioning למובייל */}
     <div
-      className="absolute inset-0 bg-cover bg-top md:bg-center bg-no-repeat"
-      style={{
-        backgroundImage: `url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/1382b2e26_Prz_8.jpg')`
-      }}
-    />
+    className="absolute inset-0 bg-cover bg-top md:bg-center bg-no-repeat"
+    style={{
+      backgroundImage: `url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/1382b2e26_Prz_8.jpg')`
+    }} />
+
 
     {/* שכבה כהה לטקסט קריא יותר - הבהרת ה-overlay עוד יותר */}
     <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/30" />
@@ -89,19 +89,19 @@ const HeroSection = ({ onStart }) => (
     {/* תוכן */}
     <div className="relative z-10 min-h-screen flex items-center justify-center text-center text-white px-4">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-2xl mx-auto"
-      >
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="max-w-2xl mx-auto">
+
         {/* לוגו החדש */}
         <div className="mb-8">
           <div className="flex items-center justify-center mb-6">
             <img
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/c6a0b9e79_logo_medical.png"
-              alt="Teddy Vets"
-              className="max-w-md w-full h-auto object-contain filter brightness-0 invert drop-shadow-2xl"
-            />
+            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/c6a0b9e79_logo_medical.png"
+            alt="Teddy Vets" className="px-12 py-4 max-w-md w-full h-auto object-contain filter brightness-0 invert drop-shadow-2xl" />
+
+
           </div>
         </div>
 
@@ -115,37 +115,37 @@ const HeroSection = ({ onStart }) => (
 
         {/* כפתור התחלה - טקסט מעודכן */}
         <Button
-          onClick={onStart}
-          size="lg"
-          className="bg-red-100 text-blue-600 px-12 py-6 text-xl font-semibold inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-11 hover:bg-gray-50 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
-        >
+        onClick={onStart}
+        size="lg"
+        className="bg-red-100 text-blue-600 px-12 py-6 text-xl font-semibold inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-11 hover:bg-gray-50 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
+
           לקבוע תור לשקט הנפשי שלכם
         </Button>
       </motion.div>
     </div>
-  </div>
-);
+  </div>;
+
 
 // Step 2: Customer Type Screen
-const CustomerTypeScreen = ({ formData, setFormData, onNext, onBack }) => (
-  <StepLayout onBack={onBack}>
+const CustomerTypeScreen = ({ formData, setFormData, onNext, onBack }) =>
+<StepLayout onBack={onBack}>
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="text-center"
-    >
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="text-center">
+
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">
         כיף לראות אתכם!<br />האם זו הפעם הראשונה שלנו יחד?
       </h2>
       <div className="space-y-4">
         <Card
-          onClick={() => {
-            setFormData({ ...formData, customerType: 'new' });
-            onNext('new');
-          }}
-          className={`cursor-pointer border-2 p-6 transition-all ${formData.customerType === 'new' ? 'border-pink-400 bg-pink-50' : 'bg-white hover:bg-pink-50/50'}`}
-        >
+        onClick={() => {
+          setFormData({ ...formData, customerType: 'new' });
+          onNext('new');
+        }}
+        className={`cursor-pointer border-2 p-6 transition-all ${formData.customerType === 'new' ? 'border-pink-400 bg-pink-50' : 'bg-white hover:bg-pink-50/50'}`}>
+
           <CardContent className="p-0 flex items-center gap-6">
             <PawPrint className="w-12 h-12 text-pink-500" />
             <div className="text-right">
@@ -154,12 +154,12 @@ const CustomerTypeScreen = ({ formData, setFormData, onNext, onBack }) => (
           </CardContent>
         </Card>
         <Card
-          onClick={() => {
-            setFormData({ ...formData, customerType: 'returning' });
-            onNext('returning');
-          }}
-          className={`cursor-pointer border-2 p-6 transition-all ${formData.customerType === 'returning' ? 'border-pink-400 bg-pink-50' : 'bg-white hover:bg-pink-50/50'}`}
-        >
+        onClick={() => {
+          setFormData({ ...formData, customerType: 'returning' });
+          onNext('returning');
+        }}
+        className={`cursor-pointer border-2 p-6 transition-all ${formData.customerType === 'returning' ? 'border-pink-400 bg-pink-50' : 'bg-white hover:bg-pink-50/50'}`}>
+
           <CardContent className="p-0 flex items-center gap-6">
             <Stethoscope className="w-12 h-12 text-pink-500" />
             <div className="text-right">
@@ -169,8 +169,8 @@ const CustomerTypeScreen = ({ formData, setFormData, onNext, onBack }) => (
         </Card>
       </div>
     </motion.div>
-  </StepLayout>
-);
+  </StepLayout>;
+
 
 // Step 3: Contact Details Screen - 2) תיקון גודל כפתורים + 3) הוספת שאלה לסוג חיה
 const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
@@ -200,40 +200,40 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
           {/* 2) בחירת מרפאה - עם גודל אחיד */}
           <div>
             <Label className="font-semibold text-gray-700 mb-3 block text-lg">בחרו מרפאה *</Label>
-            {isLoadingClinics ? (
-              <div className="flex justify-center py-8">
+            {isLoadingClinics ?
+            <div className="flex justify-center py-8">
                 <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-              </div>
-            ) : (
-              <div className="grid grid-cols-3 gap-3"> {/* Changed from grid-cols-2 to grid-cols-3 */}
-                {clinics.map((clinic) => (
-                  <Card
-                    key={clinic.id}
-                    onClick={() => setFormData({ ...formData, clinic_id: clinic.id, clinic_name: clinic.name })}
-                    className={`cursor-pointer border-2 transition-all duration-200 h-24 flex items-center justify-center ${
-                      formData.clinic_id === clinic.id
-                        ? 'border-blue-500 bg-blue-50 shadow-md'
-                        : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/30'
-                    }`}
-                  >
+              </div> :
+
+            <div className="grid grid-cols-3 gap-3"> {/* Changed from grid-cols-2 to grid-cols-3 */}
+                {clinics.map((clinic) =>
+              <Card
+                key={clinic.id}
+                onClick={() => setFormData({ ...formData, clinic_id: clinic.id, clinic_name: clinic.name })}
+                className={`cursor-pointer border-2 transition-all duration-200 h-24 flex items-center justify-center ${
+                formData.clinic_id === clinic.id ?
+                'border-blue-500 bg-blue-50 shadow-md' :
+                'border-gray-200 hover:border-blue-300 hover:bg-blue-50/30'}`
+                }>
+
                     <CardContent className="p-4 text-center w-full">
                       <div className={`font-semibold text-sm break-words ${
-                        formData.clinic_id === clinic.id ? 'text-blue-800' : 'text-gray-700'
-                      }`}>
+                  formData.clinic_id === clinic.id ? 'text-blue-800' : 'text-gray-700'}`
+                  }>
                         {clinic.name}
                       </div>
-                      {formData.clinic_id === clinic.id && (
-                        <div className="mt-2 flex justify-center">
+                      {formData.clinic_id === clinic.id &&
+                  <div className="mt-2 flex justify-center">
                           <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
                             <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                           </div>
                         </div>
-                      )}
+                  }
                     </CardContent>
                   </Card>
-                ))}
+              )}
 
                 {/* קוביית "בקרוב" */}
                 <Card className="border-2 border-dashed border-gray-300 h-24 flex items-center justify-center bg-gray-50/50">
@@ -247,7 +247,7 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
                   </CardContent>
                 </Card>
               </div>
-            )}
+            }
           </div>
 
           {/* 3) בחירת סוג החיה */}
@@ -257,11 +257,11 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
               <Card
                 onClick={() => setFormData({ ...formData, petType: 'כלב' })}
                 className={`cursor-pointer border-2 transition-all duration-200 h-24 flex items-center justify-center ${
-                  formData.petType === 'כלב'
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/30'
-                }`}
-              >
+                formData.petType === 'כלב' ?
+                'border-blue-500 bg-blue-50 shadow-md' :
+                'border-gray-200 hover:border-blue-300 hover:bg-blue-50/30'}`
+                }>
+
                 <CardContent className="p-4 text-center flex flex-col items-center gap-2">
                   <Dog className={`w-8 h-8 ${formData.petType === 'כלב' ? 'text-blue-600' : 'text-gray-400'}`} />
                   <span className={`font-semibold text-sm ${formData.petType === 'כלב' ? 'text-blue-800' : 'text-gray-700'}`}>
@@ -273,11 +273,11 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
               <Card
                 onClick={() => setFormData({ ...formData, petType: 'חתול' })}
                 className={`cursor-pointer border-2 transition-all duration-200 h-24 flex items-center justify-center ${
-                  formData.petType === 'חתול'
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/30'
-                }`}
-              >
+                formData.petType === 'חתול' ?
+                'border-blue-500 bg-blue-50 shadow-md' :
+                'border-gray-200 hover:border-blue-300 hover:bg-blue-50/30'}`
+                }>
+
                 <CardContent className="p-4 text-center flex flex-col items-center gap-2">
                   <Cat className={`w-8 h-8 ${formData.petType === 'חתול' ? 'text-blue-600' : 'text-gray-400'}`} />
                   <span className={`font-semibold text-sm ${formData.petType === 'חתול' ? 'text-blue-800' : 'text-gray-700'}`}>
@@ -295,8 +295,8 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
               value={formData.petName}
               onChange={(e) => setFormData({ ...formData, petName: e.target.value })}
               className="bg-white"
-              placeholder="שם חיית המחמד"
-            />
+              placeholder="שם חיית המחמד" />
+
           </div>
 
           <div>
@@ -306,8 +306,8 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
               value={formData.ownerName}
               onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
               className="bg-white"
-              placeholder="שם הבעלים"
-            />
+              placeholder="שם הבעלים" />
+
           </div>
 
           <div>
@@ -317,8 +317,8 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
               type="tel"
               value={formData.ownerPhone}
               onChange={(e) => setFormData({ ...formData, ownerPhone: e.target.value })}
-              className="bg-white"
-            />
+              className="bg-white" />
+
           </div>
 
           <div>
@@ -328,38 +328,38 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
               type="email"
               value={formData.ownerEmail}
               onChange={(e) => setFormData({ ...formData, ownerEmail: e.target.value })}
-              className="bg-white"
-            />
+              className="bg-white" />
+
           </div>
         </div>
 
         <Button
           onClick={onNext}
           disabled={!isFormValid}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-full text-lg font-semibold mt-10"
-        >
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-full text-lg font-semibold mt-10">
+
           המשך לבחירת שירות
         </Button>
       </motion.div>
-    </StepLayout>
-  );
+    </StepLayout>);
+
 };
 
 // Step 4: Service Selection Screen - תיקון טקסט
-const ServiceSelectionScreen = ({ formData, setFormData, onNext, onBack }) => (
-  <StepLayout onBack={onBack}>
+const ServiceSelectionScreen = ({ formData, setFormData, onNext, onBack }) =>
+<StepLayout onBack={onBack}>
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">
         איך נוכל לעזור לחבר הפרוותי היום?
       </h2>
       <div className="space-y-4">
         <Card
-          onClick={() => {
-            setFormData({ ...formData, request_type: 'vaccination' });
-            onNext('vaccination');
-          }}
-          className={`cursor-pointer border-2 p-6 transition-all ${formData.request_type === 'vaccination' ? 'border-blue-400 bg-blue-50' : 'bg-white hover:bg-blue-50/50'}`}
-        >
+        onClick={() => {
+          setFormData({ ...formData, request_type: 'vaccination' });
+          onNext('vaccination');
+        }}
+        className={`cursor-pointer border-2 p-6 transition-all ${formData.request_type === 'vaccination' ? 'border-blue-400 bg-blue-50' : 'bg-white hover:bg-blue-50/50'}`}>
+
           <CardContent className="p-0 flex items-center gap-6">
             <ShieldCheck className="w-12 h-12 text-blue-500" />
             <div className="text-right">
@@ -368,12 +368,12 @@ const ServiceSelectionScreen = ({ formData, setFormData, onNext, onBack }) => (
           </CardContent>
         </Card>
         <Card
-          onClick={() => {
-            setFormData({ ...formData, request_type: 'medical_visit' });
-            onNext('medical_visit');
-          }}
-          className={`cursor-pointer border-2 p-6 transition-all ${formData.request_type === 'medical_visit' ? 'border-blue-400 bg-blue-50' : 'bg-white hover:bg-blue-50/50'}`}
-        >
+        onClick={() => {
+          setFormData({ ...formData, request_type: 'medical_visit' });
+          onNext('medical_visit');
+        }}
+        className={`cursor-pointer border-2 p-6 transition-all ${formData.request_type === 'medical_visit' ? 'border-blue-400 bg-blue-50' : 'bg-white hover:bg-blue-50/50'}`}>
+
           <CardContent className="p-0 flex items-center gap-6">
             <Heart className="w-12 h-12 text-blue-500" />
             <div className="text-right">
@@ -383,8 +383,8 @@ const ServiceSelectionScreen = ({ formData, setFormData, onNext, onBack }) => (
         </Card>
       </div>
     </motion.div>
-  </StepLayout>
-);
+  </StepLayout>;
+
 
 // Step 4a: Vaccination Details Screen - 4) שני טורים, 5) צבע וורוד, 6) אייקון גור
 const VaccinationDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
@@ -392,24 +392,24 @@ const VaccinationDetailsScreen = ({ formData, setFormData, onNext, onBack }) => 
   const [showSpecialMessage, setShowSpecialMessage] = useState(false);
 
   const vaccineOptions = [
-    { id: 'hexagon', name: 'משושה', icon: ShieldCheck, requiresConfirmation: false },
-    { id: 'heartworm', name: 'טיפול תולעת הפארק', icon: Heart, requiresConfirmation: false },
-    { id: 'deworming', name: 'תילוע', icon: Heart, requiresConfirmation: false },
-    { id: 'rabies', name: 'כלבת', icon: ShieldCheck, requiresConfirmation: true },
-    { id: 'kennel_cough', name: 'שעלת', icon: Heart, requiresConfirmation: true },
-    { id: 'puppy_first', name: 'טיפול ראשון לגורים', icon: Baby, hasPuppyIcon: true }
-  ];
+  { id: 'hexagon', name: 'משושה', icon: ShieldCheck, requiresConfirmation: false },
+  { id: 'heartworm', name: 'טיפול תולעת הפארק', icon: Heart, requiresConfirmation: false },
+  { id: 'deworming', name: 'תילוע', icon: Heart, requiresConfirmation: false },
+  { id: 'rabies', name: 'כלבת', icon: ShieldCheck, requiresConfirmation: true },
+  { id: 'kennel_cough', name: 'שעלת', icon: Heart, requiresConfirmation: true },
+  { id: 'puppy_first', name: 'טיפול ראשון לגורים', icon: Baby, hasPuppyIcon: true }];
+
 
   const handleVaccineToggle = (vaccineId) => {
-    const newSelection = selectedVaccines.includes(vaccineId)
-      ? selectedVaccines.filter((id) => id !== vaccineId)
-      : [...selectedVaccines, vaccineId];
+    const newSelection = selectedVaccines.includes(vaccineId) ?
+    selectedVaccines.filter((id) => id !== vaccineId) :
+    [...selectedVaccines, vaccineId];
 
     setSelectedVaccines(newSelection);
     setFormData((prev) => ({ ...prev, vaccination_types: newSelection }));
 
     const requiresConfirmation = newSelection.some((id) =>
-      vaccineOptions.find((v) => v.id === id && v.requiresConfirmation)
+    vaccineOptions.find((v) => v.id === id && v.requiresConfirmation)
     );
     setShowSpecialMessage(requiresConfirmation);
   };
@@ -436,8 +436,8 @@ const VaccinationDetailsScreen = ({ formData, setFormData, onNext, onBack }) => 
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -50 }}
         transition={{ duration: 0.3 }}
-        className="space-y-6"
-      >
+        className="space-y-6">
+
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-3">
             אילו חיסונים נדרשים?
@@ -458,43 +458,43 @@ const VaccinationDetailsScreen = ({ formData, setFormData, onNext, onBack }) => 
                 key={vaccine.id}
                 onClick={() => handleVaccineToggle(vaccine.id)}
                 className={`cursor-pointer border-2 transition-all duration-200 ${
-                  isSelected
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                }`}
-              >
+                isSelected ?
+                'border-blue-500 bg-blue-50' :
+                'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}`
+                }>
+
                 <CardContent className="p-4 flex flex-col items-center justify-between h-full">
                   <div className="flex items-center gap-2 mb-2">
                     <Icon className={`w-5 h-5 ${isSelected ? 'text-blue-600' : 'text-gray-400'}`} />
                     {/* 6) אייקון גור */}
-                    {vaccine.hasPuppyIcon && (
-                      <Baby className={`w-4 h-4 ${isSelected ? 'text-blue-500' : 'text-gray-400'}`} />
-                    )}
+                    {vaccine.hasPuppyIcon &&
+                    <Baby className={`w-4 h-4 ${isSelected ? 'text-blue-500' : 'text-gray-400'}`} />
+                    }
                   </div>
                   <span className={`font-medium text-sm text-center ${isSelected ? 'text-blue-800' : 'text-gray-700'}`}>
                     {vaccine.name}
                   </span>
                   <div className={`w-5 h-5 rounded border-2 flex items-center justify-center mt-2 ${
-                    isSelected ? 'bg-blue-500 border-blue-500' : 'border-gray-300'
-                  }`}>
-                    {isSelected && (
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  isSelected ? 'bg-blue-500 border-blue-500' : 'border-gray-300'}`
+                  }>
+                    {isSelected &&
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
-                    )}
+                    }
                   </div>
                 </CardContent>
-              </Card>
-            );
+              </Card>);
+
           })}
         </div>
 
-        {showSpecialMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-amber-50 border border-amber-200 rounded-lg p-4"
-          >
+        {showSpecialMessage &&
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+
             <div className="flex items-start gap-3">
               <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                 <span className="text-white text-sm font-bold">!</span>
@@ -507,28 +507,28 @@ const VaccinationDetailsScreen = ({ formData, setFormData, onNext, onBack }) => 
               </div>
             </div>
           </motion.div>
-        )}
+        }
 
         <div className="space-y-3">
           <Button
             onClick={handleNextClick}
             disabled={selectedVaccines.length === 0}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold rounded-full"
-          >
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold rounded-full">
+
             המשך לבחירת תאריך
           </Button>
 
           <Button
             onClick={handleNotSureClick}
             variant="outline"
-            className="w-full bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 py-4 text-lg font-semibold rounded-full"
-          >
+            className="w-full bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 py-4 text-lg font-semibold rounded-full">
+
             לא בטוח אבל נשריין תור
           </Button>
         </div>
       </motion.div>
-    </StepLayout>
-  );
+    </StepLayout>);
+
 };
 
 // Step 4b: Medical Visit Details Screen - הוספת אייקונים ואפשרות חירום
@@ -539,20 +539,20 @@ const MedicalVisitDetailsScreen = ({ formData, setFormData, onNext, onBack }) =>
   const [customReason, setCustomReason] = useState('');
 
   const commonReasons = [
-    { id: 'emergency', label: 'חירום - דורש טיפול מיידי!', icon: AlertCircle, isEmergency: true },
-    { id: 'checkup', label: 'בדיקה שגרתית', icon: Stethoscope },
-    { id: 'digestive', label: 'בעיות עיכול', icon: Activity },
-    { id: 'skin', label: 'בעיות עור ופרווה', icon: Droplets },
-    { id: 'teeth', label: 'בעיות שיניים', icon: Bone },
-    { id: 'injury', label: 'פציעה או כאב', icon: Heart },
-    { id: 'breathing', label: 'בעיות נשימה', icon: Wind },
-    { id: 'other', label: 'אחר', icon: HelpCircle }
-  ];
+  { id: 'emergency', label: 'חירום - דורש טיפול מיידי!', icon: AlertCircle, isEmergency: true },
+  { id: 'checkup', label: 'בדיקה שגרתית', icon: Stethoscope },
+  { id: 'digestive', label: 'בעיות עיכול', icon: Activity },
+  { id: 'skin', label: 'בעיות עור ופרווה', icon: Droplets },
+  { id: 'teeth', label: 'בעיות שיניים', icon: Bone },
+  { id: 'injury', label: 'פציעה או כאב', icon: Heart },
+  { id: 'breathing', label: 'בעיות נשימה', icon: Wind },
+  { id: 'other', label: 'אחר', icon: HelpCircle }];
+
 
   const handleReasonToggle = (reasonLabel) => {
-    setSelectedReasons(prev => {
+    setSelectedReasons((prev) => {
       if (prev.includes(reasonLabel)) {
-        return prev.filter(r => r !== reasonLabel);
+        return prev.filter((r) => r !== reasonLabel);
       } else {
         return [...prev, reasonLabel];
       }
@@ -580,8 +580,8 @@ const MedicalVisitDetailsScreen = ({ formData, setFormData, onNext, onBack }) =>
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -50 }}
         transition={{ duration: 0.3 }}
-        className="space-y-6"
-      >
+        className="space-y-6">
+
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-3">
             ספרו לנו, איך נוכל לעזור?
@@ -600,54 +600,54 @@ const MedicalVisitDetailsScreen = ({ formData, setFormData, onNext, onBack }) =>
             {commonReasons.map((reason) => {
               const isSelected = isReasonSelected(reason.label);
               const Icon = reason.icon;
-              
+
               return (
                 <Card
                   key={reason.id}
                   onClick={() => handleReasonToggle(reason.label)}
                   className={`cursor-pointer border-2 transition-all duration-200 h-24 flex items-center justify-center ${
-                    reason.isEmergency
-                      ? isSelected 
-                        ? 'border-red-500 bg-red-500 shadow-lg' 
-                        : 'border-red-400 bg-red-500 hover:bg-red-600 shadow-md'
-                      : isSelected
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/30'
-                  }`}
-                >
+                  reason.isEmergency ?
+                  isSelected ?
+                  'border-red-500 bg-red-500 shadow-lg' :
+                  'border-red-400 bg-red-500 hover:bg-red-600 shadow-md' :
+                  isSelected ?
+                  'border-blue-500 bg-blue-50' :
+                  'border-gray-200 hover:border-blue-300 hover:bg-blue-50/30'}`
+                  }>
+
                   <CardContent className="p-3 text-center w-full">
                     <div className="flex flex-col items-center gap-2">
                       <Icon className={`w-5 h-5 ${
-                        reason.isEmergency 
-                          ? 'text-white' 
-                          : isSelected ? 'text-blue-600' : 'text-gray-500'
-                      }`} />
+                      reason.isEmergency ?
+                      'text-white' :
+                      isSelected ? 'text-blue-600' : 'text-gray-500'}`
+                      } />
                       <span className={`font-medium text-xs leading-tight block ${
-                        reason.isEmergency 
-                          ? 'text-white' 
-                          : isSelected ? 'text-blue-800' : 'text-gray-700'
-                      }`}>
+                      reason.isEmergency ?
+                      'text-white' :
+                      isSelected ? 'text-blue-800' : 'text-gray-700'}`
+                      }>
                         {reason.label}
                       </span>
                     </div>
                     <div className={`w-4 h-4 rounded border-2 flex items-center justify-center mx-auto mt-2 ${
-                      isSelected 
-                        ? reason.isEmergency 
-                          ? 'bg-white border-white' 
-                          : 'bg-blue-500 border-blue-500' 
-                        : reason.isEmergency
-                          ? 'border-white'
-                          : 'border-gray-300'
-                    }`}>
-                      {isSelected && (
-                        <svg className={`w-3 h-3 ${reason.isEmergency ? 'text-red-500' : 'text-white'}`} fill="currentColor" viewBox="0 0 20 20">
+                    isSelected ?
+                    reason.isEmergency ?
+                    'bg-white border-white' :
+                    'bg-blue-500 border-blue-500' :
+                    reason.isEmergency ?
+                    'border-white' :
+                    'border-gray-300'}`
+                    }>
+                      {isSelected &&
+                      <svg className={`w-3 h-3 ${reason.isEmergency ? 'text-red-500' : 'text-white'}`} fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
-                      )}
+                      }
                     </div>
                   </CardContent>
-                </Card>
-              );
+                </Card>);
+
             })}
           </div>
 
@@ -660,21 +660,21 @@ const MedicalVisitDetailsScreen = ({ formData, setFormData, onNext, onBack }) =>
               onChange={(e) => setCustomReason(e.target.value)}
               placeholder="תארו בפירוט נוסף..."
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-              rows="4"
-            />
+              rows="4" />
+
           </div>
         </div>
 
         <Button
           onClick={handleNextClick}
           disabled={selectedReasons.length === 0 && !customReason.trim()}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold rounded-full mt-8"
-        >
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold rounded-full mt-8">
+
           המשך לבחירת תאריך
         </Button>
       </motion.div>
-    </StepLayout>
-  );
+    </StepLayout>);
+
 };
 
 // Step 5: Date & Time Selection Screen - עדכון שעות
@@ -683,11 +683,11 @@ const DateTimeSelectionScreen = ({ formData, setFormData, onNext, onBack }) => {
   const [selectedTime, setSelectedTime] = useState(formData.preferred_time || '');
 
   const timeSlots = [
-    '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-    '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-    '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
-    '18:00', '18:30', '19:00'
-  ];
+  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
+  '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
+  '18:00', '18:30', '19:00'];
+
 
   const getMinDate = () => {
     const tomorrow = new Date();
@@ -713,18 +713,18 @@ const DateTimeSelectionScreen = ({ formData, setFormData, onNext, onBack }) => {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -50 }}
         transition={{ duration: 0.3 }}
-        className="space-y-6"
-      >
+        className="space-y-6">
+
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-3">
-            {formData.request_type === 'vaccination'
-              ? 'מעולה! בואו נקבע את התור - הוא יהיה סופי ומאושר'
-              : 'תודה ששיתפתם. בואו נמצא לכם תור'}
+            {formData.request_type === 'vaccination' ?
+            'מעולה! בואו נקבע את התור - הוא יהיה סופי ומאושר' :
+            'תודה ששיתפתם. בואו נמצא לכם תור'}
           </h2>
           <p className="text-gray-600 leading-relaxed">
-            {formData.request_type === 'vaccination'
-              ? 'בחרו את היום והשעה שהכי נוחים לכם. התור יקבע ישירות ביומן המרפאה.'
-              : 'אנא בחרו את היום והשעה שהכי נוחים לכם. נציג מהמרפאה ייצור עמכם קשר טלפוני בהקדם כדי לאשר את המועד הסופי והמדויק.'}
+            {formData.request_type === 'vaccination' ?
+            'בחרו את היום והשעה שהכי נוחים לכם. התור יקבע ישירות ביומן המרפאה.' :
+            'אנא בחרו את היום והשעה שהכי נוחים לכם. נציג מהמרפאה ייצור עמכם קשר טלפוני בהקדם כדי לאשר את המועד הסופי והמדויק.'}
           </p>
         </div>
 
@@ -739,75 +739,75 @@ const DateTimeSelectionScreen = ({ formData, setFormData, onNext, onBack }) => {
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               min={getMinDate()}
-              className="w-full text-lg p-4 border-2 border-gray-300 rounded-lg focus:border-blue-500"
-            />
+              className="w-full text-lg p-4 border-2 border-gray-300 rounded-lg focus:border-blue-500" />
+
           </div>
 
           {/* בחירת שעה */}
-          {selectedDate && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
+          {selectedDate &&
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}>
+
               <Label className="text-base font-medium text-gray-700 mb-3 block">
                 <Clock className="inline-block w-5 h-5 ml-1 text-gray-500" /> שעה מועדפת
               </Label>
               <div className="grid grid-cols-3 gap-3">
-                {timeSlots.map((time) => (
-                  <Button
-                    key={time}
-                    type="button"
-                    variant={selectedTime === time ? "default" : "outline"}
-                    onClick={() => setSelectedTime(time)}
-                    className={`p-3 text-center ${
-                      selectedTime === time
-                        ? 'bg-blue-600 text-white'
-                        : 'hover:bg-blue-50 hover:border-blue-300'
-                    }`}
-                  >
+                {timeSlots.map((time) =>
+              <Button
+                key={time}
+                type="button"
+                variant={selectedTime === time ? "default" : "outline"}
+                onClick={() => setSelectedTime(time)}
+                className={`p-3 text-center ${
+                selectedTime === time ?
+                'bg-blue-600 text-white' :
+                'hover:bg-blue-50 hover:border-blue-300'}`
+                }>
+
                     {time}
                   </Button>
-                ))}
+              )}
               </div>
             </motion.div>
-          )}
+          }
         </div>
 
         <Button
           onClick={handleNextClick}
           disabled={!selectedDate || !selectedTime}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold rounded-full mt-8"
-        >
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold rounded-full mt-8">
+
           המשך לסיכום
         </Button>
       </motion.div>
-    </StepLayout>
-  );
+    </StepLayout>);
+
 };
 
 // קונפטי אנימציה
-const ConfettiPiece = ({ delay, color, size }) => (
-  <motion.div
-    className={`absolute w-${size} h-${size} ${color} rounded-full`}
-    initial={{
-      x: Math.random() * window.innerWidth,
-      y: -20,
-      rotate: 0,
-      opacity: 1
-    }}
-    animate={{
-      y: window.innerHeight + 50,
-      rotate: 360,
-      opacity: 0
-    }}
-    transition={{
-      duration: 3 + Math.random() * 2,
-      delay: delay,
-      ease: "linear"
-    }}
-  />
-);
+const ConfettiPiece = ({ delay, color, size }) =>
+<motion.div
+  className={`absolute w-${size} h-${size} ${color} rounded-full`}
+  initial={{
+    x: Math.random() * window.innerWidth,
+    y: -20,
+    rotate: 0,
+    opacity: 1
+  }}
+  animate={{
+    y: window.innerHeight + 50,
+    rotate: 360,
+    opacity: 0
+  }}
+  transition={{
+    duration: 3 + Math.random() * 2,
+    delay: delay,
+    ease: "linear"
+  }} />;
+
+
 
 const Confetti = () => {
   const colors = ['bg-yellow-400', 'bg-pink-400', 'bg-blue-400', 'bg-green-400', 'bg-purple-400', 'bg-red-400'];
@@ -815,16 +815,16 @@ const Confetti = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-50">
-      {Array.from({ length: 50 }, (_, i) => (
-        <ConfettiPiece
-          key={i}
-          delay={i * 0.1}
-          color={colors[Math.floor(Math.random() * colors.length)]}
-          size={sizes[Math.floor(Math.random() * sizes.length)]}
-        />
-      ))}
-    </div>
-  );
+      {Array.from({ length: 50 }, (_, i) =>
+      <ConfettiPiece
+        key={i}
+        delay={i * 0.1}
+        color={colors[Math.floor(Math.random() * colors.length)]}
+        size={sizes[Math.floor(Math.random() * sizes.length)]} />
+
+      )}
+    </div>);
+
 };
 
 // Updated Main Component
@@ -978,8 +978,8 @@ export default function AppointmentBookingPage() {
 
   // Review Screen Component (replaces old ReviewAndSubmitScreen)
   const ReviewScreen = () => {
-    const selectedClinic = clinics.find(c => c.id === formData.clinic_id);
-    
+    const selectedClinic = clinics.find((c) => c.id === formData.clinic_id);
+
     // Helper functions from old ReviewAndSubmitScreen (retained as they were already in the component scope)
     const formatDate = (dateString) => {
       if (!dateString) return '';
@@ -1004,9 +1004,9 @@ export default function AppointmentBookingPage() {
 
     const getServiceLabel = () => {
       if (formData.request_type === 'vaccination') {
-        return formData.vaccination_types && formData.vaccination_types.length > 0
-          ? getVaccinationNames(formData.vaccination_types)
-          : 'חיסון שגרתי';
+        return formData.vaccination_types && formData.vaccination_types.length > 0 ?
+        getVaccinationNames(formData.vaccination_types) :
+        'חיסון שגרתי';
       }
       return formData.medical_reason || 'בדיקה/ביקור רפואי';
     };
@@ -1018,19 +1018,19 @@ export default function AppointmentBookingPage() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.3 }}
-          className="space-y-6"
-        >
+          className="space-y-6">
+
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-slate-800 mb-2">
               מעולה! מבט אחרון על פרטי הבקשה
             </h2>
-            {formData.request_type === 'medical_visit' && (
-              <div className="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+            {formData.request_type === 'medical_visit' &&
+            <div className="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
                 <p className="text-blue-800 font-semibold">
                   💬 שימו לב: נציג מהמרפאה ייצור עמכם קשר טלפוני בהקדם כדי לאשר את המועד הסופי והמדויק.
                 </p>
               </div>
-            )}
+            }
           </div>
 
           <Card className="bg-white border-2 border-gray-200">
@@ -1047,22 +1047,22 @@ export default function AppointmentBookingPage() {
                 <span className="font-medium text-gray-600">שם חיית המחמד:</span>
                 <span className="font-semibold text-gray-800">{formData.petName}</span>
               </div>
-              {formData.petType && (
-                <div className="flex justify-between items-center border-b pb-2">
+              {formData.petType &&
+              <div className="flex justify-between items-center border-b pb-2">
                   <span className="font-medium text-gray-600">סוג החיה:</span>
                   <span className="font-semibold text-gray-800">{formData.petType}</span>
                 </div>
-              )}
+              }
               <div className="flex justify-between items-center border-b pb-2">
                 <span className="font-medium text-gray-600">טלפון:</span>
                 <span className="font-semibold text-gray-800">{formData.ownerPhone}</span>
               </div>
-              {formData.ownerEmail && (
-                <div className="flex justify-between items-center border-b pb-2">
+              {formData.ownerEmail &&
+              <div className="flex justify-between items-center border-b pb-2">
                   <span className="font-medium text-gray-600">אימייל:</span>
                   <span className="font-semibold text-gray-800">{formData.ownerEmail}</span>
                 </div>
-              )}
+              }
               <div className="flex justify-between items-center border-b pb-2">
                 <span className="font-medium text-gray-600">סוג הביקור:</span>
                 <span className="font-semibold text-gray-800">
@@ -1073,12 +1073,12 @@ export default function AppointmentBookingPage() {
                 <span className="font-medium text-gray-600">שירות:</span>
                 <span className="font-semibold text-gray-800 text-right">{getServiceLabel()}</span>
               </div>
-              {formData.notes && (
-                <div className="flex justify-between items-start border-b pb-2">
+              {formData.notes &&
+              <div className="flex justify-between items-start border-b pb-2">
                   <span className="font-medium text-gray-600">הערות:</span>
                   <span className="font-semibold text-gray-800 text-right">{formData.notes}</span>
                 </div>
-              )}
+              }
               <div className="flex justify-between items-center border-b pb-2">
                 <span className="font-medium text-gray-600">תאריך מועדף:</span>
                 <span className="font-semibold text-gray-800">{formatDate(formData.preferred_date)}</span>
@@ -1097,31 +1097,31 @@ export default function AppointmentBookingPage() {
               type="button"
               variant="outline"
               onClick={handleBack} // This correctly calls the handleBack from parent context
-              className="flex-1"
-            >
+              className="flex-1">
+
               חזרה
             </Button>
             <Button
               onClick={handleSubmitBooking} // This now directly calls the parent's handleSubmitBooking
               disabled={isSubmitting} // Disabled only if submitting, no more signature/consent checks
-              className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-            >
-              {isSubmitting ? (
-                <>
+              className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
+
+              {isSubmitting ?
+              <>
                   <Loader2 className="w-5 h-5 ml-2 animate-spin" />
                   שולח...
-                </>
-              ) : (
-                <>
+                </> :
+
+              <>
                   <CheckCircle className="w-5 h-5 ml-2" />
                   אישור וקביעת התור
                 </>
-              )}
+              }
             </Button>
           </div>
         </motion.div>
-      </StepLayout>
-    );
+      </StepLayout>);
+
   };
 
   // Success Screen Component (replaces old ThankYouScreen)
@@ -1162,8 +1162,8 @@ export default function AppointmentBookingPage() {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="max-w-md w-full relative z-10"
-        >
+          className="max-w-md w-full relative z-10">
+
           <Card className="border-none shadow-2xl relative">
             {/* Close Button */}
             <Button
@@ -1171,8 +1171,8 @@ export default function AppointmentBookingPage() {
               size="icon"
               onClick={handleClose}
               className="absolute top-4 left-4 z-20 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full"
-              aria-label="סגור"
-            >
+              aria-label="סגור">
+
               <X className="w-5 h-5" />
             </Button>
 
@@ -1181,8 +1181,8 @@ export default function AppointmentBookingPage() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="mx-auto w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-2xl"
-              >
+                className="mx-auto w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-2xl">
+
                 <CheckCircle className="w-12 h-12 text-white" />
               </motion.div>
 
@@ -1193,8 +1193,8 @@ export default function AppointmentBookingPage() {
                 <p className="text-lg text-slate-600">
                   אנחנו כבר מחכים לפגוש את {formData.petName}!
                 </p>
-                {formData.request_type === 'medical_visit' ? (
-                  <div className="mt-6 p-6 bg-blue-50 border-2 border-blue-300 rounded-xl max-w-md mx-auto">
+                {formData.request_type === 'medical_visit' ?
+                <div className="mt-6 p-6 bg-blue-50 border-2 border-blue-300 rounded-xl max-w-md mx-auto">
                     <p className="text-blue-900 font-semibold text-lg mb-2">
                       📞 בקשתכם לתור התקבלה בהצלחה!
                     </p>
@@ -1204,9 +1204,9 @@ export default function AppointmentBookingPage() {
                     <p className="text-blue-800 text-sm mt-2">
                       💌 קיבלתם אישור קבלה למייל ול-SMS עם כל הפרטים.
                     </p>
-                  </div>
-                ) : (
-                  <div className="mt-6 p-6 bg-green-50 border-2 border-green-300 rounded-xl max-w-md mx-auto">
+                  </div> :
+
+                <div className="mt-6 p-6 bg-green-50 border-2 border-green-300 rounded-xl max-w-md mx-auto">
                     <p className="text-green-900 font-semibold text-lg mb-2">
                       ✅ התור שלכם נקבע בהצלחה!
                     </p>
@@ -1214,14 +1214,14 @@ export default function AppointmentBookingPage() {
                       💌 קיבלתם אישור עם כל הפרטים למייל ול-SMS. נציג מהמרפאה ייצור עמכם קשר בהקדם לאישור סופי.
                     </p>
                   </div>
-                )}
+                }
               </div>
 
               <div className="space-y-3 pt-6">
                 <Button
                   onClick={handleAddToCalendar}
-                  className="w-full max-w-md mx-auto bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
-                >
+                  className="w-full max-w-md mx-auto bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+
                   <Calendar className="w-5 h-5 ml-2" />
                   הוספה ליומן שלי
                 </Button>
@@ -1230,12 +1230,12 @@ export default function AppointmentBookingPage() {
                   href="https://wa.me/972548959176?text=היי,%20יש%20לי%20שאלה%20לגבי%20התור"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block"
-                >
+                  className="block">
+
                   <Button
                     variant="outline"
-                    className="w-full max-w-md mx-auto"
-                  >
+                    className="w-full max-w-md mx-auto">
+
                     <MessageCircle className="w-5 h-5 ml-2" />
                     יש שאלה? דברו איתנו
                   </Button>
@@ -1244,8 +1244,8 @@ export default function AppointmentBookingPage() {
             </CardContent>
           </Card>
         </motion.div>
-      </div>
-    );
+      </div>);
+
   };
 
   const renderCurrentStep = () => {
@@ -1279,6 +1279,6 @@ export default function AppointmentBookingPage() {
         {renderCurrentStep()}
       </AnimatePresence>
       {!['hero', 'thank-you'].includes(currentStep) && <WhatsAppButton />}
-    </div>
-  );
+    </div>);
+
 }
