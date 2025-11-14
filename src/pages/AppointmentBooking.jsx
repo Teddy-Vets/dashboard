@@ -24,15 +24,15 @@ import {
   PawPrint,
   ShieldCheck,
   Baby,
-  Loader2, // Added Loader2 for loading state in buttons
-  MessageCircle, // Added MessageCircle for success screen
-  X, // Added X icon
-  AlertCircle, // Added for emergency reason
-  Activity, // Added for digestive issues
-  Droplets, // Added for skin/fur issues
-  Bone, // Added for teeth issues
-  Wind, // Added for breathing issues
-  HelpCircle // Added for 'other' reason
+  Loader2,
+  MessageCircle,
+  X,
+  AlertCircle,
+  Activity,
+  Droplets,
+  Bone,
+  Wind,
+  HelpCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AppointmentRequest, Clinic } from "@/entities/all";
@@ -40,7 +40,6 @@ import { getEntityList, createEntity } from "@/components/utils/apiHelpers";
 
 // --- Reusable Components ---
 
-// Floating WhatsApp Button - עדכון מספר והגדלה
 const WhatsAppButton = () =>
 <a
   href="https://wa.me/972548959176?text=היי%20מרפאת%20טדי%20וטס,%20אני%20צריך/ה%20עזרה%20עם%20קביעת%20התור"
@@ -52,7 +51,6 @@ const WhatsAppButton = () =>
 </a>;
 
 
-// Layout for inner steps - 1) הסרת הלוגו והמשפט
 const StepLayout = ({ children, onBack }) =>
 <div className="bg-violet-50 rounded min-h-screen">
     <header className="bg-white shadow-sm p-4 sticky top-0 z-20">
@@ -71,21 +69,16 @@ const StepLayout = ({ children, onBack }) =>
 
 // --- Screen Components ---
 
-// Step 1: Hero Section
 const HeroSection = ({ onStart }) =>
 <div className="min-h-screen relative overflow-hidden">
-    {/* רקע תמונה - עדכון positioning למובייל */}
     <div
     className="absolute inset-0 bg-cover bg-top md:bg-center bg-no-repeat"
     style={{
       backgroundImage: `url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/1382b2e26_Prz_8.jpg')`
     }} />
 
-
-    {/* שכבה כהה לטקסט קריא יותר - הבהרת ה-overlay עוד יותר */}
     <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/30" />
 
-    {/* תוכן - ממורכז בחלק העליון */}
     <div className="relative z-10 flex items-start justify-center text-center text-white px-4 pt-20">
       <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -93,18 +86,14 @@ const HeroSection = ({ onStart }) =>
       transition={{ duration: 0.8 }}
       className="max-w-2xl mx-auto">
 
-        {/* לוגו החדש */}
         <div className="mb-8">
           <div className="flex items-center justify-center mb-6">
             <img
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/c6a0b9e79_logo_medical.png"
             alt="Teddy Vets" className="px-12 py-4 max-w-md w-full h-auto object-contain filter brightness-0 invert drop-shadow-2xl" />
-
-
           </div>
         </div>
 
-        {/* הודעה עיקרית */}
         <div className="mb-12">
           <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4 drop-shadow-lg">
             שומרים יחד על הבריאות<br />
@@ -112,7 +101,6 @@ const HeroSection = ({ onStart }) =>
           </h2>
         </div>
 
-        {/* כפתור התחלה - טקסט מעודכן */}
         <Button
         onClick={onStart}
         size="lg"
@@ -125,7 +113,6 @@ const HeroSection = ({ onStart }) =>
   </div>;
 
 
-// Step 2: Customer Type Screen
 const CustomerTypeScreen = ({ formData, setFormData, onNext, onBack }) =>
 <StepLayout onBack={onBack}>
     <motion.div
@@ -171,9 +158,8 @@ const CustomerTypeScreen = ({ formData, setFormData, onNext, onBack }) =>
   </StepLayout>;
 
 
-// Step 3: Contact Details Screen - 2) תיקון גודל כפתורים + 3) הוספת שאלה לסוג חיה
 const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
-  const isFormValid = formData.petName && formData.ownerName && formData.ownerPhone && formData.clinic_id && formData.petType;
+  const isFormValid = formData.petName && formData.ownerName && formData.ownerPhone && formData.ownerEmail && formData.clinic_id && formData.petType;
   const [clinics, setClinics] = useState([]);
   const [isLoadingClinics, setIsLoadingClinics] = useState(true);
 
@@ -196,7 +182,6 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
     <StepLayout onBack={onBack}>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
         
-        {/* כותרת מעל הכל */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
             שמחים מאוד שבחרתם להגיע עם החבר הפרוותי אלינו
@@ -204,7 +189,6 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
         </div>
 
         <div className="space-y-6">
-          {/* 2) בחירת מרפאה - עם גודל אחיד */}
           <div>
             <Label className="font-semibold text-gray-700 mb-3 block text-lg">בחרו מרפאה *</Label>
             {isLoadingClinics ?
@@ -212,7 +196,7 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
                 <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
               </div> :
 
-            <div className="grid grid-cols-3 gap-3"> {/* Changed from grid-cols-2 to grid-cols-3 */}
+            <div className="grid grid-cols-3 gap-3">
                 {clinics.map((clinic) =>
               <Card
                 key={clinic.id}
@@ -242,7 +226,6 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
                   </Card>
               )}
 
-                {/* קוביית "בקרוב" */}
                 <Card className="border-2 border-dashed border-gray-300 h-24 flex items-center justify-center bg-gray-50/50">
                   <CardContent className="p-4 text-center w-full">
                     <div className="font-semibold text-sm text-gray-400">
@@ -257,7 +240,6 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
             }
           </div>
 
-          {/* 3) בחירת סוג החיה */}
           <div>
             <Label className="font-semibold text-gray-700 mb-3 block text-lg">סוג החיה *</Label>
             <div className="grid grid-cols-2 gap-4">
@@ -302,7 +284,8 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
               value={formData.petName}
               onChange={(e) => setFormData({ ...formData, petName: e.target.value })}
               className="bg-white"
-              placeholder="שם חיית המחמד" />
+              placeholder="שם חיית המחמד"
+              required />
 
           </div>
 
@@ -313,7 +296,8 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
               value={formData.ownerName}
               onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
               className="bg-white"
-              placeholder="שם הבעלים" />
+              placeholder="שם הבעלים"
+              required />
 
           </div>
 
@@ -324,18 +308,21 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
               type="tel"
               value={formData.ownerPhone}
               onChange={(e) => setFormData({ ...formData, ownerPhone: e.target.value })}
-              className="bg-white" />
+              className="bg-white"
+              required />
 
           </div>
 
           <div>
-            <Label htmlFor="ownerEmail" className="font-semibold text-gray-700 mb-2 block">אימייל</Label>
+            <Label htmlFor="ownerEmail" className="font-semibold text-gray-700 mb-2 block">אימייל *</Label>
             <Input
               id="ownerEmail"
               type="email"
               value={formData.ownerEmail}
               onChange={(e) => setFormData({ ...formData, ownerEmail: e.target.value })}
-              className="bg-white" />
+              className="bg-white"
+              placeholder="your@email.com"
+              required />
 
           </div>
         </div>
@@ -352,7 +339,6 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
 
 };
 
-// Step 4: Service Selection Screen - תיקון טקסט
 const ServiceSelectionScreen = ({ formData, setFormData, onNext, onBack }) =>
 <StepLayout onBack={onBack}>
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center">
@@ -393,7 +379,6 @@ const ServiceSelectionScreen = ({ formData, setFormData, onNext, onBack }) =>
   </StepLayout>;
 
 
-// Step 4a: Vaccination Details Screen - 4) שני טורים, 5) צבע וורוד, 6) אייקון גור
 const VaccinationDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
   const [selectedVaccines, setSelectedVaccines] = useState(formData.vaccination_types || []);
   const [showSpecialMessage, setShowSpecialMessage] = useState(false);
@@ -538,7 +523,6 @@ const VaccinationDetailsScreen = ({ formData, setFormData, onNext, onBack }) => 
 
 };
 
-// Step 4b: Medical Visit Details Screen - הוספת אייקונים ואפשרות חירום
 const MedicalVisitDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
   const [selectedReasons, setSelectedReasons] = useState(
     formData.medical_reason ? formData.medical_reason.split(', ').filter(Boolean) : []
@@ -684,7 +668,6 @@ const MedicalVisitDetailsScreen = ({ formData, setFormData, onNext, onBack }) =>
 
 };
 
-// Step 5: Date & Time Selection Screen - עדכון שעות
 const DateTimeSelectionScreen = ({ formData, setFormData, onNext, onBack }) => {
   const [selectedDate, setSelectedDate] = useState(formData.preferred_date || '');
   const [selectedTime, setSelectedTime] = useState(formData.preferred_time || '');
@@ -791,7 +774,6 @@ const DateTimeSelectionScreen = ({ formData, setFormData, onNext, onBack }) => {
 
 };
 
-// קונפטי אנימציה
 const ConfettiPiece = ({ delay, color, size }) =>
 <motion.div
   className={`absolute w-${size} h-${size} ${color} rounded-full`}
@@ -832,7 +814,6 @@ const Confetti = () => {
 
 };
 
-// Updated Main Component
 export default function AppointmentBookingPage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState('hero');
@@ -854,9 +835,8 @@ export default function AppointmentBookingPage() {
     signature: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [clinics, setClinics] = useState([]); // Moved clinics state here for ReviewScreen access
+  const [clinics, setClinics] = useState([]);
 
-  // Fetch clinics early for ReviewScreen
   useEffect(() => {
     async function fetchClinics() {
       try {
@@ -899,7 +879,7 @@ export default function AppointmentBookingPage() {
         setCurrentStep('review-and-submit');
         break;
       case 'review-and-submit':
-        setCurrentStep('thank-you'); // This is triggered by handleSubmitBooking
+        setCurrentStep('thank-you');
         break;
       default:
         setCurrentStep('hero');
@@ -964,7 +944,6 @@ export default function AppointmentBookingPage() {
       const appointmentRequest = await createEntity(AppointmentRequest, payload, 'AppointmentRequest');
       console.log('[AppointmentBooking] Appointment created:', appointmentRequest);
 
-      // שליחת מיילים והתחלת מסע לקוח מותאם אישית
       if (appointmentRequest && appointmentRequest.id) {
         try {
           const { base44 } = await import('@/api/base44Client');
@@ -973,7 +952,6 @@ export default function AppointmentBookingPage() {
           console.log('[AppointmentBooking] Journey result:', journeyResult);
         } catch (journeyError) {
           console.error('[AppointmentBooking] Journey error:', journeyError);
-          // לא נעצור את התהליך - התור נשמר, רק המיילים לא נשלחו
         }
       }
 
@@ -986,11 +964,9 @@ export default function AppointmentBookingPage() {
     }
   };
 
-  // Review Screen Component (replaces old ReviewAndSubmitScreen)
   const ReviewScreen = () => {
     const selectedClinic = clinics.find((c) => c.id === formData.clinic_id);
 
-    // Helper functions from old ReviewAndSubmitScreen (retained as they were already in the component scope)
     const formatDate = (dateString) => {
       if (!dateString) return '';
       const date = new Date(dateString);
@@ -1067,12 +1043,10 @@ export default function AppointmentBookingPage() {
                 <span className="font-medium text-gray-600">טלפון:</span>
                 <span className="font-semibold text-gray-800">{formData.ownerPhone}</span>
               </div>
-              {formData.ownerEmail &&
               <div className="flex justify-between items-center border-b pb-2">
-                  <span className="font-medium text-gray-600">אימייל:</span>
-                  <span className="font-semibold text-gray-800">{formData.ownerEmail}</span>
-                </div>
-              }
+                <span className="font-medium text-gray-600">אימייל:</span>
+                <span className="font-semibold text-gray-800">{formData.ownerEmail}</span>
+              </div>
               <div className="flex justify-between items-center border-b pb-2">
                 <span className="font-medium text-gray-600">סוג הביקור:</span>
                 <span className="font-semibold text-gray-800">
@@ -1099,21 +1073,19 @@ export default function AppointmentBookingPage() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Digital signature and consent checkbox removed as per new outline */}
           
           <div className="flex gap-4">
             <Button
               type="button"
               variant="outline"
-              onClick={handleBack} // This correctly calls the handleBack from parent context
+              onClick={handleBack}
               className="flex-1">
 
               חזרה
             </Button>
             <Button
-              onClick={handleSubmitBooking} // This now directly calls the parent's handleSubmitBooking
-              disabled={isSubmitting} // Disabled only if submitting, no more signature/consent checks
+              onClick={handleSubmitBooking}
+              disabled={isSubmitting}
               className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
 
               {isSubmitting ?
@@ -1134,7 +1106,6 @@ export default function AppointmentBookingPage() {
 
   };
 
-  // Success Screen Component (replaces old ThankYouScreen)
   const SuccessScreen = () => {
     const [showConfetti, setShowConfetti] = useState(true);
 
@@ -1175,7 +1146,6 @@ export default function AppointmentBookingPage() {
           className="max-w-md w-full relative z-10">
 
           <Card className="border-none shadow-2xl relative">
-            {/* Close Button */}
             <Button
               variant="ghost"
               size="icon"
