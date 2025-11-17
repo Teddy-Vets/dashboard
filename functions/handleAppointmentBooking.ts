@@ -188,36 +188,23 @@ ${appointmentData.notes ? `📝 **הערות נוספות:**\n${appointmentData.
             
             let returningCustomerEmail = `שלום ${appointmentData.owner_name},
 
-תודה שבחרתם שוב במרפאות טדי וטס! 🙏
+נשמח לפגוש אתכם ואת ${appointmentData.pet_name}! 🐾
 
-✅ **פרטי התור שלכם:**
+**פרטי התור:**
 📅 תאריך מועדף: ${appointmentData.preferred_date || 'יתואם בהמשך'}
 🕐 שעה מועדפת: ${appointmentData.preferred_time || 'תתואם בהמשך'}
-🐾 חיית מחמד: ${appointmentData.pet_name}
 🏥 סוג ביקור: ${appointmentData.request_type === 'vaccination' ? 'חיסון' : 'ביקור רפואי'}
 
 `;
 
-            if (appointmentData.request_type === 'vaccination') {
-                returningCustomerEmail += `💉 **זכרו לחיסון:**
-• הביאו את פנקס החיסונים
-• ${appointmentData.pet_name} עשוי/ה להיות עייף/ה ביום הראשון - זה נורמלי
-
-`;
-            } else if (appointmentData.request_type === 'medical_visit') {
-                returningCustomerEmail += `🩺 **לביקור הרפואי:**
-• הכינו רשימת הסימפטומים שזיהיתם
-• הביאו תיעוד רפואי קודם אם יש
-
-⚠️ **חשוב לדעת:**
-התור עדיין לא נקבע באופן סופי. נציג מהמרפאה ייצור עמכם קשר טלפוני בהקדם כדי לאשר את המועד המדויק ולתאם את התאריך והשעה הסופיים.
+            if (appointmentData.request_type === 'medical_visit') {
+                returningCustomerEmail += `⚠️ שימו לב: נציג מהמרפאה ייצור עמכם קשר בהקדם לאישור המועד הסופי.
 
 `;
             }
 
-            returningCustomerEmail += `יש שאלות? אנחנו כאן! 📞
-
-${customized.baseContent.signature}`;
+            returningCustomerEmail += `בברכה,
+צוות טדי וטס`;
 
             if (appointmentData.owner_email) {
                 await sendEmail(
@@ -259,42 +246,28 @@ ${customized.baseContent.signature}`;
 
         const customized = getCustomizedContent(appointmentData);
 
-        let customEmailContent = `${customized.content}
+        let customEmailContent = `שלום ${appointmentData.owner_name},
 
-📋 **טופס היכרות חשוב:**
-כדי שנוכל לתת לכם ול-${appointmentData.pet_name} את השירות הטוב ביותר, אנא מלאו את טופס ההיכרות בקישור הבא:
+נשמח לפגוש אתכם ואת ${appointmentData.pet_name}! 🐾
 
-👆 ${publicFormUrl}
-
-**למה חשוב למלא את הטופס?**
-• מאפשר לנו להכיר טוב יותר את ${appointmentData.pet_name} ואת הצרכים הייחודיים
-• מקצר את זמן ההמתנה במרפאה ביום הביקור
-• מבטיח שהרופא יהיה מוכן מראש עם כל המידע החשוב
-
-🕒 **פרטי התור שלכם:**
-${appointmentData.preferred_date ? `📅 תאריך מועדף: ${appointmentData.preferred_date}` : '📅 התאריך יתואם בהמשך'}
-${appointmentData.preferred_time ? `🕐 שעה מועדפת: ${appointmentData.preferred_time}` : '🕐 השעה תתואם בהמשך'}
+**פרטי התור:**
+📅 תאריך מועדף: ${appointmentData.preferred_date || 'יתואם בהמשך'}
+🕐 שעה מועדפת: ${appointmentData.preferred_time || 'תתואם בהמשך'}
 🏥 סוג ביקור: ${appointmentData.request_type === 'vaccination' ? 'חיסון' : 'ביקור רפואי'}
 
 `;
 
         if (appointmentData.request_type === 'medical_visit') {
-            customEmailContent += `⚠️ **חשוב לדעת:**
-התור עדיין לא נקבע באופן סופי. נציג מהמרפאה ייצור עמכם קשר טלפוני בהקדם כדי לאשר את המועד המדויק ולתאם את התאריך והשעה הסופיים.
+            customEmailContent += `⚠️ שימו לב: נציג מהמרפאה ייצור עמכם קשר בהקדם לאישור המועד הסופי.
 
 `;
         }
 
-        customEmailContent += `💡 **טיפים לביקור הראשון:**
-• הביאו איתכם כל תיעוד רפואי קודם (אם קיים)
-• ${appointmentData.pet_name} יכול/ה להיות קצת לחוצ/ה - זה נורמלי לחלוטין
-• הגיעו 10 דקות לפני השעה שנקבעה
+        customEmailContent += `📋 **חשוב:** אנא מלאו את טופס ההיכרות לפני הביקור:
+${publicFormUrl}
 
-יש לכם שאלות? אנחנו כאן בשבילכם! 📞
-
-בהצלחה ומחכים לראות אתכם ואת ${appointmentData.pet_name} בקרוב! 🐕🐱
-
-${customized.baseContent.signature}`;
+בברכה,
+צוות טדי וטס`;
 
         const customWhatsAppMessage = `${customized.whatsapp}
 
