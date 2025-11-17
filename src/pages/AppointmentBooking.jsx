@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -1132,7 +1131,7 @@ export default function AppointmentBookingPage() {
     };
 
     const handleClose = () => {
-      window.location.href = '/';
+      window.location.href = '/AppointmentBooking';
     };
 
     return (

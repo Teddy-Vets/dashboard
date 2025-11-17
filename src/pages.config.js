@@ -36,7 +36,7 @@ import SystemManagement from './pages/SystemManagement';
 import PublicEmergencyTriage from './pages/PublicEmergencyTriage';
 import EmergencyTriageDashboard from './pages/EmergencyTriageDashboard';
 import ViewEmergencyTriage from './pages/ViewEmergencyTriage';
-import Layout from './Layout.jsx';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -83,5 +83,5 @@ export const PAGES = {
 export const pagesConfig = {
     mainPage: "Dashboard",
     Pages: PAGES,
-    Layout: Layout,
+    Layout: __Layout,
 };
