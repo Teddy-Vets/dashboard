@@ -3,15 +3,15 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.7.1';
 // פונקציה לעיצוב גוף המייל עם Header ו-Footer
 const createHtmlBody = (content, clinicInfo) => {
   const header = `
-    <div style="text-align: center; margin-bottom: 30px;">
-      <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/450e11dd2_Yourparagraphtext.png" alt="טדי וטס" style="width: 220px; height: auto;"/>
+    <div style="text-align: center; margin-bottom: 40px; padding-bottom: 20px;">
+      <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/450e11dd2_Yourparagraphtext.png" alt="טדי וטס" style="width: 240px; height: auto;"/>
     </div>
   `;
 
   return `
-    <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+    <div dir="rtl" style="font-family: 'Segoe UI', Tahoma, Arial, sans-serif; max-width: 600px; margin: auto; padding: 40px 30px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
       ${header}
-      <div style="font-size: 16px; color: #333; line-height: 1.6;">
+      <div style="font-size: 16px; color: #2c3e50; line-height: 1.8; padding: 0 10px;">
         ${content.replace(/\n/g, '<br>')}
       </div>
     </div>

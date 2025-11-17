@@ -29,8 +29,9 @@ Deno.serve(async (req) => {
 
         // טעינת פרטי המרפאה (כולל מייל)
         let clinicInfo = null;
+        let clinics = [];
         try {
-            const clinics = await base44.asServiceRole.entities.Clinic.filter({ id: appointmentData.clinic_id });
+            clinics = await base44.asServiceRole.entities.Clinic.filter({ id: appointmentData.clinic_id });
             clinicInfo = clinics?.[0];
             console.log('[handleAppointmentBooking] Clinic loaded:', clinicInfo?.name);
         } catch (error) {
@@ -186,25 +187,43 @@ ${appointmentData.notes ? `📝 **הערות נוספות:**\n${appointmentData.
             
             const returningCustomerSubject = `✅ אישור תור - ${appointmentData.pet_name} במרפאת טדי וטס`;
             
-            let returningCustomerEmail = `שלום ${appointmentData.owner_name},
+            const clinicName = clinics.find(c => c.id === appointmentData.clinic_id)?.name || 'טדי וטס';
+            
+            let returningCustomerEmail = `<div style="font-size: 18px; color: #2c3e50; margin-bottom: 25px;">שלום ${appointmentData.owner_name},</div>
 
-נשמח לפגוש אתכם ואת ${appointmentData.pet_name}! 🐾
+<div style="font-size: 16px; color: #34495e; margin-bottom: 30px;">נשמח לפגוש אתכם ואת ${appointmentData.pet_name}! 🐾</div>
 
-**פרטי התור:**
-📅 תאריך מועדף: ${appointmentData.preferred_date || 'יתואם בהמשך'}
-🕐 שעה מועדפת: ${appointmentData.preferred_time || 'תתואם בהמשך'}
-🏥 סוג ביקור: ${appointmentData.request_type === 'vaccination' ? 'חיסון' : 'ביקור רפואי'}
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 25px; margin: 25px 0; color: white;">
+  <div style="font-size: 18px; font-weight: bold; margin-bottom: 15px; text-align: center;">פרטי התור</div>
+  <div style="font-size: 15px; line-height: 2;">
+    <div style="margin-bottom: 8px;">📅 <strong>תאריך מועדף:</strong> ${appointmentData.preferred_date || 'יתואם בהמשך'}</div>
+    <div style="margin-bottom: 8px;">🕐 <strong>שעה מועדפת:</strong> ${appointmentData.preferred_time || 'תתואם בהמשך'}</div>
+    <div>🏥 <strong>סוג ביקור:</strong> ${appointmentData.request_type === 'vaccination' ? 'חיסון' : 'ביקור רפואי'}</div>
+  </div>
+</div>
 
 `;
 
             if (appointmentData.request_type === 'medical_visit') {
-                returningCustomerEmail += `⚠️ שימו לב: נציג מהמרפאה ייצור עמכם קשר בהקדם לאישור המועד הסופי.
+                returningCustomerEmail += `<div style="background-color: #fff3cd; border-right: 4px solid #ffc107; padding: 15px; border-radius: 6px; margin: 20px 0; color: #856404;">
+  <strong>⚠️ שימו לב:</strong> נציג מהמרפאה ייצור עמכם קשר בהקדם לאישור המועד הסופי.
+</div>
 
 `;
             }
 
-            returningCustomerEmail += `בברכה,
-צוות טדי וטס`;
+            returningCustomerEmail += `<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 25px 0;">
+  <div style="font-size: 16px; color: #2e7d32; margin-bottom: 12px;"><strong>זמינים עבורכם תמיד 💚</strong></div>
+  <div style="font-size: 14px; color: #388e3c; line-height: 1.8;">
+    📱 <a href="https://wa.me/972548959176" style="color: #25D366; text-decoration: none; font-weight: bold;">וואטסאפ המרפאה</a><br>
+    ☎️ <strong>טלפון המרפאה:</strong> ${clinicInfo?.phone || '03-1234567'}
+  </div>
+</div>
+
+<div style="margin-top: 35px; padding-top: 25px; border-top: 2px solid #ecf0f1; text-align: center; color: #7f8c8d; font-size: 15px;">
+  מצפים לראותכם,<br>
+  <strong style="color: #2c3e50;">צוות טדי וטס - ${clinicName}</strong>
+</div>`;
 
             if (appointmentData.owner_email) {
                 await sendEmail(
@@ -246,28 +265,43 @@ ${appointmentData.notes ? `📝 **הערות נוספות:**\n${appointmentData.
 
         const customized = getCustomizedContent(appointmentData);
 
-        let customEmailContent = `שלום ${appointmentData.owner_name},
+        const clinicName = clinics.find(c => c.id === appointmentData.clinic_id)?.name || 'טדי וטס';
+        
+        let customEmailContent = `<div style="font-size: 18px; color: #2c3e50; margin-bottom: 25px;">שלום ${appointmentData.owner_name},</div>
 
-נשמח לפגוש אתכם ואת ${appointmentData.pet_name}! 🐾
+<div style="font-size: 16px; color: #34495e; margin-bottom: 30px;">נשמח לפגוש אתכם ואת ${appointmentData.pet_name}! 🐾</div>
 
-**פרטי התור:**
-📅 תאריך מועדף: ${appointmentData.preferred_date || 'יתואם בהמשך'}
-🕐 שעה מועדפת: ${appointmentData.preferred_time || 'תתואם בהמשך'}
-🏥 סוג ביקור: ${appointmentData.request_type === 'vaccination' ? 'חיסון' : 'ביקור רפואי'}
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 25px; margin: 25px 0; color: white;">
+  <div style="font-size: 18px; font-weight: bold; margin-bottom: 15px; text-align: center;">פרטי התור</div>
+  <div style="font-size: 15px; line-height: 2;">
+    <div style="margin-bottom: 8px;">📅 <strong>תאריך מועדף:</strong> ${appointmentData.preferred_date || 'יתואם בהמשך'}</div>
+    <div style="margin-bottom: 8px;">🕐 <strong>שעה מועדפת:</strong> ${appointmentData.preferred_time || 'תתואם בהמשך'}</div>
+    <div>🏥 <strong>סוג ביקור:</strong> ${appointmentData.request_type === 'vaccination' ? 'חיסון' : 'ביקור רפואי'}</div>
+  </div>
+</div>
 
 `;
 
         if (appointmentData.request_type === 'medical_visit') {
-            customEmailContent += `⚠️ שימו לב: נציג מהמרפאה ייצור עמכם קשר בהקדם לאישור המועד הסופי.
+            customEmailContent += `<div style="background-color: #fff3cd; border-right: 4px solid #ffc107; padding: 15px; border-radius: 6px; margin: 20px 0; color: #856404;">
+  <strong>⚠️ שימו לב:</strong> נציג מהמרפאה ייצור עמכם קשר בהקדם לאישור המועד הסופי.
+</div>
 
 `;
         }
 
-        customEmailContent += `📋 **חשוב:** אנא מלאו את טופס ההיכרות לפני הביקור:
-${publicFormUrl}
+        customEmailContent += `<div style="background-color: #e8f5e9; border-radius: 8px; padding: 20px; margin: 25px 0;">
+  <div style="font-size: 16px; color: #2e7d32; margin-bottom: 12px;"><strong>זמינים עבורכם תמיד 💚</strong></div>
+  <div style="font-size: 14px; color: #388e3c; line-height: 1.8;">
+    📱 <a href="https://wa.me/972548959176" style="color: #25D366; text-decoration: none; font-weight: bold;">וואטסאפ המרפאה</a><br>
+    ☎️ <strong>טלפון המרפאה:</strong> ${clinicInfo?.phone || '03-1234567'}
+  </div>
+</div>
 
-בברכה,
-צוות טדי וטס`;
+<div style="margin-top: 35px; padding-top: 25px; border-top: 2px solid #ecf0f1; text-align: center; color: #7f8c8d; font-size: 15px;">
+  מצפים לראותכם,<br>
+  <strong style="color: #2c3e50;">צוות טדי וטס - ${clinicName}</strong>
+</div>`;
 
         const customWhatsAppMessage = `${customized.whatsapp}
 
