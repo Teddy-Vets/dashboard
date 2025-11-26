@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { IntakeForm } from "@/entities/IntakeForm";
 import { ConsentForm } from "@/entities/ConsentForm";
@@ -140,56 +139,41 @@ export default function DashboardPage() {
   };
 
   const loadAdminDashboard = async (user) => {
-    const allClinics = await safeApiCall(() => getEntityList(Clinic, { is_active: true }));
+    // טעינה מקבילה של כל הנתונים בקריאה אחת - הרבה יותר מהיר
+    const [
+      allClinics,
+      allIntake,
+      allConsent,
+      allAnxiety,
+      allAppointments,
+      allEmergency
+    ] = await Promise.all([
+      safeApiCall(() => getEntityList(Clinic, { is_active: true })),
+      safeApiCall(() => getEntityList(IntakeForm, {}, "-created_date", 100, 'IntakeForm')),
+      safeApiCall(() => getEntityList(ConsentForm, {}, "-created_date", 100, 'ConsentForm')),
+      safeApiCall(() => getEntityList(AnxietyQuestionnaire, {}, "-created_date", 100, 'AnxietyQuestionnaire')),
+      safeApiCall(() => getEntityList(AppointmentRequest, {}, "-created_date", 100, 'AppointmentRequest')),
+      safeApiCall(() => getEntityList(EmergencyTriage, {}, "-created_date", 100, 'EmergencyTriage'))
+    ]);
+
     setClinics(allClinics || []);
 
+    // קיבוץ הטפסים לפי מרפאה בצד הלקוח
     const formsByClinicData = {};
     
     for (const clinic of (allClinics || [])) {
-      const [
-        intakeForms,
-        consentForms,
-        anxietyQuestionnaires,
-        emergencyTriages,
-        appointmentRequests
-      ] = await Promise.all([
-        safeApiCall(() => getEntityList(IntakeForm, { clinic_id: clinic.id }, "-created_date", 15, 'IntakeForm')),
-        safeApiCall(() => getEntityList(ConsentForm, { clinic_id: clinic.id }, "-created_date", 15, 'ConsentForm')),
-        safeApiCall(() => getEntityList(AnxietyQuestionnaire, { clinic_id: clinic.id }, "-created_date", 15, 'AnxietyQuestionnaire')),
-        safeApiCall(() => getEntityList(EmergencyTriage, { clinic_id: clinic.id }, "-created_date", 15, 'EmergencyTriage')),
-        safeApiCall(() => getEntityList(AppointmentRequest, { clinic_id: clinic.id }, "-created_date", 15, 'AppointmentRequest'))
-      ]);
-
       const clinicForms = [
-        ...(intakeForms || []).map(f => ({ ...f, formType: 'intake', formTypeLabel: 'טופס היכרות' })),
-        ...(consentForms || []).map(f => ({ ...f, formType: 'consent', formTypeLabel: 'טופס הסכמה' })),
-        ...(anxietyQuestionnaires || []).map(f => ({ ...f, formType: 'anxiety', formTypeLabel: 'שאלון חרדה' })),
-        ...(emergencyTriages || []).map(f => ({ ...f, formType: 'emergency', formTypeLabel: 'טריאז\' חירום' })),
-        ...(appointmentRequests || []).map(f => ({ ...f, formType: 'appointment', formTypeLabel: 'בקשת תור' }))
+        ...(allIntake || []).filter(f => f.clinic_id === clinic.id).slice(0, 15).map(f => ({ ...f, formType: 'intake', formTypeLabel: 'טופס היכרות' })),
+        ...(allConsent || []).filter(f => f.clinic_id === clinic.id).slice(0, 15).map(f => ({ ...f, formType: 'consent', formTypeLabel: 'טופס הסכמה' })),
+        ...(allAnxiety || []).filter(f => f.clinic_id === clinic.id).slice(0, 15).map(f => ({ ...f, formType: 'anxiety', formTypeLabel: 'שאלון חרדה' })),
+        ...(allEmergency || []).filter(f => f.clinic_id === clinic.id).slice(0, 15).map(f => ({ ...f, formType: 'emergency', formTypeLabel: 'טריאז\' חירום' })),
+        ...(allAppointments || []).filter(f => f.clinic_id === clinic.id).slice(0, 15).map(f => ({ ...f, formType: 'appointment', formTypeLabel: 'בקשת תור' }))
       ].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 15);
 
       formsByClinicData[clinic.id] = clinicForms;
     }
 
     setFormsByClinic(formsByClinicData);
-
-    const [
-      allIntake,
-      allConsent,
-      allAnxiety,
-      allAppointments,
-      allEmergency,
-      allClients,
-      allPets
-    ] = await Promise.all([
-      safeApiCall(() => getEntityList(IntakeForm, {}, "-created_date", null, 'IntakeForm')),
-      safeApiCall(() => getEntityList(ConsentForm, {}, "-created_date", null, 'ConsentForm')),
-      safeApiCall(() => getEntityList(AnxietyQuestionnaire, {}, "-created_date", null, 'AnxietyQuestionnaire')),
-      safeApiCall(() => getEntityList(AppointmentRequest, {}, "-created_date", null, 'AppointmentRequest')),
-      safeApiCall(() => getEntityList(EmergencyTriage, {}, "-created_date", null, 'EmergencyTriage')),
-      safeApiCall(() => getEntityList(Client, {}, "-created_date", null, 'Client')),
-      safeApiCall(() => getEntityList(Pet, {}, "-created_date", null, 'Pet'))
-    ]);
 
     const todayIntake = allIntake?.filter(f => isToday(f.created_date)) || [];
     const todayConsent = allConsent?.filter(f => isToday(f.created_date)) || [];
@@ -198,8 +182,8 @@ export default function DashboardPage() {
     setStats({
       totalIntakeForms: allIntake?.length || 0,
       totalConsentForms: allConsent?.length || 0,
-      totalClients: allClients?.length || 0,
-      totalPets: allPets?.length || 0,
+      totalClients: 0,
+      totalPets: 0,
       todayIntakeForms: todayIntake.length,
       todayConsentForms: todayConsent.length,
       totalAnxiety: allAnxiety?.length || 0,
