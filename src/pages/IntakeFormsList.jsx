@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from "react";
-import { IntakeForm } from "@/entities/all";
+import { IntakeForm, Clinic } from "@/entities/all";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -55,6 +54,7 @@ export default function IntakeFormsListPage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [clinics, setClinics] = useState([]);
 
   const [generatingLink, setGeneratingLink] = useState({ id: null, url: null, error: null });
 
@@ -70,11 +70,17 @@ export default function IntakeFormsListPage() {
       const user = await userService.getCurrentUser();
       setCurrentUser(user);
 
-      let formsData;
-      const filters = user.role === 'admin' ? {} : { clinic_id: user.clinic_id };
-      formsData = await getEntityList(IntakeForm, filters, "-created_date", null, 'IntakeForm');
-      
-      setForms(formsData);
+      if (user.role === 'admin') {
+        const [formsData, clinicsData] = await Promise.all([
+          getEntityList(IntakeForm, {}, "-created_date", null, 'IntakeForm'),
+          getEntityList(Clinic, { is_active: true })
+        ]);
+        setForms(formsData || []);
+        setClinics(clinicsData || []);
+      } else {
+        const formsData = await getEntityList(IntakeForm, { clinic_id: user.clinic_id }, "-created_date", null, 'IntakeForm');
+        setForms(formsData || []);
+      }
     } catch (error) {
       console.error("Error loading intake forms:", error);
       setError(error);
@@ -307,7 +313,11 @@ export default function IntakeFormsListPage() {
         </Card>
 
         {/* Forms List */}
-        {!isLoading && filteredForms.length === 0 ? (
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <LoadingSpinner />
+          </div>
+        ) : !filteredForms.length ? (
           <EmptyState
             icon={FileText}
             title="לא נמצאו טפסי היכרות"
@@ -317,24 +327,92 @@ export default function IntakeFormsListPage() {
             actionLabel="הוסף טופס היכרות"
             onAction={() => navigate(createPageUrl("IntakeForm"))}
           />
+        ) : currentUser?.role === 'admin' ? (
+          clinics.map(clinic => {
+            const clinicForms = filteredForms.filter(form => form.clinic_id === clinic.id);
+            if (clinicForms.length === 0) return null;
+
+            return (
+              <div key={clinic.id} className="mb-8">
+                <h2 className="text-2xl font-bold text-slate-800 mb-4">{clinic.name}</h2>
+                
+                {/* Mobile View - Cards */}
+                <div className="md:hidden space-y-3">
+                    {clinicForms.map((form, index) => (
+                      <IntakeFormMobileCard key={form.id} form={form} index={index} />
+                    ))}
+                </div>
+
+                {/* Desktop View - Table */}
+                <Card className="hidden md:block bg-white/80 backdrop-blur-sm border-blue-100 shadow-lg">
+                  <CardHeader className="border-b">
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="w-6 h-6 text-blue-500" />
+                      רשימת טפסי היכרות ({clinicForms.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>בעלים וחיית מחמד</TableHead>
+                            <TableHead>תאריך יצירה</TableHead>
+                            <TableHead>סטטוס</TableHead>
+                            <TableHead>פעולות</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {clinicForms.map((form, index) => {
+                              const config = statusConfig[form.status] || {};
+                              const StatusIcon = config.icon;
+                              const isGenerating = generatingLink.id === form.id && !generatingLink.url && !generatingLink.error;
+
+                              return (
+                                <motion.tr key={form.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.05 }}>
+                                  <TableCell>
+                                    <p className="font-medium">{form.owner_name}</p>
+                                    <p className="text-sm text-slate-500">{form.pet_name} ({form.pet_type})</p>
+                                  </TableCell>
+                                  <TableCell>{format(new Date(form.created_date), "d MMM yyyy, HH:mm", { locale: he })}</TableCell>
+                                  <TableCell>
+                                    <Badge variant="secondary" className={`${config.color} gap-1`}>
+                                      {StatusIcon && <StatusIcon className="w-3 h-3" />}
+                                      {config.label}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex gap-2">
+                                      <Button variant="ghost" size="sm" onClick={() => viewForm(form)}><Eye className="w-4 h-4 ml-1" />צפייה</Button>
+                                      {form.status === 'draft' && (
+                                        <Button variant="ghost" size="sm" onClick={() => handleSendLink(form)} disabled={isGenerating}>
+                                          {isGenerating ? <Loader2 className="w-4 h-4 animate-spin ml-1" /> : <Send className="w-4 h-4 ml-1" />}
+                                          שלח קישור
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                </motion.tr>
+                              );
+                            })}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )
+          })
         ) : (
           <>
-            {/* Mobile View - Cards */}
+            {/* View for non-admin user */}
             <div className="md:hidden space-y-3">
               <AnimatePresence>
-                {isLoading ? (
-                  <div className="flex justify-center py-8">
-                    <LoadingSpinner />
-                  </div>
-                ) : (
-                  filteredForms.map((form, index) => (
-                    <IntakeFormMobileCard key={form.id} form={form} index={index} />
-                  ))
-                )}
+                {filteredForms.map((form, index) => (
+                  <IntakeFormMobileCard key={form.id} form={form} index={index} />
+                ))}
               </AnimatePresence>
             </div>
-
-            {/* Desktop View - Table */}
             <Card className="hidden md:block bg-white/80 backdrop-blur-sm border-blue-100 shadow-lg">
               <CardHeader className="border-b">
                 <CardTitle className="flex items-center gap-2">
@@ -355,42 +433,38 @@ export default function IntakeFormsListPage() {
                     </TableHeader>
                     <TableBody>
                       <AnimatePresence>
-                        {isLoading ? (
-                          <TableSkeleton rows={5} columns={4} />
-                        ) : (
-                          filteredForms.map((form, index) => {
-                            const config = statusConfig[form.status] || {};
-                            const StatusIcon = config.icon;
-                            const isGenerating = generatingLink.id === form.id && !generatingLink.url && !generatingLink.error;
+                        {filteredForms.map((form, index) => {
+                          const config = statusConfig[form.status] || {};
+                          const StatusIcon = config.icon;
+                          const isGenerating = generatingLink.id === form.id && !generatingLink.url && !generatingLink.error;
 
-                            return (
-                              <motion.tr key={form.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.05 }}>
-                                <TableCell>
-                                  <p className="font-medium">{form.owner_name}</p>
-                                  <p className="text-sm text-slate-500">{form.pet_name} ({form.pet_type})</p>
-                                </TableCell>
-                                <TableCell>{format(new Date(form.created_date), "d MMM yyyy, HH:mm", { locale: he })}</TableCell>
-                                <TableCell>
-                                  <Badge variant="secondary" className={`${config.color} gap-1`}>
-                                    {StatusIcon && <StatusIcon className="w-3 h-3" />}
-                                    {config.label}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex gap-2">
-                                    <Button variant="ghost" size="sm" onClick={() => viewForm(form)}><Eye className="w-4 h-4 ml-1" />צפייה</Button>
-                                    {form.status === 'draft' && (
-                                      <Button variant="ghost" size="sm" onClick={() => handleSendLink(form)} disabled={isGenerating}>
-                                        {isGenerating ? <Loader2 className="w-4 h-4 animate-spin ml-1" /> : <Send className="w-4 h-4 ml-1" />}
-                                        שלח קישור
-                                      </Button>
-                                    )}
-                                  </div>
-                                </TableCell>
-                              </motion.tr>
-                            );
-                          })
-                        )}
+                          return (
+                            <motion.tr key={form.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.05 }}>
+                              <TableCell>
+                                <p className="font-medium">{form.owner_name}</p>
+                                <p className="text-sm text-slate-500">{form.pet_name} ({form.pet_type})</p>
+                              </TableCell>
+                              <TableCell>{format(new Date(form.created_date), "d MMM yyyy, HH:mm", { locale: he })}</TableCell>
+                              <TableCell>
+                                <Badge variant="secondary" className={`${config.color} gap-1`}>
+                                  {StatusIcon && <StatusIcon className="w-3 h-3" />}
+                                  {config.label}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex gap-2">
+                                  <Button variant="ghost" size="sm" onClick={() => viewForm(form)}><Eye className="w-4 h-4 ml-1" />צפייה</Button>
+                                  {form.status === 'draft' && (
+                                    <Button variant="ghost" size="sm" onClick={() => handleSendLink(form)} disabled={isGenerating}>
+                                      {isGenerating ? <Loader2 className="w-4 h-4 animate-spin ml-1" /> : <Send className="w-4 h-4 ml-1" />}
+                                      שלח קישור
+                                    </Button>
+                                  )}
+                                </div>
+                              </TableCell>
+                            </motion.tr>
+                          );
+                        })}
                       </AnimatePresence>
                     </TableBody>
                   </Table>
