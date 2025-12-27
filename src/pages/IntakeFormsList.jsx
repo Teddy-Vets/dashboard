@@ -370,18 +370,18 @@ export default function IntakeFormsListPage() {
 
                               return (
                                 <motion.tr key={form.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.05 }}>
-                                  <TableCell>
+                                  <TableCell className="text-right">
                                     <p className="font-medium">{form.owner_name}</p>
                                     <p className="text-sm text-slate-500">{form.pet_name} ({form.pet_type})</p>
                                   </TableCell>
-                                  <TableCell>{format(new Date(form.created_date), "d MMM yyyy, HH:mm", { locale: he })}</TableCell>
-                                  <TableCell>
+                                  <TableCell className="text-right">{format(new Date(form.created_date), "d MMM yyyy, HH:mm", { locale: he })}</TableCell>
+                                  <TableCell className="text-right">
                                     <Badge variant="secondary" className={`${config.color} gap-1`}>
                                       {StatusIcon && <StatusIcon className="w-3 h-3" />}
                                       {config.label}
                                     </Badge>
                                   </TableCell>
-                                  <TableCell>
+                                  <TableCell className="text-right">
                                     <div className="flex gap-2">
                                       <Button variant="ghost" size="sm" onClick={() => viewForm(form)}><Eye className="w-4 h-4 ml-1" />צפייה</Button>
                                       {form.status === 'draft' && (
@@ -425,10 +425,10 @@ export default function IntakeFormsListPage() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>בעלים וחיית מחמד</TableHead>
-                        <TableHead>תאריך יצירה</TableHead>
-                        <TableHead>סטטוס</TableHead>
-                        <TableHead>פעולות</TableHead>
+                        <TableHead className="text-right">בעלים וחיית מחמד</TableHead>
+                        <TableHead className="text-right">תאריך יצירה</TableHead>
+                        <TableHead className="text-right">סטטוס</TableHead>
+                        <TableHead className="text-right">פעולות</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
