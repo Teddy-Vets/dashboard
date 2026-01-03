@@ -14,6 +14,7 @@ import {
   Building2 as ClinicIcon,
   Calendar,
   Megaphone,
+  Settings,
   TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,7 @@ const navItems = [
   { type: 'divider', label: 'ניהול' },
   { href: "/SystemManagement", icon: TrendingUp, label: "ניהול המערכת", roles: ['admin'] },
   { href: "/Clinics", icon: ClinicIcon, label: "מרפאות", roles: ['admin'] },
+  { href: "/ClinicSettings", icon: Settings, label: "הגדרות סנכרון", roles: ['admin'] },
   { href: "/UserManual", icon: BookUser, label: "מדריך למשתמש", roles: ['admin', 'user'] },
   { href: "/MarketingMaterials", icon: Megaphone, label: "חומרי שיווק", roles: ['admin'] },
 ];
