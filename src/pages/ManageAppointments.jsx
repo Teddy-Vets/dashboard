@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { AppointmentRequest, Clinic } from "@/entities/all";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +30,7 @@ import { createPageUrl } from "@/components/utils/urlHelpers";
 
 import userService from "@/components/services/userService";
 import { getEntityList, updateEntity, ApiError } from "@/components/utils/apiHelpers";
+import { base44 } from "@/api/base44Client";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { TableSkeleton } from "@/components/common/LoadingSkeleton";
@@ -145,6 +145,14 @@ export default function ManageAppointmentsPage() {
     setIsUpdating(true);
     try {
       await updateEntity(AppointmentRequest, appointmentId, { status: 'confirmed' }, 'AppointmentRequest');
+      
+      // Sync with Google Calendar
+      try {
+          await base44.functions.invoke('syncAppointmentToGoogleCalendar', { appointmentId: appointmentId });
+      } catch(e) {
+          console.error("Failed to sync with google calendar", e);
+      }
+
       loadData(); // Reload data to reflect the change
     } catch (error) {
       console.error("Error confirming appointment:", error);
@@ -170,6 +178,15 @@ export default function ManageAppointmentsPage() {
       }
 
       await updateEntity(AppointmentRequest, selectedAppointment.id, updateData, 'AppointmentRequest');
+
+      // Sync with Google Calendar
+      if (updateData.status === 'confirmed' || updateData.status === 'cancelled' || updateData.appointment_datetime) {
+        try {
+            await base44.functions.invoke('syncAppointmentToGoogleCalendar', { appointmentId: selectedAppointment.id });
+        } catch(e) {
+            console.error("Failed to sync with google calendar", e);
+        }
+      }
 
       setShowEditDialog(false);
       setSelectedAppointment(null);
