@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
         
         // Exchange authorization code for tokens
         const tokenUrl = 'https://oauth2.googleapis.com/token';
-        const redirectUri = `${Deno.env.get('FRONTEND_URL')}/api/handleGoogleAuthCallback`;
+        const redirectUri = `https://${Deno.env.get('BASE44_APP_ID')}.base44.app/api/handleGoogleAuthCallback`;
 
         const params = new URLSearchParams();
         params.append('client_id', Deno.env.get('GOOGLE_CLIENT_ID'));
