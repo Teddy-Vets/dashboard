@@ -15,16 +15,7 @@ const getClinics = async () => {
     return await base44.entities.Clinic.list();
 };
 
-const initiateAuth = async (clinicId) => {
-    // This will redirect the user to the Google auth screen.
-    // We'll add a backend function to generate the URL.
-    const { data } = await base44.functions.invoke('initiateClinicGoogleAuth', { clinicId });
-    if (data.authUrl) {
-        window.location.href = data.authUrl;
-    } else {
-        throw new Error('Could not get authentication URL.');
-    }
-};
+
 
 const disconnectAuth = async (clinicId) => {
     return await base44.entities.Clinic.update(clinicId, {
@@ -38,15 +29,38 @@ const disconnectAuth = async (clinicId) => {
 export default function ClinicSettings() {
     const queryClient = useQueryClient();
 
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        if (error) {
+            alert(`An error occurred during Google Calendar synchronization: ${decodeURIComponent(error)}`);
+            // Clean the URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }, []);
+
     const { data: clinics, isLoading, isError, error } = useQuery({
         queryKey: ['clinics'],
         queryFn: getClinics,
     });
 
     const initiateAuthMutation = useMutation({
-        mutationFn: initiateAuth,
+        mutationFn: async (clinicId) => {
+            const { data, error } = await base44.functions.invoke('initiateGoogleAuth', { body: { clinicId } });
+            if (error) {
+                console.error("invoke error", error);
+                throw new Error(error.details || 'Failed to initiate auth');
+            }
+            return data;
+        },
+        onSuccess: (data) => {
+            if (data && data.authorizationUrl) {
+                window.location.href = data.authorizationUrl;
+            } else {
+                alert('Could not get authorization URL.');
+            }
+        },
         onError: (error) => {
-            // Handle error, e.g., show a toast notification
             console.error('Failed to initiate auth:', error);
             alert('Failed to start Google Calendar connection: ' + error.message);
         },

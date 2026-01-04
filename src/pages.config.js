@@ -1,6 +1,7 @@
 import AnxietyQuestionnaires from './pages/AnxietyQuestionnaires';
 import AppointmentBooking from './pages/AppointmentBooking';
 import Clients from './pages/Clients';
+import ClinicSettings from './pages/ClinicSettings';
 import Clinics from './pages/Clinics';
 import ConsentForms from './pages/ConsentForms';
 import CreateAnxietyQuestionnaire from './pages/CreateAnxietyQuestionnaire';
@@ -37,7 +38,6 @@ import ViewEmergencyTriage from './pages/ViewEmergencyTriage';
 import ViewIntakeForm from './pages/ViewIntakeForm';
 import ViewPostSurgeryInstructions from './pages/ViewPostSurgeryInstructions';
 import ViewSpayNeuterInstructions from './pages/ViewSpayNeuterInstructions';
-import ClinicSettings from './pages/ClinicSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -45,6 +45,7 @@ export const PAGES = {
     "AnxietyQuestionnaires": AnxietyQuestionnaires,
     "AppointmentBooking": AppointmentBooking,
     "Clients": Clients,
+    "ClinicSettings": ClinicSettings,
     "Clinics": Clinics,
     "ConsentForms": ConsentForms,
     "CreateAnxietyQuestionnaire": CreateAnxietyQuestionnaire,
@@ -81,7 +82,6 @@ export const PAGES = {
     "ViewIntakeForm": ViewIntakeForm,
     "ViewPostSurgeryInstructions": ViewPostSurgeryInstructions,
     "ViewSpayNeuterInstructions": ViewSpayNeuterInstructions,
-    "ClinicSettings": ClinicSettings,
 }
 
 export const pagesConfig = {
