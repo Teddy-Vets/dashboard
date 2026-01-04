@@ -23,6 +23,7 @@ import userService from "@/components/services/userService";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { base44 } from "@/api/base44Client";
 import TestEnvBanner from "@/components/common/TestEnvBanner";
+import { Toaster } from "sonner";
 
 const GlobalStyles = () => (
   <style>
@@ -241,6 +242,7 @@ export default function Layout({ children, currentPageName }) {
       <>
         <TestEnvBanner />
         <AccessibilityStyles />
+      <Toaster richColors position="top-center" />
         <div dir="rtl">
           <GlobalStyles />
           {children}
@@ -253,6 +255,7 @@ export default function Layout({ children, currentPageName }) {
     <>
       <TestEnvBanner />
       <AccessibilityStyles />
+      <Toaster richColors position="top-center" />
       <div dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50">
         <GlobalStyles />
         <div className="flex">
