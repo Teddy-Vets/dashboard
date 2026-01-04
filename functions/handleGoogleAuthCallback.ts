@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
         });
         
         // Redirect user back to the settings page
-        const settingsUrl = `${Deno.env.get('FRONTEND_URL')}/ClinicSettings`;
+        const settingsUrl = `${Deno.env.get('FRONTEND_URL')}/ClinicSettings?success=true`;
         return new Response(null, {
             status: 302, // Found (redirect)
             headers: {

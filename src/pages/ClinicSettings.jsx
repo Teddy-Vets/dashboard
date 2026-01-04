@@ -10,6 +10,7 @@ import PageHeader from '@/components/common/PageHeader';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorMessage from '@/components/common/ErrorMessage';
 import { TableSkeleton } from '@/components/common/LoadingSkeleton';
+import { toast } from 'sonner';
 
 const getClinics = async () => {
     return await base44.entities.Clinic.list();
@@ -32,9 +33,13 @@ export default function ClinicSettings() {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const error = urlParams.get('error');
+        const success = urlParams.get('success');
+
         if (error) {
-            alert(`An error occurred during Google Calendar synchronization: ${decodeURIComponent(error)}`);
-            // Clean the URL
+            toast.error(`An error occurred during Google Calendar synchronization: ${decodeURIComponent(error)}`);
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (success) {
+            toast.success('Google Calendar connected successfully!');
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     }, []);
@@ -46,7 +51,7 @@ export default function ClinicSettings() {
 
     const initiateAuthMutation = useMutation({
         mutationFn: async (clinicId) => {
-            const { data, error } = await base44.functions.invoke('initiateGoogleAuth', { body: { clinicId } });
+            const { data, error } = await base44.functions.invoke('initiateGoogleAuth', { clinicId });
             if (error) {
                 console.error("invoke error", error);
                 throw new Error(error.details || 'Failed to initiate auth');
@@ -55,14 +60,15 @@ export default function ClinicSettings() {
         },
         onSuccess: (data) => {
             if (data && data.authorizationUrl) {
+                toast.info('Redirecting to Google for authentication...');
                 window.location.href = data.authorizationUrl;
             } else {
-                alert('Could not get authorization URL.');
+                toast.error('Could not get authorization URL.');
             }
         },
         onError: (error) => {
             console.error('Failed to initiate auth:', error);
-            alert('Failed to start Google Calendar connection: ' + error.message);
+            toast.error('Failed to start Google Calendar connection: ' + error.message);
         },
     });
 
@@ -70,10 +76,11 @@ export default function ClinicSettings() {
         mutationFn: disconnectAuth,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['clinics'] });
+            toast.success('Google Calendar disconnected successfully.');
         },
         onError: (error) => {
             console.error('Failed to disconnect:', error);
-            alert('Failed to disconnect Google Calendar: ' + error.message);
+            toast.error('Failed to disconnect Google Calendar: ' + error.message);
         },
     });
 
