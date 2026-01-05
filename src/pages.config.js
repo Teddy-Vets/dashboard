@@ -38,6 +38,7 @@ import ViewEmergencyTriage from './pages/ViewEmergencyTriage';
 import ViewIntakeForm from './pages/ViewIntakeForm';
 import ViewPostSurgeryInstructions from './pages/ViewPostSurgeryInstructions';
 import ViewSpayNeuterInstructions from './pages/ViewSpayNeuterInstructions';
+import GoogleCallback from './pages/GoogleCallback';
 import __Layout from './Layout.jsx';
 
 
@@ -82,6 +83,7 @@ export const PAGES = {
     "ViewIntakeForm": ViewIntakeForm,
     "ViewPostSurgeryInstructions": ViewPostSurgeryInstructions,
     "ViewSpayNeuterInstructions": ViewSpayNeuterInstructions,
+    "GoogleCallback": GoogleCallback,
 }
 
 export const pagesConfig = {
