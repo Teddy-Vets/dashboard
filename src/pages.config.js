@@ -12,6 +12,7 @@ import CreateSpayNeuterInstructions from './pages/CreateSpayNeuterInstructions';
 import Dashboard from './pages/Dashboard';
 import DentalCareInstructions from './pages/DentalCareInstructions';
 import EmergencyTriageDashboard from './pages/EmergencyTriageDashboard';
+import GoogleCallback from './pages/GoogleCallback';
 import Home from './pages/Home';
 import IntakeForm from './pages/IntakeForm';
 import IntakeFormsList from './pages/IntakeFormsList';
@@ -38,7 +39,6 @@ import ViewEmergencyTriage from './pages/ViewEmergencyTriage';
 import ViewIntakeForm from './pages/ViewIntakeForm';
 import ViewPostSurgeryInstructions from './pages/ViewPostSurgeryInstructions';
 import ViewSpayNeuterInstructions from './pages/ViewSpayNeuterInstructions';
-import GoogleCallback from './pages/GoogleCallback';
 import __Layout from './Layout.jsx';
 
 
@@ -57,6 +57,7 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "DentalCareInstructions": DentalCareInstructions,
     "EmergencyTriageDashboard": EmergencyTriageDashboard,
+    "GoogleCallback": GoogleCallback,
     "Home": Home,
     "IntakeForm": IntakeForm,
     "IntakeFormsList": IntakeFormsList,
@@ -83,7 +84,6 @@ export const PAGES = {
     "ViewIntakeForm": ViewIntakeForm,
     "ViewPostSurgeryInstructions": ViewPostSurgeryInstructions,
     "ViewSpayNeuterInstructions": ViewSpayNeuterInstructions,
-    "GoogleCallback": GoogleCallback,
 }
 
 export const pagesConfig = {

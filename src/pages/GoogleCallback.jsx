@@ -9,31 +9,35 @@ import { AlertCircle, CheckCircle2 } from 'lucide-react';
 export default function GoogleCallback() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const [status, setStatus] = useState('processing'); // processing, success, error
+    const [status, setStatus] = useState('processing');
     const [errorMessage, setErrorMessage] = useState('');
     
-    // Prevent double-execution of the effect (common in React 18 strict mode or re-renders)
-    const processedRef = useRef(false);
+    // Store the code in ref to prevent multiple uses
+    const codeUsedRef = useRef(false);
 
     useEffect(() => {
-        // Prevent double execution - check immediately before doing anything
-        if (processedRef.current) {
-            console.log('Already processed, skipping');
+        // Get params
+        const code = searchParams.get('code');
+        const state = searchParams.get('state');
+        const error = searchParams.get('error');
+
+        // If no params, do nothing
+        if (!code && !error) {
             return;
         }
 
-        const processCallback = async () => {
-            const code = searchParams.get('code');
-            const state = searchParams.get('state');
-            const error = searchParams.get('error');
+        // CRITICAL: Check if already processed BEFORE doing anything async
+        if (codeUsedRef.current) {
+            console.log('[GoogleCallback] Already processed, aborting');
+            return;
+        }
 
-            // If no params yet, wait
-            if (!code && !error) {
-                return;
-            }
-            
-            // Mark as processed IMMEDIATELY at the start
-            processedRef.current = true;
+        // Mark as used IMMEDIATELY AND SYNCHRONOUSLY
+        codeUsedRef.current = true;
+        console.log('[GoogleCallback] Processing authorization code...');
+
+        // Now do the async work
+        const processCallback = async () => {
 
             if (error) {
                 setStatus('error');
