@@ -38,7 +38,6 @@ export default function GoogleCallback() {
 
         // Now do the async work
         const processCallback = async () => {
-
             if (error) {
                 setStatus('error');
                 setErrorMessage(`שגיאה מגוגל: ${error}`);
