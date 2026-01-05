@@ -1,11 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
@@ -124,7 +116,7 @@ export default function GoogleCallback() {
                             </div>
                             <div className="text-center">
                                 <h3 className="text-xl font-medium text-red-800">החיבור נכשל</h3>
-                                <p className="text-red-600 mt-2 bg-red-50 p-3 rounded text-sm">{errorMessage}</p>
+                                <p className="text-red-600 mt-2 bg-red-50 p-3 rounded text-sm whitespace-pre-wrap" style={{direction: 'ltr'}}>{errorMessage}</p>
                             </div>
                             <Button 
                                 onClick={() => navigate('/ClinicSettings')}
