@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,36 +7,17 @@ import { Button } from '@/components/ui/button';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function GoogleCallback() {
-    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [status, setStatus] = useState('processing');
     const [errorMessage, setErrorMessage] = useState('');
-    
-    // Store the code in ref to prevent multiple uses
-    const codeUsedRef = useRef(false);
 
     useEffect(() => {
-        // Get params
-        const code = searchParams.get('code');
-        const state = searchParams.get('state');
-        const error = searchParams.get('error');
+        // Parse URL parameters manually to ensure single processing
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+        const error = urlParams.get('error');
 
-        // If no params, do nothing
-        if (!code && !error) {
-            return;
-        }
-
-        // CRITICAL: Check if already processed BEFORE doing anything async
-        if (codeUsedRef.current) {
-            console.log('[GoogleCallback] Already processed, aborting');
-            return;
-        }
-
-        // Mark as used IMMEDIATELY AND SYNCHRONOUSLY
-        codeUsedRef.current = true;
-        console.log('[GoogleCallback] Processing authorization code...');
-
-        // Now do the async work
         const processCallback = async () => {
             if (error) {
                 setStatus('error');
@@ -51,19 +32,17 @@ export default function GoogleCallback() {
             }
 
             try {
-                // Call the backend function to exchange the code for tokens
+                console.log('[GoogleCallback] Exchanging code for token...');
                 const { data, error: functionError } = await base44.functions.invoke('exchangeGoogleToken', {
                     code,
                     state
                 });
 
-                // Handle network/invoke level errors
                 if (functionError) {
                     console.error("Invoke error:", functionError);
                     throw new Error(functionError.message || 'Network error invoking backend');
                 }
 
-                // Handle logic errors returned with 200 status (Debug Mode)
                 if (data && data.success === false) {
                     console.error("Logic error:", data);
                     let msg = data.error || 'Unknown backend error';
@@ -72,8 +51,8 @@ export default function GoogleCallback() {
                     throw new Error(msg);
                 }
 
+                console.log('[GoogleCallback] Success!');
                 setStatus('success');
-                // Redirect back to settings after a short delay
                 setTimeout(() => {
                     navigate('/ClinicSettings?success=true');
                 }, 2000);
@@ -85,8 +64,14 @@ export default function GoogleCallback() {
             }
         };
 
-        processCallback();
-    }, [searchParams, navigate]);
+        // Only process if we actually received a code or an error
+        if (code || error) {
+            processCallback();
+        } else {
+            setStatus('error');
+            setErrorMessage('לא התקבלו פרמטרים מגוגל');
+        }
+    }, []); // Empty dependency array to run only once
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4" dir="rtl">
