@@ -130,9 +130,21 @@ export default function ManageAppointmentsPage() {
 
   const handleEdit = (appointment) => {
     setSelectedAppointment(appointment);
+    
+    let defaultDateTime = '';
+    if (appointment.appointment_datetime) {
+      defaultDateTime = new Date(appointment.appointment_datetime).toISOString().slice(0, 16);
+    } else if (appointment.preferred_date) {
+      const preferredDate = new Date(appointment.preferred_date);
+      const timeStr = appointment.preferred_time || '09:00';
+      const [hours, minutes] = timeStr.includes(':') ? timeStr.split(':') : ['09', '00'];
+      preferredDate.setHours(parseInt(hours), parseInt(minutes));
+      defaultDateTime = preferredDate.toISOString().slice(0, 16);
+    }
+    
     setEditForm({
       status: appointment.status || 'submitted',
-      appointment_datetime: appointment.appointment_datetime ? new Date(appointment.appointment_datetime).toISOString().slice(0, 16) : '',
+      appointment_datetime: defaultDateTime,
       notes: appointment.notes || ''
     });
     setShowEditDialog(true);
