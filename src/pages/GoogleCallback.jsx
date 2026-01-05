@@ -37,16 +37,19 @@ export default function GoogleCallback() {
                     state
                 });
 
+                // Handle network/invoke level errors
                 if (functionError) {
-                    // Try to extract detailed error message from backend
-                    let detailedMsg = functionError.message || 'שגיאה בביצוע החיבור בשרת';
-                    if (functionError.details) {
-                        detailedMsg += ` (${functionError.details})`;
-                    } else if (functionError.error) {
-                         detailedMsg += ` (${functionError.error})`;
-                    }
-                    console.error("Full function error:", functionError);
-                    throw new Error(detailedMsg);
+                    console.error("Invoke error:", functionError);
+                    throw new Error(functionError.message || 'Network error invoking backend');
+                }
+
+                // Handle logic errors returned with 200 status (Debug Mode)
+                if (data && data.success === false) {
+                    console.error("Logic error:", data);
+                    let msg = data.error || 'Unknown backend error';
+                    if (data.details) msg += `\nDetails: ${data.details}`;
+                    if (data.debug) msg += `\nDebug Info: ${JSON.stringify(data.debug)}`;
+                    throw new Error(msg);
                 }
 
                 setStatus('success');

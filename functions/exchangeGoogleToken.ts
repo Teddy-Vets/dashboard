@@ -70,15 +70,23 @@ Deno.serve(async (req) => {
         if (!tokenResponse.ok) {
             const errorBody = await tokenResponse.text();
             console.error('Failed to exchange code for token:', errorBody);
-            // Return detailed error for frontend debugging
-            return new Response(JSON.stringify({ error: `Failed to get tokens from Google: ${tokenResponse.statusText}`, details: errorBody }), { status: 400, headers: {'Content-Type': 'application/json'} });
+            // Return 200 with error details to ensure frontend can read it without catching 400 exceptions
+            return new Response(JSON.stringify({ 
+                success: false, 
+                error: `Google Token Error (${tokenResponse.status})`, 
+                details: errorBody,
+                debug: {
+                    usedRedirectUri: redirectUri,
+                    clientIdPrefix: Deno.env.get('GOOGLE_CLIENT_ID')?.substring(0, 5) + '...'
+                }
+            }), { status: 200, headers: {'Content-Type': 'application/json'} });
         }
 
         const tokens = await tokenResponse.json();
         const { access_token, refresh_token } = tokens;
 
         if (!access_token) {
-             return new Response(JSON.stringify({ error: 'Access token not found in Google response' }), { status: 400, headers: {'Content-Type': 'application/json'} });
+             return new Response(JSON.stringify({ success: false, error: 'Access token not found in Google response' }), { status: 200, headers: {'Content-Type': 'application/json'} });
         }
 
         // Get user's primary calendar ID
