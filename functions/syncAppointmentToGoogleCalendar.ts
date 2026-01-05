@@ -60,8 +60,10 @@ Deno.serve(async (req) => {
         const eventPayload = {
             summary: `${appointment.pet_name} - ${appointment.request_type === 'vaccination' ? 'חיסון' : 'ביקור רפואי'}`,
             description: `בעלים: ${appointment.owner_name}\nחיית מחמד: ${appointment.pet_name}\nסיבה: ${appointment.medical_reason || 'חיסון'}\nמרפאה: ${clinic?.name || 'לא צוין'}`,
+            location: clinic?.address || '',
             start: { dateTime: startTime.toISOString(), timeZone: 'Asia/Jerusalem' },
             end: { dateTime: endTime.toISOString(), timeZone: 'Asia/Jerusalem' },
+            attendees: clinic?.email ? [{ email: clinic.email }] : [],
         };
 
         let googleEvent;
