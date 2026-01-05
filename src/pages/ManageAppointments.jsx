@@ -44,6 +44,7 @@ export default function ManageAppointmentsPage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [customerTypeFilter, setCustomerTypeFilter] = useState("all");
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -122,8 +123,9 @@ export default function ManageAppointmentsPage() {
       apt.owner_phone?.includes(searchQuery);
 
     const matchesStatus = statusFilter === "all" || apt.status === statusFilter;
+    const matchesCustomerType = customerTypeFilter === "all" || apt.customer_type === customerTypeFilter;
 
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesCustomerType;
   });
 
   const handleEdit = (appointment) => {
@@ -204,7 +206,8 @@ export default function ManageAppointmentsPage() {
       total: appointments.length,
       submitted: appointments.filter(a => a.status === 'submitted').length,
       confirmed: appointments.filter(a => a.status === 'confirmed').length,
-      completed: appointments.filter(a => a.status === 'completed').length
+      completed: appointments.filter(a => a.status === 'completed').length,
+      newCustomers: appointments.filter(a => a.customer_type === 'new').length
     };
   };
 
@@ -228,13 +231,16 @@ export default function ManageAppointmentsPage() {
   const AppointmentMobileCard = ({ appointment, index }) => {
     const statusConf = statusConfig[appointment.status] || statusConfig.submitted;
     const StatusIcon = statusConf.icon;
+    const isNewCustomer = appointment.customer_type === 'new';
 
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
-        className="bg-white rounded-lg border-2 border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow"
+        className={`rounded-lg border-2 p-4 shadow-sm hover:shadow-md transition-shadow ${
+          isNewCustomer ? 'bg-[#f2bbad]' : 'bg-white border-gray-100'
+        }`}
       >
         {/* Header */}
         <div className="flex justify-between items-start mb-3">
@@ -452,6 +458,15 @@ export default function ManageAppointmentsPage() {
                 >
                   הושלמו
                 </Button>
+                <Button
+                  variant={customerTypeFilter === "new" ? "default" : "outline"}
+                  onClick={() => setCustomerTypeFilter(customerTypeFilter === "new" ? "all" : "new")}
+                  size="sm"
+                  className="text-xs md:text-sm bg-[#f2bbad] hover:bg-[#e8a899] border-[#d99688]"
+                  style={customerTypeFilter === "new" ? { backgroundColor: '#f2bbad' } : {}}
+                >
+                  לקוחות חדשים ({stats.newCustomers})
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -512,6 +527,7 @@ export default function ManageAppointmentsPage() {
                           filteredAppointments.map((apt, index) => {
                             const config = statusConfig[apt.status] || statusConfig.draft;
                             const StatusIcon = config.icon;
+                            const isNewCustomer = apt.customer_type === 'new';
 
                             return (
                               <motion.tr
@@ -519,7 +535,9 @@ export default function ManageAppointmentsPage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.05 }}
-                                className="hover:bg-blue-50/50 transition-colors"
+                                className={`transition-colors ${
+                                  isNewCustomer ? 'bg-[#f2bbad] hover:bg-[#e8a899]' : 'hover:bg-blue-50/50'
+                                }`}
                               >
                                 <TableCell>
                                   <div className="flex flex-col">
