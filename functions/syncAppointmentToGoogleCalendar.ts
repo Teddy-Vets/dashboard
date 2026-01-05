@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
         const endTime = new Date(startTime.getTime() + 30 * 60 * 1000); // 30 minutes duration
 
         const eventPayload = {
-            summary: `${appointment.pet_name} - ${appointment.request_type === 'vaccination' ? 'חיסון' : 'ביקור רפואי'}`,
+            summary: `${appointment.request_type === 'vaccination' ? 'חיסון' : 'ביקור רפואי'} ל${appointment.pet_name} (${appointment.owner_name}) במרפאה ${clinic?.name || 'טדי וטס'}`,
             description: `בעלים: ${appointment.owner_name}\nחיית מחמד: ${appointment.pet_name}\nסיבה: ${appointment.medical_reason || 'חיסון'}\nמרפאה: ${clinic?.name || 'לא צוין'}`,
             location: clinic?.address || '',
             start: { dateTime: startTime.toISOString(), timeZone: 'Asia/Jerusalem' },
