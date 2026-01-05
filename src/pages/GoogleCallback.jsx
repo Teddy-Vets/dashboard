@@ -16,21 +16,24 @@ export default function GoogleCallback() {
     const processedRef = useRef(false);
 
     useEffect(() => {
+        // Prevent double execution - check immediately before doing anything
+        if (processedRef.current) {
+            console.log('Already processed, skipping');
+            return;
+        }
+
         const processCallback = async () => {
             const code = searchParams.get('code');
             const state = searchParams.get('state');
             const error = searchParams.get('error');
 
-            // Prevent processing if already processed or if no params
-            if (processedRef.current) return;
-            
-            // Mark as processed immediately to prevent race conditions
-            if (code || error) {
-                processedRef.current = true;
-            } else {
-                // Wait for params if they aren't here yet
+            // If no params yet, wait
+            if (!code && !error) {
                 return;
             }
+            
+            // Mark as processed IMMEDIATELY at the start
+            processedRef.current = true;
 
             if (error) {
                 setStatus('error');
