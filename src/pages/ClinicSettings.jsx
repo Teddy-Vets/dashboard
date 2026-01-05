@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { connectClinicGoogleCalendar } from '@/functions/connectClinicGoogleCalendar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Power, PowerOff, Settings } from 'lucide-react';
+import { ExternalLink, Power, PowerOff, Settings, Calendar, Check, X } from 'lucide-react';
 import PageHeader from '@/components/common/PageHeader';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorMessage from '@/components/common/ErrorMessage';
@@ -18,11 +19,76 @@ const getClinics = async () => {
 
 export default function ClinicSettings() {
     const queryClient = useQueryClient();
+    const [connectingClinic, setConnectingClinic] = useState(null);
 
     const { data: clinics, isLoading, isError, error } = useQuery({
         queryKey: ['clinics'],
         queryFn: getClinics,
     });
+
+    // Handle OAuth callback
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const clinicId = urlParams.get('state');
+
+        if (code && clinicId) {
+            handleOAuthCallback(code, clinicId);
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }, []);
+
+    const handleOAuthCallback = async (code, clinicId) => {
+        try {
+            setConnectingClinic(clinicId);
+            const response = await connectClinicGoogleCalendar({ code, clinicId });
+            
+            if (response.data.success) {
+                toast.success(`Google Calendar חובר בהצלחה למרפאה (${response.data.email})`);
+                queryClient.invalidateQueries(['clinics']);
+            } else {
+                throw new Error('Failed to connect');
+            }
+        } catch (error) {
+            console.error('OAuth callback error:', error);
+            toast.error('שגיאה בחיבור Google Calendar');
+        } finally {
+            setConnectingClinic(null);
+        }
+    };
+
+    const handleConnectCalendar = (clinicId) => {
+        const clientId = 'GOOGLE_CLIENT_ID'; // Will be replaced with actual env var
+        const redirectUri = encodeURIComponent(window.location.origin + '/ClinicSettings');
+        const scope = encodeURIComponent('https://www.googleapis.com/auth/calendar.events email');
+        
+        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+            `client_id=${clientId}&` +
+            `redirect_uri=${redirectUri}&` +
+            `response_type=code&` +
+            `scope=${scope}&` +
+            `access_type=offline&` +
+            `prompt=consent&` +
+            `state=${clinicId}`;
+        
+        window.location.href = authUrl;
+    };
+
+    const handleDisconnectCalendar = async (clinicId) => {
+        try {
+            await base44.entities.Clinic.update(clinicId, {
+                google_calendar_access_token: null,
+                google_calendar_refresh_token: null,
+                google_calendar_id: null,
+            });
+            toast.success('Google Calendar נותק בהצלחה');
+            queryClient.invalidateQueries(['clinics']);
+        } catch (error) {
+            console.error('Error disconnecting:', error);
+            toast.error('שגיאה בניתוק Google Calendar');
+        }
+    };
 
     return (
         <div dir="rtl" className="p-4 md:p-6 space-y-4 md:space-y-6 bg-gray-50 min-h-screen">
@@ -54,17 +120,72 @@ export default function ClinicSettings() {
                         {isError && <ErrorMessage error={error} />}
                         
                         {!isLoading && !isError && clinics && (
-                             <div className="overflow-x-auto">
-                                <p className="text-gray-600 text-sm">
-                                    רשימת המרפאות שלך ({clinics.length}):
+                            <div className="space-y-4">
+                                <p className="text-gray-600 text-sm mb-3">
+                                    חבר את חשבון Google Calendar לכל מרפאה:
                                 </p>
-                                <ul className="mt-2 space-y-2">
-                                    {clinics.map((clinic) => (
-                                        <li key={clinic.id} className="p-2 bg-gray-50 rounded">
-                                            {clinic.name}
-                                        </li>
-                                    ))}
-                                </ul>
+                                <div className="space-y-3">
+                                    {clinics.map((clinic) => {
+                                        const isConnected = !!clinic.google_calendar_id;
+                                        const isConnecting = connectingClinic === clinic.id;
+                                        
+                                        return (
+                                            <Card key={clinic.id} className="border">
+                                                <CardContent className="p-4">
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-3">
+                                                            <Calendar className="w-5 h-5 text-gray-500" />
+                                                            <div>
+                                                                <h3 className="font-medium text-gray-900">{clinic.name}</h3>
+                                                                {isConnected && (
+                                                                    <p className="text-sm text-gray-500">{clinic.google_calendar_id}</p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="flex items-center gap-2">
+                                                            {isConnected ? (
+                                                                <>
+                                                                    <Badge className="bg-green-100 text-green-800 border-green-200">
+                                                                        <Check className="w-3 h-3 ml-1" />
+                                                                        מחובר
+                                                                    </Badge>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={() => handleDisconnectCalendar(clinic.id)}
+                                                                        className="text-red-600 hover:text-red-700"
+                                                                    >
+                                                                        <X className="w-4 h-4 ml-1" />
+                                                                        נתק
+                                                                    </Button>
+                                                                </>
+                                                            ) : (
+                                                                <Button
+                                                                    onClick={() => handleConnectCalendar(clinic.id)}
+                                                                    disabled={isConnecting}
+                                                                    className="bg-blue-600 hover:bg-blue-700"
+                                                                >
+                                                                    {isConnecting ? (
+                                                                        <>
+                                                                            <LoadingSpinner size="sm" className="ml-2" />
+                                                                            מתחבר...
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <Calendar className="w-4 h-4 ml-1" />
+                                                                            חבר Google Calendar
+                                                                        </>
+                                                                    )}
+                                                                </Button>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         )}
                     </CardContent>

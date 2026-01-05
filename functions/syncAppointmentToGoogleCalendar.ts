@@ -20,10 +20,18 @@ Deno.serve(async (req) => {
         if (!appointment) {
             return new Response(JSON.stringify({ error: 'Appointment not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
         }
-        
-        const accessToken = await base44Service.connectors.getAccessToken("googlecalendar");
+
+        const clinic = (await base44Service.entities.Clinic.filter({ id: appointment.clinic_id }))[0];
+
+        // Try to use clinic's own Google Calendar token first
+        let accessToken = clinic?.google_calendar_access_token;
+
+        // If clinic doesn't have token, fall back to global connector
         if (!accessToken) {
-            throw new Error('Failed to get Google Calendar access token.');
+            accessToken = await base44Service.connectors.getAccessToken("googlecalendar");
+            if (!accessToken) {
+                throw new Error('Failed to get Google Calendar access token.');
+            }
         }
 
         const calendarId = 'primary';
@@ -52,8 +60,6 @@ Deno.serve(async (req) => {
              return new Response(JSON.stringify({ message: 'Appointment not in a state to be synced.' }), { status: 200, headers: { 'Content-Type': 'application/json' } });
         }
         
-        const clinic = (await base44Service.entities.Clinic.filter({ id: appointment.clinic_id }))[0];
-
         const startTime = new Date(appointment.appointment_datetime);
         const endTime = new Date(startTime.getTime() + 30 * 60 * 1000); // 30 minutes duration
 
