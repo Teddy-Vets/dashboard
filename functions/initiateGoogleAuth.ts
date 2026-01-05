@@ -29,7 +29,9 @@ Deno.serve(async (req) => {
     const clientId = Deno.env.get('GOOGLE_CLIENT_ID');
     // The redirect URI must be registered in the Google Cloud Console for your OAuth client.
     // Updated to point to the frontend callback page to avoid custom domain API routing issues
-    const redirectUri = `${Deno.env.get('FRONTEND_URL')}/GoogleCallback`;
+    // Ensure no double slashes if FRONTEND_URL ends with /
+    const baseUrl = Deno.env.get('FRONTEND_URL').replace(/\/$/, '');
+    const redirectUri = `${baseUrl}/GoogleCallback`;
     
     console.log(`Using Redirect URI: ${redirectUri}`);
 

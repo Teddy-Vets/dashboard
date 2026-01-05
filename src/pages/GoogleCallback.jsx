@@ -38,7 +38,15 @@ export default function GoogleCallback() {
                 });
 
                 if (functionError) {
-                    throw new Error(functionError.message || 'שגיאה בביצוע החיבור בשרת');
+                    // Try to extract detailed error message from backend
+                    let detailedMsg = functionError.message || 'שגיאה בביצוע החיבור בשרת';
+                    if (functionError.details) {
+                        detailedMsg += ` (${functionError.details})`;
+                    } else if (functionError.error) {
+                         detailedMsg += ` (${functionError.error})`;
+                    }
+                    console.error("Full function error:", functionError);
+                    throw new Error(detailedMsg);
                 }
 
                 setStatus('success');
