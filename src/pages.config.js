@@ -12,7 +12,6 @@ import CreateSpayNeuterInstructions from './pages/CreateSpayNeuterInstructions';
 import Dashboard from './pages/Dashboard';
 import DentalCareInstructions from './pages/DentalCareInstructions';
 import EmergencyTriageDashboard from './pages/EmergencyTriageDashboard';
-import GoogleCallback from './pages/GoogleCallback';
 import Home from './pages/Home';
 import IntakeForm from './pages/IntakeForm';
 import IntakeFormsList from './pages/IntakeFormsList';
@@ -57,7 +56,6 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "DentalCareInstructions": DentalCareInstructions,
     "EmergencyTriageDashboard": EmergencyTriageDashboard,
-    "GoogleCallback": GoogleCallback,
     "Home": Home,
     "IntakeForm": IntakeForm,
     "IntakeFormsList": IntakeFormsList,
