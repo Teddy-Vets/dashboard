@@ -11,12 +11,38 @@ Deno.serve(async (req) => {
     }
 
     try {
-        const url = new URL(req.url);
-        const code = url.searchParams.get('code');
-        const stateParam = url.searchParams.get('state');
+        let code, stateParam;
+
+        // 1. Try extracting from current Request URL (Production flow)
+        const requestUrl = new URL(req.url);
+        code = requestUrl.searchParams.get('code');
+        stateParam = requestUrl.searchParams.get('state');
+
+        // 2. If missing, try extracting from Body (Test/Debug flow)
+        if (!code || !stateParam) {
+            try {
+                // We attempt to parse the body as JSON
+                // Note: We don't clone req because in Deno.serve we typically consume it once.
+                // If this fails (e.g. body is empty or not JSON), we catch the error.
+                const body = await req.json();
+                
+                if (body.url) {
+                    // Case: User pasted the full URL in { "url": "..." }
+                    const payloadUrl = new URL(body.url);
+                    code = payloadUrl.searchParams.get('code');
+                    stateParam = payloadUrl.searchParams.get('state');
+                } else {
+                    // Case: User sent { "code": "...", "state": "..." } directly
+                    code = body.code;
+                    stateParam = body.state;
+                }
+            } catch (e) {
+                // Body was not JSON or readable, ignore
+            }
+        }
 
         if (!code || !stateParam) {
-            return new Response('Missing code or state parameter', { status: 400 });
+            return new Response('Missing code or state parameter. If testing, send {"url": "YOUR_FULL_CALLBACK_URL"} in the payload.', { status: 400 });
         }
 
         const { clinicId } = JSON.parse(stateParam);
