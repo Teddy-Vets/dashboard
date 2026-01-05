@@ -6,17 +6,39 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
+import React, { useEffect, useState, useRef } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
+
 export default function GoogleCallback() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [status, setStatus] = useState('processing'); // processing, success, error
     const [errorMessage, setErrorMessage] = useState('');
+    
+    // Prevent double-execution of the effect (common in React 18 strict mode or re-renders)
+    const processedRef = useRef(false);
 
     useEffect(() => {
         const processCallback = async () => {
             const code = searchParams.get('code');
             const state = searchParams.get('state');
             const error = searchParams.get('error');
+
+            // Prevent processing if already processed or if no params
+            if (processedRef.current) return;
+            
+            // Mark as processed immediately to prevent race conditions
+            if (code || error) {
+                processedRef.current = true;
+            } else {
+                // Wait for params if they aren't here yet
+                return;
+            }
 
             if (error) {
                 setStatus('error');
