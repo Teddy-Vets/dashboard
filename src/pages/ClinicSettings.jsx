@@ -59,7 +59,7 @@ export default function ClinicSettings() {
     };
 
     const handleConnectCalendar = (clinicId) => {
-        const clientId = 'GOOGLE_CLIENT_ID'; // Will be replaced with actual env var
+        const clientId = '1086447441446-ptdtulk0hqtoqgoj3qg0sans614mqe74.apps.googleusercontent.com';
         const redirectUri = encodeURIComponent(window.location.origin + '/ClinicSettings');
         const scope = encodeURIComponent('https://www.googleapis.com/auth/calendar.events email');
         
