@@ -50,13 +50,17 @@ const WhatsAppButton = () =>
 </a>;
 
 
-const StepLayout = ({ children, onBack }) =>
+const StepLayout = ({ children, onBack, hideBackButton = false }) =>
 <div className="bg-violet-50 rounded min-h-screen">
     <header className="bg-white shadow-sm p-4 sticky top-0 z-20">
       <div className="flex items-center justify-between max-w-md mx-auto">
-        <Button variant="ghost" size="icon" onClick={onBack}>
-          <ArrowLeft className="w-6 h-6 text-gray-600" />
-        </Button>
+        {!hideBackButton ? (
+          <Button variant="ghost" size="icon" onClick={onBack}>
+            <ArrowLeft className="w-6 h-6 text-gray-600" />
+          </Button>
+        ) : (
+          <div className="w-10"></div>
+        )}
         <div className="w-10"></div>
       </div>
     </header>
@@ -89,7 +93,7 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
   }, []);
 
   return (
-    <StepLayout onBack={() => {}}>
+    <StepLayout hideBackButton={true}>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
         
         <div className="text-center mb-8">
