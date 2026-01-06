@@ -14,7 +14,7 @@ const ISRAEL_TIMEZONE = 'Asia/Jerusalem';
  * @param {Date|string} date - תאריך (Date object או ISO string)
  * @returns {Date} תאריך מותאם לזמן ישראל
  */
-const toIsraelTime = (date) => {
+export const toIsraelTime = (date) => {
   const dateObj = typeof date === 'string' ? parseISO(date) : date;
   
   // קבלת המחרוזת בזמן ישראל

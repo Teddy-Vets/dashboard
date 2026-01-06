@@ -21,9 +21,10 @@ import {
   Search,
   Filter,
   Plus,
-  User // Added User icon for mobile card
+  User
 } from "lucide-react";
-import { formatDateTimeInIsrael } from "@/components/utils/dateUtils";
+import { formatDateTimeInIsrael, toIsraelTime } from "@/components/utils/dateUtils";
+import { format } from 'date-fns';
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/components/utils/urlHelpers";
@@ -133,13 +134,16 @@ export default function ManageAppointmentsPage() {
     
     let defaultDateTime = '';
     if (appointment.appointment_datetime) {
-      defaultDateTime = new Date(appointment.appointment_datetime).toISOString().slice(0, 16);
+      const dateObj = new Date(appointment.appointment_datetime);
+      const israelDate = toIsraelTime(dateObj);
+      defaultDateTime = format(israelDate, 'yyyy-MM-dd\'T\'HH:mm');
     } else if (appointment.preferred_date) {
       const preferredDate = new Date(appointment.preferred_date);
       const timeStr = appointment.preferred_time || '09:00';
       const [hours, minutes] = timeStr.includes(':') ? timeStr.split(':') : ['09', '00'];
       preferredDate.setHours(parseInt(hours), parseInt(minutes));
-      defaultDateTime = preferredDate.toISOString().slice(0, 16);
+      const israelPreferredDate = toIsraelTime(preferredDate);
+      defaultDateTime = format(israelPreferredDate, 'yyyy-MM-dd\'T\'HH:mm');
     }
     
     setEditForm({
