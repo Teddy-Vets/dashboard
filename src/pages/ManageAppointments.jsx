@@ -192,7 +192,13 @@ export default function ManageAppointmentsPage() {
 
       // רק אם יש תאריך ושעה חדשים
       if (editForm.appointment_datetime) {
-        updateData.appointment_datetime = new Date(editForm.appointment_datetime).toISOString();
+        // המשתמש הזין תאריך ושעה בזמן מקומי (ישראל)
+        // צריך להמיר ל-UTC בצורה נכונה
+        const localDateTime = new Date(editForm.appointment_datetime);
+        // קבלת offset בדקות ולהוסיף אותו כדי לשמור את הזמן הנכון
+        const timezoneOffset = localDateTime.getTimezoneOffset() * 60000;
+        const israelTime = new Date(localDateTime.getTime() - timezoneOffset);
+        updateData.appointment_datetime = israelTime.toISOString();
       }
 
       await updateEntity(AppointmentRequest, selectedAppointment.id, updateData, 'AppointmentRequest');
