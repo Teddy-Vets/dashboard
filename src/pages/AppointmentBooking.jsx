@@ -68,95 +68,6 @@ const StepLayout = ({ children, onBack }) =>
 
 // --- Screen Components ---
 
-const HeroSection = ({ onStart }) =>
-<div className="min-h-screen relative overflow-hidden">
-    <div
-    className="absolute inset-0 bg-cover bg-top md:bg-center bg-no-repeat"
-    style={{
-      backgroundImage: `url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/1382b2e26_Prz_8.jpg')`
-    }} />
-
-    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/30" />
-
-    <div className="relative z-10 flex items-start justify-center text-center text-white px-4 pt-20">
-      <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      className="max-w-2xl mx-auto">
-
-        <div className="mb-8">
-          <div className="flex items-center justify-center mb-6">
-            <img
-            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/c6a0b9e79_logo_medical.png"
-            alt="Teddy Vets" className="px-12 py-4 max-w-md w-full h-auto object-contain filter brightness-0 invert drop-shadow-2xl" />
-          </div>
-        </div>
-
-        <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4 drop-shadow-lg">
-            שומרים יחד על הבריאות<br />
-            של החברים הפרוותיים שלנו
-          </h2>
-        </div>
-
-        <Button
-        onClick={onStart}
-        size="lg"
-        className="bg-red-100 text-blue-600 px-12 py-6 text-xl font-semibold inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-11 hover:bg-gray-50 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
-
-          לקבוע תור לשקט הנפשי שלכם
-        </Button>
-      </motion.div>
-    </div>
-  </div>;
-
-
-const CustomerTypeScreen = ({ formData, setFormData, onNext, onBack }) =>
-<StepLayout onBack={onBack}>
-    <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    className="text-center">
-
-      <h2 className="text-gray-800 mb-6 text-2xl font-semibold text-center">כיף לראות אתכם 🐶😻
-האם זו הפעם הראשונה שלנו יחד או שאנחנו כבר חברים?
-    </h2>
-      <div className="space-y-4">
-        <Card
-        onClick={() => {
-          setFormData({ ...formData, customerType: 'new' });
-          onNext('new');
-        }}
-        className={`cursor-pointer border-2 p-6 transition-all ${formData.customerType === 'new' ? 'border-pink-400 bg-pink-50' : 'bg-white hover:bg-pink-50/50'}`}>
-
-          <CardContent className="p-0 flex items-center gap-6">
-            <PawPrint className="w-12 h-12 text-pink-500" />
-            <div className="text-right">
-              <p className="font-semibold text-xl text-gray-800">כן, אנחנו חברים חדשים</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card
-        onClick={() => {
-          setFormData({ ...formData, customerType: 'returning' });
-          onNext('returning');
-        }}
-        className={`cursor-pointer border-2 p-6 transition-all ${formData.customerType === 'returning' ? 'border-pink-400 bg-pink-50' : 'bg-white hover:bg-pink-50/50'}`}>
-
-          <CardContent className="p-0 flex items-center gap-6">
-            <Stethoscope className="w-12 h-12 text-pink-500" />
-            <div className="text-right">
-              <p className="font-semibold text-xl text-gray-800">כבר היינו, מכירים ואוהבים</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </motion.div>
-  </StepLayout>;
-
-
 const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
   const isFormValid = formData.petName && formData.ownerName && formData.ownerPhone && formData.ownerEmail && formData.clinic_id && formData.petType;
   const [clinics, setClinics] = useState([]);
@@ -178,7 +89,7 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
   }, []);
 
   return (
-    <StepLayout onBack={onBack}>
+    <StepLayout onBack={() => {}}>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
         
         <div className="text-center mb-8">
@@ -875,7 +786,7 @@ export default function AppointmentBookingPage() {
         setCurrentStep('thank-you');
         break;
       default:
-        setCurrentStep('hero');
+        setCurrentStep('contact-details');
         break;
     }
   };
