@@ -815,11 +815,11 @@ const Confetti = () => {
 
 export default function AppointmentBookingPage() {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState('hero');
+  const [currentStep, setCurrentStep] = useState('contact-details');
   const [formData, setFormData] = useState({
     clinic_id: '',
     clinic_name: '',
-    customerType: '',
+    customerType: 'new', // ברירת מחדל - לקוח חדש
     petType: '',
     ownerName: '',
     ownerPhone: '',
@@ -854,12 +854,6 @@ export default function AppointmentBookingPage() {
     }
 
     switch (currentStep) {
-      case 'hero':
-        setCurrentStep('customer-type');
-        break;
-      case 'customer-type':
-        setCurrentStep('contact-details');
-        break;
       case 'contact-details':
         setCurrentStep('service-selection');
         break;
@@ -888,12 +882,6 @@ export default function AppointmentBookingPage() {
 
   const handleBack = () => {
     switch (currentStep) {
-      case 'customer-type':
-        setCurrentStep('hero');
-        break;
-      case 'contact-details':
-        setCurrentStep('customer-type');
-        break;
       case 'service-selection':
         setCurrentStep('contact-details');
         break;
@@ -1229,10 +1217,6 @@ export default function AppointmentBookingPage() {
 
   const renderCurrentStep = () => {
     switch (currentStep) {
-      case 'hero':
-        return <HeroSection onStart={handleNext} />;
-      case 'customer-type':
-        return <CustomerTypeScreen formData={formData} setFormData={setFormData} onNext={handleNext} onBack={handleBack} />;
       case 'contact-details':
         return <ContactDetailsScreen formData={formData} setFormData={setFormData} onNext={handleNext} onBack={handleBack} />;
       case 'service-selection':
@@ -1248,7 +1232,7 @@ export default function AppointmentBookingPage() {
       case 'thank-you':
         return <SuccessScreen />;
       default:
-        return <HeroSection onStart={handleNext} />;
+        return <ContactDetailsScreen formData={formData} setFormData={setFormData} onNext={handleNext} onBack={handleBack} />;
     }
   };
 
@@ -1257,7 +1241,7 @@ export default function AppointmentBookingPage() {
       <AnimatePresence mode="wait">
         {renderCurrentStep()}
       </AnimatePresence>
-      {!['hero', 'thank-you'].includes(currentStep) && <WhatsAppButton />}
+      {currentStep !== 'thank-you' && <WhatsAppButton />}
     </div>);
 
 }
