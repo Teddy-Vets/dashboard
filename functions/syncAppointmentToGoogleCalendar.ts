@@ -1,5 +1,36 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+// Helper function to refresh access token
+async function refreshClinicGoogleToken(base44Service, clinic) {
+    const clientId = Deno.env.get('GOOGLE_CLIENT_ID');
+    const clientSecret = Deno.env.get('GOOGLE_CLIENT_SECRET');
+
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            client_id: clientId,
+            client_secret: clientSecret,
+            refresh_token: clinic.google_calendar_refresh_token,
+            grant_type: 'refresh_token',
+        }),
+    });
+
+    if (!tokenResponse.ok) {
+        throw new Error('Failed to refresh Google token');
+    }
+
+    const tokens = await tokenResponse.json();
+
+    // Update clinic with new access token
+    await base44Service.entities.Clinic.update(clinic.id, {
+        google_calendar_access_token: tokens.access_token,
+        google_calendar_last_sync: new Date().toISOString(),
+    });
+
+    return tokens.access_token;
+}
+
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
@@ -23,18 +54,28 @@ Deno.serve(async (req) => {
 
         const clinic = (await base44Service.entities.Clinic.filter({ id: appointment.clinic_id }))[0];
 
-        // Try to use clinic's own Google Calendar token first
-        let accessToken = clinic?.google_calendar_access_token;
+        // Determine which token and calendar to use
+        let accessToken;
+        let calendarId;
 
-        // If clinic doesn't have token, fall back to global connector
-        if (!accessToken) {
+        if (clinic?.google_calendar_refresh_token) {
+            // Clinic has its own calendar connected - refresh token and use it
+            try {
+                accessToken = await refreshClinicGoogleToken(base44Service, clinic);
+                calendarId = clinic.google_calendar_id || 'primary';
+            } catch (error) {
+                console.error('Failed to refresh clinic token, falling back to global connector:', error);
+                accessToken = await base44Service.connectors.getAccessToken("googlecalendar");
+                calendarId = 'primary';
+            }
+        } else {
+            // Use global connector
             accessToken = await base44Service.connectors.getAccessToken("googlecalendar");
             if (!accessToken) {
                 throw new Error('Failed to get Google Calendar access token.');
             }
+            calendarId = 'primary';
         }
-
-        const calendarId = 'primary';
         const eventId = appointment.google_calendar_event_id;
 
         // Handle cancellation
