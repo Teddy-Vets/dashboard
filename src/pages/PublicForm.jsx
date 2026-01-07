@@ -88,7 +88,7 @@ export default function PublicFormPage() {
 
   return (
     <div className="relative">
-      {/* Language Selector - Fixed at top right */}
+      {/* Language Selector - Fixed at top left */}
       <div className="fixed top-4 left-4 z-50 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-2 border border-slate-200">
         <div className="flex items-center gap-2">
           <Globe className="w-4 h-4 text-slate-600" />
