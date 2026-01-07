@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import PublicIntakeFormFlow from "../components/intake-form/PublicIntakeFormFlow";
 import PublicIntakeFormFlowEn from "../components/intake-form/PublicIntakeFormFlowEn";
 import PublicIntakeFormFlowRu from "../components/intake-form/PublicIntakeFormFlowRu";
+import PublicIntakeFormFlowFr from "../components/intake-form/PublicIntakeFormFlowFr";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import ErrorMessage from "../components/common/ErrorMessage";
 import { validateLink } from "@/functions/validateLink";
@@ -20,7 +21,7 @@ export default function PublicFormPage() {
     const token = urlParams.get('t');
     const langParam = urlParams.get('lang');
 
-    if (langParam && ['he', 'en', 'ru'].includes(langParam)) {
+    if (langParam && ['he', 'en', 'ru', 'fr'].includes(langParam)) {
       setLanguage(langParam);
     }
 
@@ -82,7 +83,7 @@ export default function PublicFormPage() {
     );
   }
 
-  const FormComponent = language === 'en' ? PublicIntakeFormFlowEn : language === 'ru' ? PublicIntakeFormFlowRu : PublicIntakeFormFlow;
+  const FormComponent = language === 'en' ? PublicIntakeFormFlowEn : language === 'ru' ? PublicIntakeFormFlowRu : language === 'fr' ? PublicIntakeFormFlowFr : PublicIntakeFormFlow;
 
   return (
     <div className="relative">
@@ -114,6 +115,14 @@ export default function PublicFormPage() {
               className="text-xs font-medium px-3 py-1"
             >
               Русский
+            </Button>
+            <Button
+              size="sm"
+              variant={language === 'fr' ? 'default' : 'ghost'}
+              onClick={() => setLanguage('fr')}
+              className="text-xs font-medium px-3 py-1"
+            >
+              Français
             </Button>
           </div>
         </div>

@@ -162,7 +162,8 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
     const messages = {
       he: `שלום ${formData.ownerName || ''},\nאנא מלאו את טופס ההיכרות למרפאת טדי וטס:`,
       en: `Hello ${formData.ownerName || ''},\nPlease fill out the intake form for Teddy Vets clinic:`,
-      ru: `Здравствуйте ${formData.ownerName || ''},\nПожалуйста, заполните анкету для клиники Teddy Vets:`
+      ru: `Здравствуйте ${formData.ownerName || ''},\nПожалуйста, заполните анкету для клиники Teddy Vets:`,
+      fr: `Bonjour ${formData.ownerName || ''},\nVeuillez remplir le formulaire d'accueil pour la clinique Teddy Vets :`
     };
     
     const message = messages[formData.language] || messages.he;
@@ -173,13 +174,15 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
     const subjects = {
       he: 'טופס היכרות למרפאת טדי וטס',
       en: 'Intake Form for Teddy Vets Clinic',
-      ru: 'Анкета для клиники Teddy Vets'
+      ru: 'Анкета для клиники Teddy Vets',
+      fr: 'Formulaire d\'accueil pour la clinique Teddy Vets'
     };
     
     const bodies = {
       he: `שלום ${formData.ownerName || ''},\n\nנא למלא את טופס ההיכרות בקישור הבא:\n\nתודה,\nצוות מרפאות טדי וטס`,
       en: `Hello ${formData.ownerName || ''},\n\nPlease fill out the intake form at the following link:\n\nThank you,\nTeddy Vets Team`,
-      ru: `Здравствуйте ${formData.ownerName || ''},\n\nПожалуйста, заполните анкету по следующей ссылке:\n\nСпасибо,\nКоманда Teddy Vets`
+      ru: `Здравствуйте ${formData.ownerName || ''},\n\nПожалуйста, заполните анкету по следующей ссылке:\n\nСпасибо,\nКоманда Teddy Vets`,
+      fr: `Bonjour ${formData.ownerName || ''},\n\nVeuillez remplir le formulaire d'accueil au lien suivant :\n\nMerci,\nÉquipe Teddy Vets`
     };
     
     const subject = subjects[formData.language] || subjects.he;
@@ -359,6 +362,7 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
                     <SelectItem value="he">עברית</SelectItem>
                     <SelectItem value="en">English</SelectItem>
                     <SelectItem value="ru">Русский</SelectItem>
+                    <SelectItem value="fr">Français</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
