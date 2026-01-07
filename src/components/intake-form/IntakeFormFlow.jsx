@@ -159,13 +159,31 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
   };
 
   const handleShareWhatsApp = () => {
-    const message = `שלום ${formData.ownerName || ''},\nאנא מלאו את טופס ההיכרות למרפאת טדי וטס:\n\n${publicUrl}`;
+    const messages = {
+      he: `שלום ${formData.ownerName || ''},\nאנא מלאו את טופס ההיכרות למרפאת טדי וטס:`,
+      en: `Hello ${formData.ownerName || ''},\nPlease fill out the intake form for Teddy Vets clinic:`,
+      ru: `Здравствуйте ${formData.ownerName || ''},\nПожалуйста, заполните анкету для клиники Teddy Vets:`
+    };
+    
+    const message = messages[formData.language] || messages.he;
     shareViaWhatsApp(publicUrl, message);
   };
 
   const handleShareEmail = () => {
-    const subject = 'טופס היכרות למרפאת טדי וטס';
-    const body = `שלום ${formData.ownerName || ''},\n\nנא למלא את טופס ההיכרות בקישור הבא:\n${publicUrl}\n\nתודה,\nצוות מרפאות טדי וטס`;
+    const subjects = {
+      he: 'טופס היכרות למרפאת טדי וטס',
+      en: 'Intake Form for Teddy Vets Clinic',
+      ru: 'Анкета для клиники Teddy Vets'
+    };
+    
+    const bodies = {
+      he: `שלום ${formData.ownerName || ''},\n\nנא למלא את טופס ההיכרות בקישור הבא:\n\nתודה,\nצוות מרפאות טדי וטס`,
+      en: `Hello ${formData.ownerName || ''},\n\nPlease fill out the intake form at the following link:\n\nThank you,\nTeddy Vets Team`,
+      ru: `Здравствуйте ${formData.ownerName || ''},\n\nПожалуйста, заполните анкету по следующей ссылке:\n\nСпасибо,\nКоманда Teddy Vets`
+    };
+    
+    const subject = subjects[formData.language] || subjects.he;
+    const body = bodies[formData.language] || bodies.he;
     shareViaEmail(publicUrl, subject, body);
   };
 

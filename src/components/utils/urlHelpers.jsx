@@ -114,8 +114,8 @@ export const copyToClipboard = async (text) => {
  * פתיחת שיתוף בווטסאפ
  */
 export const shareViaWhatsApp = (url, message = '') => {
-  const text = message ? `${message}\n\n${url}` : url;
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  const text = message ? message : url;
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}\n\n${encodeURIComponent(url)}`;
   window.open(whatsappUrl, '_blank');
 };
 
