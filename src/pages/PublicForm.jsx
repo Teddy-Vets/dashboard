@@ -18,6 +18,11 @@ export default function PublicFormPage() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('t');
+    const langParam = urlParams.get('lang');
+
+    if (langParam && ['he', 'en', 'ru'].includes(langParam)) {
+      setLanguage(langParam);
+    }
 
     if (!token) {
       setError('קישור לא תקין - חסר מזהה');

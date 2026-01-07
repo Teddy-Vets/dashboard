@@ -24,6 +24,8 @@ import PublicAnxietyQuestionnaire from './pages/PublicAnxietyQuestionnaire';
 import PublicConsentForm from './pages/PublicConsentForm';
 import PublicEmergencyTriage from './pages/PublicEmergencyTriage';
 import PublicForm from './pages/PublicForm';
+import PublicFormEn from './pages/PublicFormEn';
+import PublicFormRu from './pages/PublicFormRu';
 import PublicSpayNeuterInstructions from './pages/PublicSpayNeuterInstructions';
 import PublicViewIntakeForm from './pages/PublicViewIntakeForm';
 import PuppyAdoptionGuide from './pages/PuppyAdoptionGuide';
@@ -38,8 +40,6 @@ import ViewEmergencyTriage from './pages/ViewEmergencyTriage';
 import ViewIntakeForm from './pages/ViewIntakeForm';
 import ViewPostSurgeryInstructions from './pages/ViewPostSurgeryInstructions';
 import ViewSpayNeuterInstructions from './pages/ViewSpayNeuterInstructions';
-import PublicFormEn from './pages/PublicFormEn';
-import PublicFormRu from './pages/PublicFormRu';
 import __Layout from './Layout.jsx';
 
 
@@ -70,6 +70,8 @@ export const PAGES = {
     "PublicConsentForm": PublicConsentForm,
     "PublicEmergencyTriage": PublicEmergencyTriage,
     "PublicForm": PublicForm,
+    "PublicFormEn": PublicFormEn,
+    "PublicFormRu": PublicFormRu,
     "PublicSpayNeuterInstructions": PublicSpayNeuterInstructions,
     "PublicViewIntakeForm": PublicViewIntakeForm,
     "PuppyAdoptionGuide": PuppyAdoptionGuide,
@@ -84,8 +86,6 @@ export const PAGES = {
     "ViewIntakeForm": ViewIntakeForm,
     "ViewPostSurgeryInstructions": ViewPostSurgeryInstructions,
     "ViewSpayNeuterInstructions": ViewSpayNeuterInstructions,
-    "PublicFormEn": PublicFormEn,
-    "PublicFormRu": PublicFormRu,
 }
 
 export const pagesConfig = {

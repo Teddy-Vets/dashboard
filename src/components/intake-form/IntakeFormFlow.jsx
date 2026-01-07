@@ -22,6 +22,7 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
     phone: '',
     email: '',
     petName: '',
+    language: 'he',
     ...prefilledData
   });
 
@@ -135,7 +136,7 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
         throw new Error("לא התקבל טוקן מהשרת.");
       }
 
-      const url = `${window.location.origin}/PublicForm?t=${token}`;
+      const url = `${window.location.origin}/PublicForm?t=${token}&lang=${formData.language}`;
       setPublicUrl(url);
       setShowSuccess(true);
 
@@ -324,6 +325,24 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
                   className="mt-2" 
                   placeholder="שם החיה"
                 />
+              </div>
+
+              <div>
+                <Label className="text-base font-medium text-slate-700">שפת הטופס *</Label>
+                <Select 
+                  value={formData.language}
+                  onValueChange={(value) => updateFormData('language', value)}
+                  dir="rtl"
+                >
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="בחר שפה" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="he">עברית</SelectItem>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="ru">Русский</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
