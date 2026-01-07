@@ -38,6 +38,8 @@ import ViewEmergencyTriage from './pages/ViewEmergencyTriage';
 import ViewIntakeForm from './pages/ViewIntakeForm';
 import ViewPostSurgeryInstructions from './pages/ViewPostSurgeryInstructions';
 import ViewSpayNeuterInstructions from './pages/ViewSpayNeuterInstructions';
+import PublicFormEn from './pages/PublicFormEn';
+import PublicFormRu from './pages/PublicFormRu';
 import __Layout from './Layout.jsx';
 
 
@@ -82,6 +84,8 @@ export const PAGES = {
     "ViewIntakeForm": ViewIntakeForm,
     "ViewPostSurgeryInstructions": ViewPostSurgeryInstructions,
     "ViewSpayNeuterInstructions": ViewSpayNeuterInstructions,
+    "PublicFormEn": PublicFormEn,
+    "PublicFormRu": PublicFormRu,
 }
 
 export const pagesConfig = {
