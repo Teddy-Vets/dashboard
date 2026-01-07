@@ -3,6 +3,7 @@ import PublicIntakeFormFlow from "../components/intake-form/PublicIntakeFormFlow
 import PublicIntakeFormFlowEn from "../components/intake-form/PublicIntakeFormFlowEn";
 import PublicIntakeFormFlowRu from "../components/intake-form/PublicIntakeFormFlowRu";
 import PublicIntakeFormFlowFr from "../components/intake-form/PublicIntakeFormFlowFr";
+import PublicIntakeFormFlowAr from "../components/intake-form/PublicIntakeFormFlowAr";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import ErrorMessage from "../components/common/ErrorMessage";
 import { validateLink } from "@/functions/validateLink";
@@ -21,7 +22,7 @@ export default function PublicFormPage() {
     const token = urlParams.get('t');
     const langParam = urlParams.get('lang');
 
-    if (langParam && ['he', 'en', 'ru', 'fr'].includes(langParam)) {
+    if (langParam && ['he', 'en', 'ru', 'fr', 'ar'].includes(langParam)) {
       setLanguage(langParam);
     }
 
@@ -83,7 +84,7 @@ export default function PublicFormPage() {
     );
   }
 
-  const FormComponent = language === 'en' ? PublicIntakeFormFlowEn : language === 'ru' ? PublicIntakeFormFlowRu : language === 'fr' ? PublicIntakeFormFlowFr : PublicIntakeFormFlow;
+  const FormComponent = language === 'en' ? PublicIntakeFormFlowEn : language === 'ru' ? PublicIntakeFormFlowRu : language === 'fr' ? PublicIntakeFormFlowFr : language === 'ar' ? PublicIntakeFormFlowAr : PublicIntakeFormFlow;
 
   return (
     <div className="relative">
@@ -123,6 +124,14 @@ export default function PublicFormPage() {
               className="text-xs font-medium px-3 py-1"
             >
               Français
+            </Button>
+            <Button
+              size="sm"
+              variant={language === 'ar' ? 'default' : 'ghost'}
+              onClick={() => setLanguage('ar')}
+              className="text-xs font-medium px-3 py-1"
+            >
+              العربية
             </Button>
           </div>
         </div>
