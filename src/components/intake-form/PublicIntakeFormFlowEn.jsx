@@ -207,7 +207,7 @@ export default function PublicIntakeFormFlowEn({ token, formId, initialData = {}
 
   if (submitSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 p-4 flex items-center justify-center">
+      <div dir="ltr" className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 p-4 flex items-center justify-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -248,7 +248,7 @@ export default function PublicIntakeFormFlowEn({ token, formId, initialData = {}
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50">
+    <div dir="ltr" className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50">
       {/* Hero Header with Background Image */}
       <div 
         className="relative bg-cover bg-center overflow-hidden"
