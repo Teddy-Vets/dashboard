@@ -267,12 +267,12 @@ export default function PublicIntakeFormFlowRu({ token, formId, initialData = {}
             <div className="flex-shrink-0 w-20 md:w-28"></div>
 
             {/* Text in center */}
-            <div className="flex-1 text-center text-white">
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-1 drop-shadow-lg">
+            <div className="flex-1 text-center text-white px-8 md:px-16">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-1 drop-shadow-lg max-w-2xl mx-auto">
                 Добро пожаловать, мы уже ждем встречи с вами
               </h1>
-              
-              <p className="text-xs md:text-sm lg:text-base max-w-3xl mx-auto leading-tight drop-shadow-md">
+
+              <p className="text-xs md:text-sm lg:text-base max-w-2xl mx-auto leading-tight drop-shadow-md">
                 Процесс знакомства быстрый и поможет нам подготовить для вас и вашего питомца приятный и персонализированный визит
               </p>
             </div>
