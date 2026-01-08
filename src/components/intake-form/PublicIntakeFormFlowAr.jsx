@@ -264,7 +264,13 @@ export default function PublicIntakeFormFlowAr({ token, formId, initialData = {}
         <div className="relative z-10 container mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
             {/* Logo on the right for RTL */}
-            <div className="flex-shrink-0 w-20 md:w-28"></div>
+            <div className="flex-shrink-0">
+              <img
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/c6a0b9e79_logo_medical.png"
+                alt="Teddy Vets"
+                className="w-20 md:w-28 h-auto object-contain filter brightness-0 invert"
+              />
+            </div>
 
             {/* Text in center */}
             <div className="flex-1 text-center text-white">
@@ -277,14 +283,8 @@ export default function PublicIntakeFormFlowAr({ token, formId, initialData = {}
               </p>
             </div>
 
-            {/* Logo on the left for RTL */}
-            <div className="flex-shrink-0">
-              <img
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/c6a0b9e79_logo_medical.png"
-                alt="Teddy Vets"
-                className="w-20 md:w-28 h-auto object-contain filter brightness-0 invert"
-              />
-            </div>
+            {/* Spacer for balance */}
+            <div className="flex-shrink-0 w-20 md:w-28"></div>
           </div>
         </div>
 
