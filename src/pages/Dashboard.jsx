@@ -92,6 +92,11 @@ export default function DashboardPage() {
   const loadUserDashboard = async (user) => {
     const clinicId = user.clinic_id;
     
+    // בדיקה אם למשתמש יש clinic_id מוגדר
+    if (!clinicId) {
+      throw new Error('המשתמש לא משויך למרפאה. אנא פנה למנהל המערכת לשיוך למרפאה.');
+    }
+    
     const [
       intakeForms,
       consentForms,

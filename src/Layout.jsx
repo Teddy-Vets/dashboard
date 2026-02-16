@@ -15,7 +15,8 @@ import {
   Calendar,
   Megaphone,
   Settings,
-  TrendingUp
+  TrendingUp,
+  Users
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -63,6 +64,7 @@ const navItems = [
   { href: "/ConsentForms", icon: ClipboardCheck, label: "טפסי הסכמה", roles: ['admin', 'user'] },
   { type: 'divider', label: 'ניהול' },
   { href: "/SystemManagement", icon: TrendingUp, label: "ניהול המערכת", roles: ['admin'] },
+  { href: "/UserManagement", icon: Users, label: "ניהול משתמשים", roles: ['admin'] },
   { href: "/Clinics", icon: ClinicIcon, label: "מרפאות", roles: ['admin'] },
   { href: "/ClinicSettings", icon: Settings, label: "הגדרות סנכרון", roles: ['admin'] },
   { href: "/UserManual", icon: BookUser, label: "מדריך למשתמש", roles: ['admin', 'user'] },
