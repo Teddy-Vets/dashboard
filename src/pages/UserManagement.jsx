@@ -145,11 +145,20 @@ export default function UserManagement() {
   return (
     <div className="p-6 space-y-6 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <PageHeader
-          title="ניהול משתמשים"
-          description="ניהול משתמשי המערכת והרשאות"
-          icon={Users}
-        />
+        <div className="flex items-center justify-between mb-6">
+          <PageHeader
+            title="ניהול משתמשים"
+            description="ניהול משתמשי המערכת והרשאות"
+            icon={Users}
+          />
+          <Button
+            onClick={() => setIsInviteDialogOpen(true)}
+            className="bg-blue-600 hover:bg-blue-700 gap-2"
+          >
+            <UserPlus className="w-4 h-4" />
+            הזמן משתמש
+          </Button>
+        </div>
 
         {/* Search Bar */}
         <Card className="mb-6 bg-white/90 backdrop-blur-sm shadow-lg">
