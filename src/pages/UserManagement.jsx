@@ -22,6 +22,10 @@ export default function UserManagement() {
   const [editingUser, setEditingUser] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState("user");
+  const [isInviting, setIsInviting] = useState(false);
 
   useEffect(() => {
     loadData();
