@@ -85,6 +85,23 @@ export default function UserManagement() {
     }
   };
 
+  const handleInviteUser = async () => {
+    if (!inviteEmail) return;
+    setIsInviting(true);
+    try {
+      await base44.users.inviteUser(inviteEmail, inviteRole);
+      toast.success(`הזמנה נשלחה ל-${inviteEmail}`);
+      setIsInviteDialogOpen(false);
+      setInviteEmail("");
+      setInviteRole("user");
+    } catch (err) {
+      console.error("Error inviting user:", err);
+      toast.error("שגיאה בשליחת ההזמנה");
+    } finally {
+      setIsInviting(false);
+    }
+  };
+
   const filteredUsers = users.filter(user => 
     user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase())
