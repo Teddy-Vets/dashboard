@@ -80,6 +80,7 @@ import PublicViewIntakeForm from './pages/PublicViewIntakeForm';
 import PuppyAdoptionGuide from './pages/PuppyAdoptionGuide';
 import SpayNeuterInstructions from './pages/SpayNeuterInstructions';
 import SystemManagement from './pages/SystemManagement';
+import UserManagement from './pages/UserManagement';
 import UserManual from './pages/UserManual';
 import VaccinationForm from './pages/VaccinationForm';
 import ViewAnxietyQuestionnaire from './pages/ViewAnxietyQuestionnaire';
@@ -89,7 +90,6 @@ import ViewEmergencyTriage from './pages/ViewEmergencyTriage';
 import ViewIntakeForm from './pages/ViewIntakeForm';
 import ViewPostSurgeryInstructions from './pages/ViewPostSurgeryInstructions';
 import ViewSpayNeuterInstructions from './pages/ViewSpayNeuterInstructions';
-import UserManagement from './pages/UserManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -127,6 +127,7 @@ export const PAGES = {
     "PuppyAdoptionGuide": PuppyAdoptionGuide,
     "SpayNeuterInstructions": SpayNeuterInstructions,
     "SystemManagement": SystemManagement,
+    "UserManagement": UserManagement,
     "UserManual": UserManual,
     "VaccinationForm": VaccinationForm,
     "ViewAnxietyQuestionnaire": ViewAnxietyQuestionnaire,
@@ -136,7 +137,6 @@ export const PAGES = {
     "ViewIntakeForm": ViewIntakeForm,
     "ViewPostSurgeryInstructions": ViewPostSurgeryInstructions,
     "ViewSpayNeuterInstructions": ViewSpayNeuterInstructions,
-    "UserManagement": UserManagement,
 }
 
 export const pagesConfig = {
