@@ -246,6 +246,53 @@ export default function UserManagement() {
           </CardContent>
         </Card>
 
+        {/* Invite User Dialog */}
+        <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>הזמנת משתמש חדש</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label>כתובת אימייל</Label>
+                <Input
+                  type="email"
+                  placeholder="example@email.com"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>תפקיד</Label>
+                <Select value={inviteRole} onValueChange={setInviteRole}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="user">משתמש רגיל</SelectItem>
+                    <SelectItem value="admin">מנהל מערכת</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <p className="text-xs text-slate-500">
+                המשתמש יקבל אימייל עם הזמנה להצטרף למערכת. לאחר ההצטרפות תוכל לשייך אותו למרפאה.
+              </p>
+              <div className="flex justify-end gap-2 pt-2">
+                <Button variant="outline" onClick={() => setIsInviteDialogOpen(false)} disabled={isInviting}>
+                  ביטול
+                </Button>
+                <Button onClick={handleInviteUser} disabled={isInviting || !inviteEmail} className="bg-blue-600 hover:bg-blue-700">
+                  {isInviting ? (
+                    <><LoadingSpinner size="sm" className="ml-2" />שולח...</>
+                  ) : (
+                    'שלח הזמנה'
+                  )}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Edit User Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
