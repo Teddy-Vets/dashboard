@@ -1156,7 +1156,7 @@ export default function AppointmentBookingPage() {
       <AnimatePresence mode="wait">
         {renderCurrentStep()}
       </AnimatePresence>
-      {currentStep !== 'thank-you' && <WhatsAppButton />}
+
     </div>);
 
 }
