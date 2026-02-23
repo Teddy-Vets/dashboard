@@ -64,6 +64,18 @@ export default function SystemManagementPage() {
           ...cConsent.filter(f => ['completed', 'legally_sealed'].includes(f.status)),
         ].length;
 
+        // Per-type pending
+        const intakePending = cIntake.filter(f => ['submitted', 'reviewed'].includes(f.status)).length;
+        const consentPending = cConsent.filter(f => f.status === 'pending').length;
+
+        // Per-type sent
+        const intakeSent = cIntake.filter(f => ['published', 'sent'].includes(f.status)).length;
+        const consentSent = cConsent.filter(f => ['pending', 'signed', 'completed', 'legally_sealed'].includes(f.status)).length;
+
+        // Per-type completed
+        const intakeCompleted = cIntake.filter(f => ['completed', 'archived'].includes(f.status)).length;
+        const consentCompleted = cConsent.filter(f => ['completed', 'legally_sealed'].includes(f.status)).length;
+
         stats[clinic.id] = {
           intakeForms: cIntake.length,
           consentForms: cConsent.length,
@@ -71,6 +83,12 @@ export default function SystemManagementPage() {
           sentToClient,
           receivedPending,
           completed,
+          intakePending,
+          consentPending,
+          intakeSent,
+          consentSent,
+          intakeCompleted,
+          consentCompleted,
         };
       });
 
