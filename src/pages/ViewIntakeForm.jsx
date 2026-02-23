@@ -118,7 +118,10 @@ export default function ViewIntakeFormPage() {
             חזור לרשימה
           </Button>
           <h1 className="text-2xl font-bold">צפייה בטופס היכרות</h1>
-          <div></div>
+          <Button variant="outline" onClick={() => window.print()} className="flex items-center gap-1">
+            <Printer className="w-4 h-4" />
+            הדפס / שמור כ-PDF בתיק לקוח
+          </Button>
         </div>
         
         {formData && formData.status === 'reviewed' && (
