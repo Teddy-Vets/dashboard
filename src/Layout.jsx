@@ -63,7 +63,7 @@ const navItems = [
   { href: "/IntakeFormsList", icon: ClipboardCheck, label: "טפסי היכרות", roles: ['admin', 'user'] },
   { href: "/ConsentForms", icon: ClipboardCheck, label: "טפסי הסכמה", roles: ['admin', 'user'] },
   { type: 'divider', label: 'ניהול' },
-  { href: "/SystemManagement", icon: TrendingUp, label: "ניהול המערכת", roles: ['admin'] },
+  { href: "/SystemManagement", icon: TrendingUp, label: "ניהול המערכת", roles: ['admin', 'user'] },
   { href: "/UserManagement", icon: Users, label: "ניהול משתמשים", roles: ['admin'] },
   { href: "/Clinics", icon: ClinicIcon, label: "מרפאות", roles: ['admin'] },
   { href: "/ClinicSettings", icon: Settings, label: "הגדרות סנכרון", roles: ['admin'] },
