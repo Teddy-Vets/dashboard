@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { SpayNeuterInstructions, Clinic } from '@/entities/all';
 import { useNavigate } from "react-router-dom";
@@ -323,6 +322,15 @@ export default function ViewSpayNeuterInstructionsPage() { // Renamed component
                     <Download className="w-4 h-4 ml-1" />
                   )}
                   הורד PDF
+                </Button>
+
+                <Button
+                  onClick={() => window.print()}
+                  size="sm"
+                  variant="outline"
+                >
+                  <FileText className="w-4 h-4 ml-1" />
+                  הדפס
                 </Button>
               </div>
             </div>
