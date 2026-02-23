@@ -221,7 +221,7 @@ export default function Layout({ children, currentPageName }) {
   };
 
   useEffect(() => {
-    const adminOnlyPages = ["/MarketingMaterials", "/SystemManagement", "/Clinics"];
+    const adminOnlyPages = ["/MarketingMaterials", "/Clinics"];
     
     if (!isLoadingUser) {
       if (adminOnlyPages.includes(location.pathname)) {
