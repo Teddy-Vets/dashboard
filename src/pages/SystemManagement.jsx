@@ -149,7 +149,7 @@ export default function SystemManagementPage() {
             <NetworkTotalCard icon={ClipboardCheck} label="טפסי היכרות" value={networkTotals.intakeForms} color="from-teal-400 to-teal-600" />
             <NetworkTotalCard icon={FileText} label="טפסי הסכמה" value={networkTotals.consentForms} color="from-purple-400 to-purple-600" />
             <NetworkTotalCard icon={Send} label="נשלחו ללקוח" value={networkTotals.sentToClient} color="from-cyan-400 to-cyan-600" />
-            <NetworkTotalCard icon={Inbox} label="התקבלו - טרם טופלו" value={networkTotals.receivedPending} color={networkTotals.receivedPending > 0 ? "from-amber-400 to-amber-600" : "from-green-400 to-green-600"} />
+            <NetworkTotalCard icon={Inbox} label="התקבלו - טרם טופלו" value={networkTotals.receivedPending} color={networkTotals.receivedPending > 0 ? "from-amber-400 to-amber-600" : "from-green-400 to-green-600"} percentOf={networkTotals.sentToClient} percentLabel="מסך נשלחו" />
             <NetworkTotalCard icon={CheckCircle} label="הושלם טיפול" value={networkTotals.completed} color="from-green-400 to-green-600" />
           </div>
         </div>
