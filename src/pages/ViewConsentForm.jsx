@@ -118,10 +118,21 @@ export default function ViewConsentFormPage() {
             <h1 className="text-3xl font-bold text-slate-800">צפייה בטופס הכנה לניתוח</h1>
             <p className="text-slate-600 mt-1">מספר טופס: {form.id.substring(0, 8)}</p>
           </div>
-          <Badge className={`${config.color} border flex items-center gap-1`}>
-            <StatusIcon className="w-4 h-4" />
-            {config.label}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge className={`${config.color} border flex items-center gap-1`}>
+              <StatusIcon className="w-4 h-4" />
+              {config.label}
+            </Badge>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.print()}
+              className="flex items-center gap-1"
+            >
+              <Printer className="w-4 h-4" />
+              הדפס
+            </Button>
+          </div>
         </div>
 
         {/* Form Content */}
