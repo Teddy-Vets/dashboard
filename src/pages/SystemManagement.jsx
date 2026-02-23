@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { IntakeForm, ConsentForm, AppointmentRequest } from "@/entities/all";
+import { base44 } from "@/api/base44Client";
+import { Clinic, IntakeForm, ConsentForm, AppointmentRequest } from "@/entities/all";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity } from "lucide-react";
+import { Activity, Building2, ClipboardCheck, FileText, Calendar, Clock, TrendingUp, CheckCircle } from "lucide-react";
 import userService from "@/components/services/userService";
-import { getEntityList, safeApiCall } from "@/components/utils/apiHelpers";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import PageHeader from "@/components/common/PageHeader";
-import SystemHealthWidget from "@/components/dashboard/SystemHealthWidget";
-import { isToday } from "@/components/utils/dateUtils";
+import NetworkClinicStats from "@/components/dashboard/NetworkClinicStats";
 
 export default function SystemManagementPage() {
-  const [currentUser, setCurrentUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [pendingForms, setPendingForms] = useState([]);
-  const [todayAppointmentsCount, setTodayAppointmentsCount] = useState(0);
+  const [clinics, setClinics] = useState([]);
+  const [clinicStats, setClinicStats] = useState({});
+  const [networkTotals, setNetworkTotals] = useState({
+    intakeForms: 0,
+    consentForms: 0,
+    appointments: 0,
+    pending: 0,
+    activeClinics: 0,
+  });
 
   useEffect(() => {
     loadData();
@@ -24,51 +29,48 @@ export default function SystemManagementPage() {
   const loadData = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
-      const user = await userService.getCurrentUser();
-      setCurrentUser(user);
-
-      // טעינת טפסים ממתינים
-      const [intakeForms, consentForms, appointments] = await Promise.all([
-        safeApiCall(async () => {
-          if (user.role === "admin") {
-            return await getEntityList(IntakeForm, { status: 'draft' }, '-created_date', null, 'IntakeForm');
-          } else if (user.clinic_id) {
-            return await getEntityList(IntakeForm, { clinic_id: user.clinic_id, status: 'draft' }, '-created_date', null, 'IntakeForm');
-          }
-          return [];
-        }),
-        safeApiCall(async () => {
-          if (user.role === "admin") {
-            return await getEntityList(ConsentForm, { status: 'pending' }, '-created_date', null, 'ConsentForm');
-          } else if (user.clinic_id) {
-            return await getEntityList(ConsentForm, { clinic_id: user.clinic_id, status: 'pending' }, '-created_date', null, 'ConsentForm');
-          }
-          return [];
-        }),
-        safeApiCall(async () => {
-          if (user.role === "admin") {
-            return await getEntityList(AppointmentRequest, {}, '-created_date', null, 'AppointmentRequest');
-          } else if (user.clinic_id) {
-            return await getEntityList(AppointmentRequest, { clinic_id: user.clinic_id }, '-created_date', null, 'AppointmentRequest');
-          }
-          return [];
-        })
+      const [clinicsData, intakeForms, consentForms, appointments] = await Promise.all([
+        Clinic.list("-created_date"),
+        IntakeForm.list("-created_date", 500),
+        ConsentForm.list("-created_date", 500),
+        AppointmentRequest.list("-created_date", 500),
       ]);
 
-      // איחוד טפסים ממתינים
-      const allPending = [
-        ...(intakeForms || []),
-        ...(consentForms || [])
-      ];
-      setPendingForms(allPending);
+      setClinics(clinicsData);
 
-      // ספירת תורים להיום
-      const todayAppts = (appointments || []).filter(apt => 
-        apt.appointment_datetime && isToday(apt.appointment_datetime)
-      );
-      setTodayAppointmentsCount(todayAppts.length);
+      // Build per-clinic stats
+      const stats = {};
+      clinicsData.forEach(clinic => {
+        const cIntake = intakeForms.filter(f => f.clinic_id === clinic.id);
+        const cConsent = consentForms.filter(f => f.clinic_id === clinic.id);
+        const cAppts = appointments.filter(f => f.clinic_id === clinic.id);
+        const cPending = [
+          ...cIntake.filter(f => ['draft', 'submitted', 'reviewed'].includes(f.status)),
+          ...cConsent.filter(f => f.status === 'pending'),
+        ];
+        stats[clinic.id] = {
+          intakeForms: cIntake.length,
+          consentForms: cConsent.length,
+          appointments: cAppts.length,
+          pending: cPending.length,
+        };
+      });
+
+      setClinicStats(stats);
+
+      // Network totals
+      const pendingAll = [
+        ...intakeForms.filter(f => ['draft', 'submitted', 'reviewed'].includes(f.status)),
+        ...consentForms.filter(f => f.status === 'pending'),
+      ];
+      setNetworkTotals({
+        intakeForms: intakeForms.length,
+        consentForms: consentForms.length,
+        appointments: appointments.length,
+        pending: pendingAll.length,
+        activeClinics: clinicsData.filter(c => c.is_active).length,
+      });
 
     } catch (err) {
       console.error("Error loading system data:", err);
@@ -82,13 +84,8 @@ export default function SystemManagementPage() {
     return (
       <div className="p-6">
         <div className="max-w-7xl mx-auto">
-          <PageHeader
-            title="ניהול המערכת"
-            description="טוען נתונים..."
-          />
-          <div className="flex justify-center py-12">
-            <LoadingSpinner size="xl" />
-          </div>
+          <PageHeader title="ניהול המערכת" description="טוען נתונים..." />
+          <div className="flex justify-center py-12"><LoadingSpinner size="xl" /></div>
         </div>
       </div>
     );
@@ -98,10 +95,7 @@ export default function SystemManagementPage() {
     return (
       <div className="p-6">
         <div className="max-w-7xl mx-auto">
-          <PageHeader
-            title="ניהול המערכת"
-            description="שגיאה בטעינת הנתונים"
-          />
+          <PageHeader title="ניהול המערכת" description="שגיאה בטעינת הנתונים" />
           <ErrorMessage error={error} onRetry={loadData} />
         </div>
       </div>
@@ -109,31 +103,56 @@ export default function SystemManagementPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+    <div className="p-6 space-y-8 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 min-h-screen" dir="rtl">
+      <div className="max-w-7xl mx-auto space-y-8">
         <PageHeader
           title="ניהול המערכת"
-          description="מעקב אחר בריאות המערכת ופעילות הטפסים"
+          description="סקירת נתוני הרשת לפי מרפאות וסה״כ"
         />
 
-        <Card className="mb-6 bg-white/90 backdrop-blur-sm shadow-lg">
-          <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-cyan-50">
-            <CardTitle className="flex items-center gap-2 text-blue-900">
-              <Activity className="w-5 h-5" />
-              סטטוס המערכת
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <SystemHealthWidget
-              pendingForms={pendingForms}
-              todayAppointmentsCount={todayAppointmentsCount}
-              avgResponseHours={0}
-              completionRate={0}
-              isLoading={false}
-            />
-          </CardContent>
-        </Card>
+        {/* Network Totals */}
+        <div>
+          <h2 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-blue-500" />
+            סיכום רשת כולל
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <NetworkTotalCard icon={Building2} label="מרפאות פעילות" value={networkTotals.activeClinics} total={clinics.length} color="from-blue-400 to-blue-600" />
+            <NetworkTotalCard icon={ClipboardCheck} label="טפסי היכרות" value={networkTotals.intakeForms} color="from-teal-400 to-teal-600" />
+            <NetworkTotalCard icon={FileText} label="טפסי הסכמה" value={networkTotals.consentForms} color="from-purple-400 to-purple-600" />
+            <NetworkTotalCard icon={Calendar} label="בקשות תור" value={networkTotals.appointments} color="from-cyan-400 to-cyan-600" />
+            <NetworkTotalCard icon={Clock} label="ממתינים לטיפול" value={networkTotals.pending} color={networkTotals.pending > 0 ? "from-amber-400 to-amber-600" : "from-green-400 to-green-600"} />
+          </div>
+        </div>
+
+        {/* Per-clinic breakdown */}
+        <div>
+          <h2 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-blue-500" />
+            פירוט לפי מרפאות ({clinics.length})
+          </h2>
+          <NetworkClinicStats clinics={clinics} clinicStats={clinicStats} isLoading={false} />
+        </div>
       </div>
     </div>
+  );
+}
+
+function NetworkTotalCard({ icon: Icon, label, value, total, color }) {
+  return (
+    <Card className="bg-white/90 shadow-md border-blue-100 overflow-hidden">
+      <CardContent className="p-0">
+        <div className={`bg-gradient-to-br ${color} p-4 text-white`}>
+          <Icon className="w-6 h-6 mb-2 opacity-90" />
+          <p className="text-3xl font-bold">{value}</p>
+          {total !== undefined && (
+            <p className="text-xs opacity-80">מתוך {total} סה״כ</p>
+          )}
+        </div>
+        <div className="px-4 py-2">
+          <p className="text-sm font-medium text-slate-700">{label}</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
