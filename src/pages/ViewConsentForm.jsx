@@ -130,7 +130,7 @@ export default function ViewConsentFormPage() {
               className="flex items-center gap-1"
             >
               <Printer className="w-4 h-4" />
-              הדפס
+              הדפס / שמור כ-PDF בתיק לקוח
             </Button>
           </div>
         </div>
