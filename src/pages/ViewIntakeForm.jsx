@@ -4,7 +4,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorMessage from '@/components/common/ErrorMessage';
 import ViewSubmittedIntakeForm from '@/components/intake-form/ViewSubmittedIntakeForm';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, UserPlus, PawPrint, Loader2 } from "lucide-react";
+import { ArrowRight, UserPlus, PawPrint, Loader2, Printer } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/components/utils/urlHelpers";
 import { getEntityById, createEntity, updateEntity, ApiError } from '@/components/utils/apiHelpers';
