@@ -41,11 +41,18 @@ export default function NetworkClinicStats({ clinics, clinicStats, isLoading }) 
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
-              <div className="grid grid-cols-2 gap-3">
-                <StatItem icon={ClipboardCheck} label="טפסי היכרות" value={stats.intakeForms ?? 0} color="text-blue-600" bg="bg-blue-50" />
-                <StatItem icon={FileText} label="טפסי הסכמה" value={stats.consentForms ?? 0} color="text-purple-600" bg="bg-purple-50" />
+              <div className="grid grid-cols-3 gap-2 mb-2">
+                <StatItem icon={ClipboardCheck} label="היכרות" value={stats.intakeForms ?? 0} color="text-blue-600" bg="bg-blue-50" />
+                <StatItem icon={FileText} label="הסכמה" value={stats.consentForms ?? 0} color="text-purple-600" bg="bg-purple-50" />
                 <StatItem icon={Calendar} label="תורים" value={stats.appointments ?? 0} color="text-teal-600" bg="bg-teal-50" />
-                <StatItem icon={Clock} label="ממתינים" value={stats.pending ?? 0} color="text-amber-600" bg="bg-amber-50" />
+              </div>
+              <div className="border-t border-slate-100 pt-2 mt-1">
+                <p className="text-xs text-slate-400 mb-2 font-medium">סטטוס טפסים</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <StatItem icon={Send} label="נשלחו" value={stats.sentToClient ?? 0} color="text-cyan-600" bg="bg-cyan-50" />
+                  <StatItem icon={Inbox} label="ממתינים" value={stats.receivedPending ?? 0} color={(stats.receivedPending ?? 0) > 0 ? "text-amber-600" : "text-slate-500"} bg={(stats.receivedPending ?? 0) > 0 ? "bg-amber-50" : "bg-slate-50"} />
+                  <StatItem icon={CheckCircle} label="הושלמו" value={stats.completed ?? 0} color="text-green-600" bg="bg-green-50" />
+                </div>
               </div>
             </CardContent>
           </Card>
