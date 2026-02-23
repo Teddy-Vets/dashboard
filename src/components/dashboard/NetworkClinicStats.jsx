@@ -35,9 +35,7 @@ export default function NetworkClinicStats({ clinics, clinicStats, isLoading }) 
                   </div>
                   <span className="font-semibold text-slate-800">{clinic.name}</span>
                 </div>
-                <Badge className={clinic.is_active ? "bg-green-100 text-green-800 border-green-200" : "bg-red-100 text-red-800 border-red-200"}>
-                  {clinic.is_active ? "פעיל" : "לא פעיל"}
-                </Badge>
+
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-3">
