@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { ConsentForm } from "@/entities/ConsentForm";
@@ -6,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label"; // Added Label import
-import { ArrowRight, Calendar, User, Clock, Shield, CheckCircle, FileText } from "lucide-react"; // Updated lucide-react imports
+import { ArrowRight, Calendar, User, Clock, Shield, CheckCircle, FileText, Printer } from "lucide-react"; // Updated lucide-react imports
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { motion } from "framer-motion";
