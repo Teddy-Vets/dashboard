@@ -167,7 +167,8 @@ export default function SystemManagementPage() {
   );
 }
 
-function NetworkTotalCard({ icon: Icon, label, value, total, color }) {
+function NetworkTotalCard({ icon: Icon, label, value, total, color, percentOf, percentLabel }) {
+  const pct = percentOf > 0 ? Math.round((value / percentOf) * 100) : null;
   return (
     <Card className="bg-white/90 shadow-md border-blue-100 overflow-hidden">
       <CardContent className="p-0">
@@ -176,6 +177,9 @@ function NetworkTotalCard({ icon: Icon, label, value, total, color }) {
           <p className="text-3xl font-bold">{value}</p>
           {total !== undefined && (
             <p className="text-xs opacity-80">מתוך {total} סה״כ</p>
+          )}
+          {pct !== null && (
+            <p className="text-xs opacity-80">{pct}% {percentLabel}</p>
           )}
         </div>
         <div className="px-4 py-2">
