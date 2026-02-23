@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Building2, ClipboardCheck, Calendar, FileText, CheckCircle, Clock } from "lucide-react";
+import { Building2, ClipboardCheck, Calendar, FileText, CheckCircle, Clock, Send, Inbox } from "lucide-react";
 
 export default function NetworkClinicStats({ clinics, clinicStats, isLoading }) {
   if (isLoading) {
