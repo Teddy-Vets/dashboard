@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Clinic, IntakeForm, ConsentForm, AppointmentRequest } from "@/entities/all";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, Building2, ClipboardCheck, FileText, Calendar, Clock, TrendingUp, CheckCircle } from "lucide-react";
+import { Activity, Building2, ClipboardCheck, FileText, Calendar, Clock, TrendingUp, CheckCircle, Send, Inbox } from "lucide-react";
 import userService from "@/components/services/userService";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ErrorMessage from "@/components/common/ErrorMessage";
