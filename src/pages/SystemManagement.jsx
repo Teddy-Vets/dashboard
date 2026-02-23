@@ -45,30 +45,58 @@ export default function SystemManagementPage() {
         const cIntake = intakeForms.filter(f => f.clinic_id === clinic.id);
         const cConsent = consentForms.filter(f => f.clinic_id === clinic.id);
         const cAppts = appointments.filter(f => f.clinic_id === clinic.id);
-        const cPending = [
-          ...cIntake.filter(f => ['draft', 'submitted', 'reviewed'].includes(f.status)),
+
+        // שנשלחו ללקוח = טפסים שיצאו מהמרפאה (published/sent) + consent שנשלחו
+        const sentToClient = [
+          ...cIntake.filter(f => ['published', 'sent'].includes(f.status)),
+          ...cConsent.filter(f => ['pending', 'signed', 'completed', 'legally_sealed'].includes(f.status)),
+        ].length;
+
+        // התקבלו בחזרה וטרם טופלו = submitted/reviewed
+        const receivedPending = [
+          ...cIntake.filter(f => ['submitted', 'reviewed'].includes(f.status)),
           ...cConsent.filter(f => f.status === 'pending'),
-        ];
+        ].length;
+
+        // הושלם טיפול = completed/archived/legally_sealed
+        const completed = [
+          ...cIntake.filter(f => ['completed', 'archived'].includes(f.status)),
+          ...cConsent.filter(f => ['completed', 'legally_sealed'].includes(f.status)),
+        ].length;
+
         stats[clinic.id] = {
           intakeForms: cIntake.length,
           consentForms: cConsent.length,
           appointments: cAppts.length,
-          pending: cPending.length,
+          sentToClient,
+          receivedPending,
+          completed,
         };
       });
 
       setClinicStats(stats);
 
       // Network totals
-      const pendingAll = [
-        ...intakeForms.filter(f => ['draft', 'submitted', 'reviewed'].includes(f.status)),
+      const sentAll = [
+        ...intakeForms.filter(f => ['published', 'sent'].includes(f.status)),
+        ...consentForms.filter(f => ['pending', 'signed', 'completed', 'legally_sealed'].includes(f.status)),
+      ].length;
+      const receivedPendingAll = [
+        ...intakeForms.filter(f => ['submitted', 'reviewed'].includes(f.status)),
         ...consentForms.filter(f => f.status === 'pending'),
-      ];
+      ].length;
+      const completedAll = [
+        ...intakeForms.filter(f => ['completed', 'archived'].includes(f.status)),
+        ...consentForms.filter(f => ['completed', 'legally_sealed'].includes(f.status)),
+      ].length;
+
       setNetworkTotals({
         intakeForms: intakeForms.length,
         consentForms: consentForms.length,
         appointments: appointments.length,
-        pending: pendingAll.length,
+        sentToClient: sentAll,
+        receivedPending: receivedPendingAll,
+        completed: completedAll,
         activeClinics: clinicsData.filter(c => c.is_active).length,
       });
 
