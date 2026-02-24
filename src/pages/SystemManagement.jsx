@@ -191,7 +191,7 @@ export default function SystemManagementPage() {
   );
 }
 
-function NetworkTotalCard({ icon: Icon, label, value, total, color, percentOf, percentLabel }) {
+function NetworkTotalCard({ icon: Icon, label, value, color, percentOf, percentLabel, details = [] }) {
   const pct = percentOf > 0 ? Math.round((value / percentOf) * 100) : null;
   return (
     <Card className="bg-white/90 shadow-md border-blue-100 overflow-hidden">
@@ -199,15 +199,15 @@ function NetworkTotalCard({ icon: Icon, label, value, total, color, percentOf, p
         <div className={`bg-gradient-to-br ${color} p-4 text-white`}>
           <Icon className="w-6 h-6 mb-2 opacity-90" />
           <p className="text-3xl font-bold">{value}</p>
-          {total !== undefined && (
-            <p className="text-xs opacity-80">מתוך {total} סה״כ</p>
-          )}
           {pct !== null && (
             <p className="text-xs opacity-80">{pct}% {percentLabel}</p>
           )}
         </div>
         <div className="px-4 py-2">
           <p className="text-sm font-medium text-slate-700">{label}</p>
+          {details.map((d, i) => (
+            <p key={i} className="text-xs text-slate-400 mt-0.5">{d}</p>
+          ))}
         </div>
       </CardContent>
     </Card>
