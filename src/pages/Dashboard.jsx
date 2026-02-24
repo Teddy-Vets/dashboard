@@ -482,38 +482,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Stats - Responsive Grid with descriptions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
-          {statsData.map((stat, index) => (
-            <motion.div
-              key={stat.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className="h-full">
-              
-              <Link to={createPageUrl(stat.link)} className="block h-full">
-                <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur-sm border-2 hover:border-blue-300 h-full">
-                  <CardContent className="p-4 md:p-6">
-                    <div className="flex items-center justify-between mb-3 md:mb-4">
-                      <div className={`${stat.color} p-2 md:p-3 rounded-xl`}>
-                        <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-xl md:text-2xl font-bold text-slate-900">{stat.value}</p>
-                      <p className="text-xs md:text-sm text-slate-600 font-medium">{stat.title}</p>
-                      <p className="text-xs text-slate-500 leading-relaxed">{stat.description}</p>
-                      {stat.change && (
-                        <p className="text-xs text-green-600 font-medium mt-2">{stat.change}</p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+
 
         {/* Forms Lists */}
         {currentUser?.role === "admin" ? (
