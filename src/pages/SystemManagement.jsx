@@ -69,7 +69,8 @@ export default function SystemManagementPage() {
         const consentPending = cConsent.filter(f => f.status === 'pending').length;
 
         // Per-type sent
-        const intakeSent = cIntake.filter(f => ['published', 'sent'].includes(f.status)).length;
+        // Intake forms are sent via public link - all non-draft records were sent to client
+        const intakeSent = cIntake.filter(f => f.status !== 'draft').length;
         const consentSent = cConsent.filter(f => ['pending', 'signed', 'completed', 'legally_sealed'].includes(f.status)).length;
 
         // Per-type completed
