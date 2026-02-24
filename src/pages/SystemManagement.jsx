@@ -163,13 +163,18 @@ export default function SystemManagementPage() {
             <TrendingUp className="w-5 h-5 text-blue-500" />
             סיכום רשת כולל
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
 
-            <NetworkTotalCard icon={ClipboardCheck} label="טפסי היכרות" value={networkTotals.intakeForms} color="from-teal-400 to-teal-600" />
-            <NetworkTotalCard icon={FileText} label="טפסי הסכמה" value={networkTotals.consentForms} color="from-purple-400 to-purple-600" />
-            <NetworkTotalCard icon={Send} label="נשלחו ללקוח" value={networkTotals.sentToClient} color="from-cyan-400 to-cyan-600" />
-            <NetworkTotalCard icon={Inbox} label="התקבלו - טרם טופלו" value={networkTotals.receivedPending} color={networkTotals.receivedPending > 0 ? "from-amber-400 to-amber-600" : "from-green-400 to-green-600"} percentOf={networkTotals.sentToClient} percentLabel="מסך נשלחו" />
-            <NetworkTotalCard icon={CheckCircle} label="הושלם טיפול" value={networkTotals.completed} color="from-green-400 to-green-600" />
+            <NetworkTotalCard icon={ClipboardCheck} label="טפסי היכרות" value={networkTotals.intakeForms} color="from-teal-400 to-teal-600"
+              details={[`${clinics.length} מרפאות`]} />
+            <NetworkTotalCard icon={FileText} label="טפסי הסכמה" value={networkTotals.consentForms} color="from-purple-400 to-purple-600"
+              details={[`${clinics.length} מרפאות`]} />
+            <NetworkTotalCard icon={Send} label="נשלחו ללקוח" value={networkTotals.sentToClient} color="from-cyan-400 to-cyan-600"
+              details={[`היכרות + הסכמה`]} />
+            <NetworkTotalCard icon={Inbox} label="התקבלו - טרם טופלו" value={networkTotals.receivedPending} color={networkTotals.receivedPending > 0 ? "from-amber-400 to-amber-600" : "from-green-400 to-green-600"} percentOf={networkTotals.sentToClient} percentLabel="מסך נשלחו"
+              details={[`מתוך ${networkTotals.sentToClient} נשלחו`]} />
+            <NetworkTotalCard icon={CheckCircle} label="הושלם טיפול" value={networkTotals.completed} color="from-green-400 to-green-600"
+              details={[`${networkTotals.sentToClient > 0 ? Math.round((networkTotals.completed / networkTotals.sentToClient) * 100) : 0}% מהנשלחים`]} />
           </div>
         </div>
 
