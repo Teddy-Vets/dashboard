@@ -78,8 +78,8 @@ export default function SystemManagementPage() {
         const consentCompleted = cConsent.filter(f => ['completed', 'legally_sealed'].includes(f.status)).length;
 
         stats[clinic.id] = {
-          intakeForms: cIntake.length,
-          consentForms: cConsent.length,
+          intakeForms: intakeSent,
+          consentForms: consentSent,
           appointments: cAppts.length,
           sentToClient,
           receivedPending,
