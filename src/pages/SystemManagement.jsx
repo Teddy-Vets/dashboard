@@ -169,8 +169,6 @@ export default function SystemManagementPage() {
               details={[`${clinics.length} מרפאות`]} />
             <NetworkTotalCard icon={FileText} label="טפסי הסכמה" value={networkTotals.consentForms} color="from-purple-400 to-purple-600"
               details={[`${clinics.length} מרפאות`]} />
-            <NetworkTotalCard icon={Send} label="נשלחו ללקוח" value={networkTotals.sentToClient} color="from-cyan-400 to-cyan-600"
-              details={[`היכרות + הסכמה`]} />
             <NetworkTotalCard icon={Inbox} label="התקבלו - טרם טופלו" value={networkTotals.receivedPending} color={networkTotals.receivedPending > 0 ? "from-amber-400 to-amber-600" : "from-green-400 to-green-600"} percentOf={networkTotals.sentToClient} percentLabel="מסך נשלחו"
               details={[`מתוך ${networkTotals.sentToClient} נשלחו`]} />
             <NetworkTotalCard icon={CheckCircle} label="הושלם טיפול" value={networkTotals.completed} color="from-green-400 to-green-600"
