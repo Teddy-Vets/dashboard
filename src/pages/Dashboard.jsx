@@ -202,9 +202,10 @@ export default function DashboardPage() {
     const statusConfig = {
       draft: { label: "טיוטה", color: "bg-gray-100 text-gray-800" },
       submitted: { label: "הוגש", color: "bg-blue-100 text-blue-800" },
-      pending: { label: "ממתין", color: "bg-yellow-100 text-yellow-800" },
-      signed: { label: "נחתם", color: "bg-green-100 text-green-800" },
+      pending: { label: "ממתין לחתימה", color: "bg-yellow-100 text-yellow-800" },
+      signed: { label: "נחתם", color: "bg-blue-100 text-blue-800" },
       completed: { label: "הושלם", color: "bg-green-100 text-green-800" },
+      legally_sealed: { label: "חתום משפטית", color: "bg-purple-100 text-purple-800" },
       reviewed: { label: "נבדק", color: "bg-purple-100 text-purple-800" },
       contacted: { label: "נוצר קשר", color: "bg-indigo-100 text-indigo-800" },
       confirmed: { label: "אושר", color: "bg-green-100 text-green-800" },
