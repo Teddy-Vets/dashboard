@@ -21,7 +21,8 @@ Deno.serve(async (req) => {
       'anxiety_questionnaire',
       'spay_neuter_instructions',
       'dental_care_instructions',
-      'post_surgery_instructions'
+      'post_surgery_instructions',
+      'subscription_agreement'
     ];
     
     if (!form_type || !validFormTypes.includes(form_type)) {

@@ -102,6 +102,12 @@ Deno.serve(async (req) => {
             formData = rabiesResults?.[0] || {};
             break;
           }
+
+          case 'subscription_agreement': {
+            const subResults = await base44.asServiceRole.entities.SubscriptionAgreement.filter({ id: link.form_id });
+            formData = subResults?.[0] || {};
+            break;
+          }
         }
       } catch (e) {
         console.warn(`Form with ID ${link.form_id} not found, but link is valid. Proceeding.`, e);
