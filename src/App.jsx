@@ -52,8 +52,8 @@ const AuthenticatedApp = () => {
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
-        <Route path="/SubscriptionAgreements" element={<LayoutWrapper currentPageName="SubscriptionAgreements"><SubscriptionAgreements /></LayoutWrapper>} />
-        <Route path="/CreateSubscriptionAgreement" element={<LayoutWrapper currentPageName="CreateSubscriptionAgreement"><CreateSubscriptionAgreement /></LayoutWrapper>} />
+        <Route path="/SubscriptionAgreements" element={<SubscriptionAgreements />} />
+        <Route path="/CreateSubscriptionAgreement" element={<CreateSubscriptionAgreement />} />
         <Route path="/PublicSubscriptionAgreement" element={<PublicSubscriptionAgreement />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
