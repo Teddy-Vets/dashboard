@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
                     // יצירת חיית מחמד חדשה
                     console.log('[submitIntake] Creating new pet');
                     pet = await base44.asServiceRole.entities.Pet.create({
-                        clinic_id: formData.clinic_id,
+                        clinic_id,
                         client_id: clientId,
                         pet_name: formData.pet_name,
                         pet_type: formData.pet_type || 'כלב',
