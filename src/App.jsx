@@ -54,7 +54,7 @@ const AuthenticatedApp = () => {
         ))}
         <Route path="/SubscriptionAgreements" element={<LayoutWrapper currentPageName="SubscriptionAgreements"><SubscriptionAgreements /></LayoutWrapper>} />
         <Route path="/CreateSubscriptionAgreement" element={<LayoutWrapper currentPageName="CreateSubscriptionAgreement"><CreateSubscriptionAgreement /></LayoutWrapper>} />
-        <Route path="/PublicSubscriptionAgreement" element={<LayoutWrapper currentPageName="PublicSubscriptionAgreement"><PublicSubscriptionAgreement /></LayoutWrapper>} />
+        <Route path="/PublicSubscriptionAgreement" element={<PublicSubscriptionAgreement />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>
