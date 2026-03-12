@@ -24,9 +24,15 @@ Deno.serve(async (req) => {
             console.log('[submitIntake] No authenticated user - public form submission');
         }
 
+        // קריאת הטופס הקיים מהמסד כדי לקבל clinic_id אמין
+        const existingForms = await base44.asServiceRole.entities.IntakeForm.filter({ id: formData.id });
+        const existingForm = existingForms?.[0] || {};
+        const clinic_id = existingForm.clinic_id || formData.clinic_id;
+
         // עדכון הטופס לסטטוס submitted - תמיד נשתמש ב-service role
         const updatedForm = await base44.asServiceRole.entities.IntakeForm.update(formData.id, {
             ...formData,
+            clinic_id,
             status: 'submitted',
             completed_at: new Date().toISOString(),
             client_consent: true
