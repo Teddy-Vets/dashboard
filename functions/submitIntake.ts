@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
                         // יצירת לקוח חדש
                         console.log('[submitIntake] Creating new client');
                         client = await base44.asServiceRole.entities.Client.create({
-                            clinic_id: formData.clinic_id,
+                            clinic_id,
                             owner_name: formData.owner_name,
                             phone: formData.owner_phone || '',
                             email: formData.owner_email || '',
