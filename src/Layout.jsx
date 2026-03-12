@@ -62,6 +62,7 @@ const navItems = [
   { type: 'divider', label: 'טפסים והנחיות' },
   { href: "/IntakeFormsList", icon: ClipboardCheck, label: "טפסי היכרות", roles: ['admin', 'user'] },
   { href: "/ConsentForms", icon: ClipboardCheck, label: "טפסי הסכמה", roles: ['admin', 'user'] },
+  { href: "/SubscriptionAgreements", icon: ClipboardCheck, label: "הסכמי מנויים", roles: ['admin', 'user'] },
   { type: 'divider', label: 'ניהול' },
   { href: "/SystemManagement", icon: TrendingUp, label: "ניהול המערכת", roles: ['admin', 'user'] },
   { href: "/UserManagement", icon: Users, label: "ניהול משתמשים", roles: ['admin'] },
@@ -234,8 +235,8 @@ export default function Layout({ children, currentPageName }) {
   }, [currentUser, isLoadingUser, location.pathname, navigate]);
 
   // Public pages
-  const publicPages = ['PublicForm', 'PublicConsentForm', 'PublicViewIntakeForm', 'AppointmentBooking', 'PublicAnxietyQuestionnaire', 'PublicEmergencyTriage'];
-  const publicPaths = ['/PublicForm', '/PublicConsentForm', '/PublicViewIntakeForm', '/AppointmentBooking', '/PublicAnxietyQuestionnaire', '/PublicEmergencyTriage'];
+  const publicPages = ['PublicForm', 'PublicConsentForm', 'PublicViewIntakeForm', 'AppointmentBooking', 'PublicAnxietyQuestionnaire', 'PublicEmergencyTriage', 'PublicSubscriptionAgreement'];
+  const publicPaths = ['/PublicForm', '/PublicConsentForm', '/PublicViewIntakeForm', '/AppointmentBooking', '/PublicAnxietyQuestionnaire', '/PublicEmergencyTriage', '/PublicSubscriptionAgreement'];
 
   const isPublicPage = publicPages.includes(currentPageName) || publicPaths.includes(location.pathname);
 
