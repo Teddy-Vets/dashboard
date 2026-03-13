@@ -205,14 +205,14 @@ export default function CreateSubscriptionAgreementPage() {
 
             <div className="mt-4">
               <Label className="text-base font-semibold">תדירות תשלום</Label>
-              <RadioGroup value={form.payment_frequency} onValueChange={v => handleChange('payment_frequency', v)} className="flex gap-6 mt-2">
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="monthly" id="pay-monthly" />
+              <RadioGroup value={form.payment_frequency} onValueChange={v => handleChange('payment_frequency', v)} className="flex flex-col gap-3 mt-2 items-end">
+                <div className="flex items-center gap-2 flex-row-reverse justify-end w-full">
                   <Label htmlFor="pay-monthly" className="cursor-pointer">הוראת קבע חודשית</Label>
+                  <RadioGroupItem value="monthly" id="pay-monthly" />
                 </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="annual" id="pay-annual" />
+                <div className="flex items-center gap-2 flex-row-reverse justify-end w-full">
                   <Label htmlFor="pay-annual" className="cursor-pointer">תשלום שנתי מראש (חודש מתנה)</Label>
+                  <RadioGroupItem value="annual" id="pay-annual" />
                 </div>
               </RadioGroup>
             </div>
