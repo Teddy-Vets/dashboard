@@ -38,7 +38,6 @@ export default function SubscriptionAgreementsPage() {
   const [generatingLinkId, setGeneratingLinkId] = useState(null);
   const [generatedLinks, setGeneratedLinks] = useState({});
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [exportingPdfId, setExportingPdfId] = useState(null);
 
   useEffect(() => { loadData(); }, []);
 
