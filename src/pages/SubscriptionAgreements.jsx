@@ -285,7 +285,7 @@ export default function SubscriptionAgreementsPage() {
                   <div className="flex items-center gap-2"><PawPrint className="w-4 h-4 text-orange-500" /><span>{a.pet_name}</span></div>
                   <div className="text-slate-500">{PLAN_LABELS[a.selected_plan]} · {a.payment_frequency === 'annual' ? 'שנתי' : 'חודשי'}</div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {a.status === 'legally_sealed' ? (
                     <Button variant="ghost" size="sm" className="flex-1 text-purple-600" onClick={() => window.open(`/ViewSubscriptionAgreement?id=${a.id}`, '_blank')}>
                       <Eye className="w-4 h-4 ml-1" />צפייה
@@ -296,6 +296,9 @@ export default function SubscriptionAgreementsPage() {
                       שלח לחתימה
                     </Button>
                   )}
+                  <Button variant="ghost" size="sm" onClick={() => exportPDF(a.id)} disabled={exportingPdfId === a.id} className="text-slate-600 hover:bg-slate-50">
+                    {exportingPdfId === a.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                  </Button>
                 </div>
                 {link && (
                   <div className="mt-2 flex items-center gap-2 bg-slate-50 p-2 rounded">
