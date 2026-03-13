@@ -228,7 +228,7 @@ export default function SubscriptionAgreementsPage() {
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-col gap-2">
-                              <div className="flex gap-2">
+                              <div className="flex gap-2 flex-wrap">
                                 {a.status === 'legally_sealed' ? (
                                   <Button variant="ghost" size="sm" className="text-purple-600 hover:bg-purple-50" onClick={() => window.open(`/ViewSubscriptionAgreement?id=${a.id}`, '_blank')}>
                                     <Eye className="w-4 h-4 ml-1" />צפייה
@@ -241,6 +241,10 @@ export default function SubscriptionAgreementsPage() {
                                     </Button>
                                   )
                                 )}
+                                <Button variant="ghost" size="sm" onClick={() => exportPDF(a.id)} disabled={exportingPdfId === a.id} className="text-slate-600 hover:bg-slate-50">
+                                  {exportingPdfId === a.id ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <Download className="w-4 h-4 ml-1" />}
+                                  PDF
+                                </Button>
                               </div>
                               {link && (
                                 <div className="flex items-center gap-2 bg-slate-100 p-1 rounded max-w-xs">
