@@ -40,7 +40,12 @@ export default function CreateSubscriptionAgreementPage() {
   });
 
   useEffect(() => {
-    userService.getCurrentUser().then(setCurrentUser);
+    userService.getCurrentUser().then(user => {
+      setCurrentUser(user);
+      if (user?.role === 'admin') {
+        base44.entities.Clinic.list().then(setClinics).catch(() => {});
+      }
+    });
   }, []);
 
   const handleChange = (field, value) => setForm(p => ({ ...p, [field]: value }));
