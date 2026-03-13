@@ -81,17 +81,6 @@ export default function SubscriptionAgreementsPage() {
     }
   };
 
-  const exportPDF = async (agreementId) => {
-    setExportingPdfId(agreementId);
-    try {
-      await generatePDFClientSide(agreementId);
-    } catch (e) {
-      console.error(e);
-      alert("שגיאה בייצוא PDF. נסו שוב.");
-    } finally {
-      setExportingPdfId(null);
-    }
-  };
 
   const filtered = agreements.filter(a =>
     !searchQuery ||
