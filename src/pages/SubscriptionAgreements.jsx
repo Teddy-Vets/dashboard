@@ -83,6 +83,24 @@ export default function SubscriptionAgreementsPage() {
     }
   };
 
+  const exportPDF = async (agreementId) => {
+    setExportingPdfId(agreementId);
+    try {
+      const response = await generateSubscriptionAgreementPDF({ agreement_id: agreementId });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `subscription_agreement_${agreementId}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert("שגיאה בייצוא PDF. נסו שוב.");
+    } finally {
+      setExportingPdfId(null);
+    }
+  };
+
   const filtered = agreements.filter(a =>
     !searchQuery ||
     a.owner_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
