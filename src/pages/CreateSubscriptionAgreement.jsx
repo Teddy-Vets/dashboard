@@ -157,7 +157,7 @@ export default function CreateSubscriptionAgreementPage() {
             <div>
               <Label>סוג</Label>
               <RadioGroup value={form.pet_type} onValueChange={v => handleChange('pet_type', v)} className="flex gap-4 mt-2">
-                {["כלב", "חתול", "אחר"].map(t => (
+                {["כלב", "חתול", "אחר"].reverse().map(t => (
                   <div key={t} className="flex items-center gap-2">
                     <RadioGroupItem value={t} id={`pet-${t}`} />
                     <Label htmlFor={`pet-${t}`} className="cursor-pointer">{PET_TYPE_EMOJIS[t]} {t}</Label>
