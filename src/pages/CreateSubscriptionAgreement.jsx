@@ -194,7 +194,7 @@ export default function CreateSubscriptionAgreementPage() {
                       <p className="font-bold text-slate-800">{plan.label}</p>
                       <p className="text-sm text-slate-500">{plan.subtitle}</p>
                     </div>
-                    <div className="text-left">
+                    <div className="text-right">
                       <p className="text-sm text-slate-600">חודשי: <span className="font-bold">₪{plan.monthly}</span></p>
                       <p className="text-sm text-slate-500">שנתי: <span className="font-semibold">₪{plan.annual}/חודש</span></p>
                     </div>
