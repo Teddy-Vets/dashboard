@@ -2,7 +2,6 @@ import './App.css'
 import SubscriptionAgreements from './pages/SubscriptionAgreements'
 import CreateSubscriptionAgreement from './pages/CreateSubscriptionAgreement'
 import PublicSubscriptionAgreement from './pages/PublicSubscriptionAgreement'
-import Reports from './pages/Reports'
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -56,7 +55,6 @@ const AuthenticatedApp = () => {
         <Route path="/SubscriptionAgreements" element={<SubscriptionAgreements />} />
         <Route path="/CreateSubscriptionAgreement" element={<CreateSubscriptionAgreement />} />
         <Route path="/PublicSubscriptionAgreement" element={<PublicSubscriptionAgreement />} />
-        <Route path="/Reports" element={<Reports />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>
