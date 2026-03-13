@@ -274,9 +274,7 @@ export default function SubscriptionAgreementsPage() {
                       שלח לחתימה
                     </Button>
                   )}
-                  <Button variant="ghost" size="sm" onClick={() => exportPDF(a.id)} disabled={exportingPdfId === a.id} className="text-slate-600 hover:bg-slate-50">
-                    {exportingPdfId === a.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                  </Button>
+
                 </div>
                 {link && (
                   <div className="mt-2 flex items-center gap-2 bg-slate-50 p-2 rounded">
