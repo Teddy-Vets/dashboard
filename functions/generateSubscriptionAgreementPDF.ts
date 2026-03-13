@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
-import { jsPDF } from 'npm:jspdf@4.0.0';
+import { jsPDF } from 'npm:jspdf@2.5.2';
 
 const PLAN_LABELS = {
   teddy_basic: "טדי בייסיק (כלבים) - ₪89/חודש",
