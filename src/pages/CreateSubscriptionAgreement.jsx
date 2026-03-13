@@ -79,7 +79,7 @@ export default function CreateSubscriptionAgreementPage() {
   const selectedPlan = PLANS.find(p => p.value === form.selected_plan);
 
   return (
-    <div className="p-4 md:p-6 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 min-h-screen" dir="rtl">
+    <div className="p-4 md:p-6 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 min-h-screen" dir="rtl" style={{direction: 'rtl', textAlign: 'right'}}>
       <div className="max-w-3xl mx-auto space-y-6">
 
         {/* Header */}
