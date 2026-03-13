@@ -105,7 +105,7 @@ export default function CreateSubscriptionAgreementPage() {
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="בחר מרפאה..." />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent dir="rtl">
                   {clinics.map(c => (
                     <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                   ))}
