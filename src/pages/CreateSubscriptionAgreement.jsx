@@ -160,7 +160,7 @@ export default function CreateSubscriptionAgreementPage() {
                 {["כלב", "חתול", "אחר"].map(t => (
                   <div key={t} className="flex items-center gap-2">
                     <RadioGroupItem value={t} id={`pet-${t}`} />
-                    <Label htmlFor={`pet-${t}`} className="cursor-pointer">{t}</Label>
+                    <Label htmlFor={`pet-${t}`} className="cursor-pointer">{PET_TYPE_EMOJIS[t]} {t}</Label>
                   </div>
                 ))}
               </RadioGroup>
