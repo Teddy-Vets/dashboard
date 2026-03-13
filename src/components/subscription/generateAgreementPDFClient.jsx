@@ -169,8 +169,12 @@ export async function generatePDFClientSide(agreementId) {
   const canvas = await html2canvas(container.firstChild, {
     scale: 2,
     useCORS: true,
+    allowTaint: true,
     backgroundColor: '#ffffff',
     logging: false,
+    foreignObjectRendering: false,
+    removeContainer: true,
+    ignoreElements: (el) => el.tagName === 'IFRAME' || el.tagName === 'SCRIPT',
   });
 
   document.body.removeChild(container);
