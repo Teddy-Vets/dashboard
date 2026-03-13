@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Eye, Send, Copy, Loader2, FileText, Clock, Shield, PawPrint, User, Download } from "lucide-react";
+import { Plus, Search, Eye, Send, Copy, Loader2, FileText, Clock, Shield, PawPrint, User } from "lucide-react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { motion, AnimatePresence } from "framer-motion";
