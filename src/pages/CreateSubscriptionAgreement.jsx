@@ -93,6 +93,28 @@ export default function CreateSubscriptionAgreementPage() {
           </div>
         </div>
 
+        {/* Clinic Selector - admin only */}
+        {currentUser?.role === 'admin' && (
+          <Card className="bg-white shadow">
+            <CardHeader className="border-b">
+              <CardTitle className="flex items-center gap-2 text-lg">🏥 בחירת מרפאה</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <Label>מרפאה *</Label>
+              <Select value={form.clinic_id || ""} onValueChange={v => handleChange('clinic_id', v)}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="בחר מרפאה..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {clinics.map(c => (
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Client Details */}
         <Card className="bg-white shadow">
           <CardHeader className="border-b">
