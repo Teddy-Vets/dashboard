@@ -55,11 +55,16 @@ export default function CreateSubscriptionAgreementPage() {
       alert("יש למלא שם לקוח, שם חיה ומסלול.");
       return;
     }
+    const clinic_id = currentUser?.role === 'admin' ? form.clinic_id : (currentUser?.clinic_id || currentUser?.id);
+    if (!clinic_id) {
+      alert("יש לבחור מרפאה.");
+      return;
+    }
     setIsSaving(true);
     try {
       await base44.entities.SubscriptionAgreement.create({
         ...form,
-        clinic_id: currentUser?.clinic_id || currentUser?.id,
+        clinic_id,
         status: "pending",
       });
       navigate("/SubscriptionAgreements");
