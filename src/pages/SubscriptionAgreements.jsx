@@ -10,7 +10,6 @@ import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { motion, AnimatePresence } from "framer-motion";
 import { createFormLink } from "@/functions/createFormLink";
-import { generatePDFClientSide } from "@/components/subscription/generateAgreementPDFClient";
 import { copyToClipboard } from "@/components/utils/urlHelpers";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import EmptyState from "@/components/common/EmptyState";
