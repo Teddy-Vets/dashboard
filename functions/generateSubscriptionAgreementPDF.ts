@@ -172,8 +172,14 @@ Deno.serve(async (req) => {
       y += 8;
 
       try {
-        doc.addImage(agreement.signature_data, 'PNG', margin, y, 80, 30);
-      } catch (_) {}
+        const sigData = agreement.signature_data;
+        const base64 = sigData.includes(',') ? sigData.split(',')[1] : sigData;
+        doc.addImage(base64, 'PNG', margin, y, 80, 30);
+      } catch (_) {
+        doc.setFontSize(9);
+        doc.setTextColor(100, 100, 100);
+        doc.text('[Digital Signature on File]', pageW - margin, y + 10, { align: 'right' });
+      }
       y += 35;
     } else {
       doc.setFontSize(10);
