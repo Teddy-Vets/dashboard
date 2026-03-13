@@ -18,9 +18,12 @@ const PLANS = [
   { value: "teddy_insured", label: "טדי בטוח", subtitle: "לבעלי ביטוח פרטי", monthly: 79, annual: 72 },
 ];
 
+const PET_TYPE_EMOJIS = { "כלב": "🐶", "חתול": "🐱", "אחר": "🦜" };
+
 export default function CreateSubscriptionAgreementPage() {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
+  const [clinics, setClinics] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [form, setForm] = useState({
     owner_name: "",
