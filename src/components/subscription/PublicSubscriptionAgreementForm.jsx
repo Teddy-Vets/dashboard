@@ -153,29 +153,196 @@ export default function PublicSubscriptionAgreementForm({ linkData, token }) {
 
             {/* Plan */}
             <div className="bg-purple-50/30 p-6 rounded-xl border border-purple-100/50">
-              <h3 className="text-xl font-bold text-slate-700 mb-4">2. המסלול הנבחר</h3>
-              <div className="bg-white p-4 rounded-lg border border-purple-100">
-                <p className="font-bold text-purple-800 text-lg">{PLAN_LABELS[form.selected_plan] || form.selected_plan || '-'}</p>
-                <p className="text-slate-600 mt-1">תשלום: <span className="font-semibold">{form.payment_frequency === 'annual' ? 'שנתי מראש (כולל חודש מתנה)' : 'הוראת קבע חודשית'}</span></p>
+              <h3 className="text-xl font-bold text-slate-700 mb-4">2. בחירת מסלול ותדירות תשלום</h3>
+
+              {/* Plans Table */}
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-purple-100 text-purple-900">
+                      <th className="border border-purple-200 px-3 py-2 text-right font-bold">מסלול</th>
+                      <th className="border border-purple-200 px-3 py-2 text-right font-bold">תשלום חודשי בהו"ק</th>
+                      <th className="border border-purple-200 px-3 py-2 text-right font-bold">תשלום שנתי מראש (כולל חודש מתנה)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { plan: 'teddy_basic', label: 'טדי בייסיק (כלבים)', monthly: '₪89 לחודש', annual: '₪82 לחודש (תשלום מראש לשנה)' },
+                      { plan: 'teddy_plus', label: 'טדי פלוס (כלבים)', monthly: '₪129 לחודש', annual: '₪118 לחודש (תשלום מראש לשנה)' },
+                      { plan: 'teddy_platinum', label: 'טדי פלטינום (כלבים)', monthly: '₪169 לחודש', annual: '₪155 לחודש (תשלום מראש לשנה)' },
+                      { plan: 'teddy_royal', label: 'טדי רויאל (חתולים)', monthly: '₪79 לחודש', annual: '₪72 לחודש (תשלום מראש לשנה)' },
+                      { plan: 'teddy_insured', label: 'טדי בטוח (לבעלי ביטוח פרטי)', monthly: '₪79 לחודש', annual: '₪72 לחודש (תשלום מראש לשנה)' },
+                    ].map(row => (
+                      <tr key={row.plan} className={form.selected_plan === row.plan ? 'bg-purple-50 font-bold' : 'bg-white'}>
+                        <td className="border border-purple-100 px-3 py-2">
+                          {form.selected_plan === row.plan && <span className="inline-block w-2 h-2 rounded-full bg-purple-500 ml-1 mb-0.5" />}
+                          {row.label}
+                        </td>
+                        <td className="border border-purple-100 px-3 py-2">{row.monthly}</td>
+                        <td className="border border-purple-100 px-3 py-2">{row.annual}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div className="mt-4 text-sm text-slate-600 space-y-1">
+
+              <div className="bg-white p-4 rounded-lg border border-purple-200 mb-4">
+                <p className="font-bold text-purple-800 text-base">המסלול הנבחר: {PLAN_LABELS[form.selected_plan] || form.selected_plan || '-'}</p>
+                <p className="text-slate-600 mt-1 text-sm">תשלום: <span className="font-semibold">{form.payment_frequency === 'annual' ? 'שנתי מראש (כולל חודש מתנה)' : 'הוראת קבע חודשית'}</span></p>
+              </div>
+
+              <div className="mt-2 text-sm text-slate-600 space-y-1 bg-yellow-50/50 p-3 rounded-lg border border-yellow-100">
+                <p className="font-semibold text-slate-700 mb-1">הערות מחיר ותשלום:</p>
                 <p>• תקופת המנוי הינה 12 חודשים.</p>
-                <p>• מחירי המנויים עשויים להיות צמודים למדד ואינם כוללים אגרות ממשלתיות.</p>
-                <p>• במקרה של כשל בגבייה תישלח התראה, ואם לא יבוצע תשלום תוך 7 ימים, הרשת רשאית להשעות או לבטל את המנוי.</p>
+                <p>• מחירי המנויים עשויים להיות צמודים למדד ואינם כוללים אגרות ממשלתיות (לדוגמה: אגרת חיסון כלבת).</p>
+                <p>• התשלום יבוצע בתשלום חד פעמי לשנה או הוראת קבע חודשית.</p>
+                <p>• במקרה של כשל בגבייה תישלח התראה, ואם לא יבוצע תשלום בתוך 7 ימים ממועד ההתראה, הרשת רשאית להשעות או לבטל את המנוי.</p>
               </div>
             </div>
 
-            {/* Terms - Section 3 */}
+            {/* Part B – Full Terms */}
+            <div className="bg-slate-50/60 p-6 rounded-xl border border-slate-200/60">
+              <h3 className="text-xl font-bold text-slate-700 mb-1">חלק ב׳ – תנאי ההסכם</h3>
+              <p className="text-xs text-slate-500 mb-5">(תנאי הצטרפות ושימוש בתוכנית המנויים)</p>
+
+              <div className="space-y-5 text-sm text-slate-600">
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">1. כללי</p>
+                  <p>1.1 תקנון זה מסדיר את תנאי ההצטרפות, השימוש, הזכאות, הביטול, האחריות וההתחייבויות במסגרת תוכניות המנויים של רשת המרפאות הווטרינריות Teddy Vets.</p>
+                  <p>1.2 התקנון מנוסח בלשון זכר מטעמי נוחות בלבד ומתייחס לכל המינים באופן שווה.</p>
+                  <p>1.3 כל לקוח המצטרף לתוכנית מנויים מאשר כי קרא, הבין והסכים לכל תנאי התקנון.</p>
+                  <p>1.4 במקרה של סתירה בין הוראות התקנון לבין פרסום שיווקי כלשהו – הוראות תקנון זה תגברנה.</p>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">2. תוכניות המנויים</p>
+                  <p>2.1 הרשת מציעה מספר תוכניות מנויים: טדי בייסיק, טדי פלוס, טדי פלטינום, טדי רויאל (לחתולים), טדי בטוח (לבעלי ביטוח פרטי).</p>
+                  <p>2.2 כל תוכנית כוללת סל שירותים והטבות שונה, כפי שמפורט בפרסום העדכני באתר הרשת ובמרפאות.</p>
+                  <p>2.3 השירותים עשויים לכלול: חיסונים שנתיים, טיפולים מונעים, בדיקות רפואיות, שירותי חירום, ייעוץ וטרינרי מרחוק, ניקוי שיניים, בדיקות סקר, טיפולים פיזיותרפיים, הטבות לרכישת מוצרים ועוד.</p>
+                  <p>2.4 השירותים ניתנים לפי שיקול דעת רפואי ובהתאם להנחיות משרד החקלאות והרגולציה הרלוונטית.</p>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">3. תקופת המנוי ותשלום</p>
+                  <p>3.1 המנוי הינו לתקופה של 12 חודשים.</p>
+                  <p>3.2 הלקוח יכול לבחור בין תשלום חודשי לבין תשלום שנתי מראש (הכולל חודש מתנה).</p>
+                  <p>3.3 התשלום מתבצע באמצעות כרטיס אשראי תקף או הוראת קבע.</p>
+                  <p>3.4 במקרה של כשל בגבייה – תישלח ללקוח התראה. אם לא יבוצע תשלום תוך 7 ימים, הרשת שומרת לעצמה את הזכות להשעות או לבטל את המנוי.</p>
+                  <p>3.5 מחירי המנויים צמודים למדד ואינם כוללים אגרות ממשלתיות (לדוג' אגרת חיסון כלבת).</p>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">4. זכאות והיקף הכיסוי</p>
+                  <p>4.1 כל מנוי תקף עבור חיית מחמד אחת בלבד. לא ניתן להעביר את המנוי לבעלים או לחיה אחרת.</p>
+                  <p>4.2 חיה אשר חלתה או טופלה טרם ההצטרפות – לא תהיה זכאית להחזר בגין טיפול רטרואקטיבי.</p>
+                  <p>4.3 טיפולים כרוניים, אשפוזים, או מצבים הדורשים בדיקות מעבדה מתקדמות – יינתנו לפי התנאים וההנחות של כל מסלול.</p>
+                  <p>4.4 טיפולים חיצוניים (אצל מומחים חיצוניים לרשת) אינם כלולים במנוי, אלא אם צוין אחרת.</p>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">5. קבלת שירות והזמנת תורים</p>
+                  <p>5.1 לקוח זכאי לקבל את השירותים הכלולים בתוכניתו במהלך תקופת המנוי בלבד.</p>
+                  <p>5.2 יש לקבוע תור מראש לכל שירות – למעט מקרי חירום.</p>
+                  <p>5.3 תורים יתואמו בהתאם לזמינות הצוות והמרפאה. אין התחייבות למועד מסוים למעט תוכניות הכוללות הבטחת תור.</p>
+                  <p>5.4 שירותים שאינם מומשו בתקופת המנוי – לא יצברו לשנה הבאה ולא יינתן עבורם החזר.</p>
+                  <p>5.5 תור שלא בוטל לפחות 4 שעות מראש – ייחשב כמומש.</p>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">6. מימוש הטבות והנחות</p>
+                  <p>6.1 ההטבות במסלול תקפות רק כל עוד המנוי פעיל ותשלומיו מעודכנים.</p>
+                  <p>6.2 הנחות ברכישת מוצרים או טיפולים ניתנות במקום בלבד ואינן תקפות לאתר.</p>
+                  <p>6.3 ניקוי שיניים ללא עלות (בטדי פלטינום) או בהנחה – יינתן אחת לשנה בלבד.</p>
+                  <p>6.4 לא ניתן לצבור טיפולים שלא מומשו.</p>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">7. ייעוץ מרחוק</p>
+                  <p>7.1 שירות שיחה/וידאו עם וטרינר מחוץ לשעות הפעילות יינתן בהתאם למדיניות הרשת.</p>
+                  <p>7.2 השירות אינו מהווה תחליף לבדיקה רפואית פיזית.</p>
+                  <p>7.3 הרשת אינה מתחייבת למענה מיידי, אך תעשה מאמץ לתת מענה תוך זמן סביר.</p>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">8. ביטול ושינוי מסלול</p>
+                  <p>8.1 ניתן לבטל את המנוי בכל עת בהודעה בכתב לפחות 14 יום מראש.</p>
+                  <p>8.2 במקרה של תשלום חודשי – יחויב הלקוח עד סוף החודש בו נמסרה הודעת הביטול.</p>
+                  <p>8.3 במקרה של תשלום שנתי מראש – ייערך חישוב לפי חודשים מנוצלים, בניכוי חודש המתנה, והיתרה תוחזר.</p>
+                  <p>8.4 שינוי מסלול (שדרוג או מעבר למסלול אחר) יתאפשר רק באישור הנהלת הרשת ובהתאם למדיניות.</p>
+                </div>
+              </div>
+
+              {/* Cancellation Scenarios Table */}
+              <div className="mt-6">
+                <p className="font-bold text-slate-800 mb-3 text-sm">טבלת תרחישי ביטול:</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-slate-200 text-slate-800">
+                        <th className="border border-slate-300 px-3 py-2 text-right font-bold">תרחיש</th>
+                        <th className="border border-slate-300 px-3 py-2 text-right font-bold">הפעולה במערכת</th>
+                        <th className="border border-slate-300 px-3 py-2 text-right font-bold">התחשבנות כספית</th>
+                        <th className="border border-slate-300 px-3 py-2 text-right font-bold">המסר ללקוח</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="bg-white">
+                        <td className="border border-slate-200 px-3 py-2 font-semibold">פטירת בעל החיים 🐾</td>
+                        <td className="border border-slate-200 px-3 py-2">ביטול מנוי מיידי</td>
+                        <td className="border border-slate-200 px-3 py-2"><strong>ספיגת חוב:</strong> לא גובים יתרה, גם אם ניצל שירותים רבים.</td>
+                        <td className="border border-slate-200 px-3 py-2 text-slate-600">"משתתפים בצערכם, דאגנו לעצור את כל החיובים העתידיים. שלא תדעו צער."</td>
+                      </tr>
+                      <tr className="bg-slate-50/50">
+                        <td className="border border-slate-200 px-3 py-2 font-semibold">מעבר דירה / מסירה 🏠</td>
+                        <td className="border border-slate-200 px-3 py-2">ביטול בכפוף לגמר חשבון</td>
+                        <td className="border border-slate-200 px-3 py-2"><strong>השוואת ערך:</strong> (שווי טיפולים) פחות (מה ששולם). הלקוח משלים את ההפרש.</td>
+                        <td className="border border-slate-200 px-3 py-2 text-slate-600">"מכיוון שההנחות ניתנו על בסיס שנתי, אנו מחשבים את העלות היחסית וסוגרים את החשבון."</td>
+                      </tr>
+                      <tr className="bg-white">
+                        <td className="border border-slate-200 px-3 py-2 font-semibold">ביטול מרצון (סתם כי רוצה)</td>
+                        <td className="border border-slate-200 px-3 py-2">ביטול בכפוף לגמר חשבון</td>
+                        <td className="border border-slate-200 px-3 py-2"><strong>הזול מביניהם:</strong> הלקוח בוחר אם להשלים את ההפרש למחירון מלא, או לשלם את יתרת המנוי.</td>
+                        <td className="border border-slate-200 px-3 py-2 text-slate-600">"המנוי הוא התחייבות שנתית שנותנת הנחות ענק. ניתן לבטל, אך אז ההנחות מתבטלות רטרואקטיבית."</td>
+                      </tr>
+                      <tr className="bg-slate-50/50">
+                        <td className="border border-slate-200 px-3 py-2 font-semibold">חוסר שביעות רצון (תלונה)</td>
+                        <td className="border border-slate-200 px-3 py-2">שיקול דעת מנהל</td>
+                        <td className="border border-slate-200 px-3 py-2"><strong>גמיש:</strong> במקרה של כשל שירותי מובהק, נהוג לבטל ללא קנס.</td>
+                        <td className="border border-slate-200 px-3 py-2 text-slate-600">"חשוב לנו שתצאו בהרגשה טובה. במקרה הזה נבוא לקראתכם ונבטל ללא חיוב נוסף."</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="space-y-3 mt-6 text-sm text-slate-600">
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">9. סיום חד-צדדי ע"י הרשת</p>
+                  <p>9.1 הרשת שומרת לעצמה את הזכות להפסיק מנוי באופן חד-צדדי במקרה של: התנהגות פוגענית או מאיימת מצד הלקוח, אי עמידה בתנאי התשלום, ניצול לרעה של שירותי המנוי.</p>
+                </div>
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">10. אחריות רפואית ומגבלות</p>
+                  <p>10.1 כל שירות רפואי יבוצע ע"י צוות מקצועי מוסמך בהתאם לסטנדרטים הנהוגים ברשת.</p>
+                  <p>10.2 המנוי אינו מבטיח מניעת מחלה או ריפוי מלא, אלא גישה זמינה, משתלמת ורציפה לשירותים וטרינריים.</p>
+                  <p>10.3 השירותים ניתנים בהתאם לשיקול דעת רפואי בלבד, ואין לדרוש טיפול שאינו מאושר ע"י רופא.</p>
+                </div>
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">11. הגנת פרטיות ודיוור</p>
+                  <p>11.1 הצטרפות לתוכנית המנויים מהווה אישור להעברת דיוור שיווקי (לרבות SMS ודוא"ל) בנושאים הקשורים למנוי.</p>
+                  <p>11.2 ניתן להסיר את ההרשאה בכל עת ע"י פניה לשירות הלקוחות.</p>
+                </div>
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">12. שונות</p>
+                  <p>12.1 הרשת רשאית לעדכן מעת לעת את תנאי התקנון, סל השירותים או המחירים, תוך מתן הודעה מראש של 30 יום למנויים הפעילים.</p>
+                  <p>12.2 מובהר כי אין כפל מבצעים, הטבות או הנחות – למעט אם נאמר במפורש אחרת.</p>
+                  <p>12.3 כל מחלוקת תידון בבתי המשפט המוסמכים בת"א בלבד.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3 – Declarations */}
             <div className="bg-slate-50/60 p-6 rounded-xl border border-slate-200/60">
               <h3 className="text-xl font-bold text-slate-700 mb-4">3. הסכמות והצהרות</h3>
-              <div className="space-y-3 text-sm text-slate-600">
-                <p>• <strong>הזכאות:</strong> כל מנוי תקף עבור חיית מחמד אחת בלבד. לא ניתן להעביר את המנוי לבעלים או לחיה אחרת.</p>
-                <p>• <strong>ביטול:</strong> ניתן לבטל את המנוי בהודעה בכתב לפחות 14 יום מראש. שדרוג מסלול – באישור הנהלה בלבד.</p>
-                <p>• <strong>שירותים:</strong> שירותים שלא מומשו בתקופת המנוי לא יצברו ולא יינתן עבורם החזר.</p>
-                <p>• <strong>אחריות:</strong> המנוי אינו מבטיח מניעת מחלה, אלא גישה זמינה ומשתלמת לשירותים וטרינריים.</p>
-                <p>• <strong>שינוי תנאים:</strong> הרשת רשאית לעדכן תנאי התקנון תוך הודעה מראש של 30 יום.</p>
-                <p>• <strong>סמכות שיפוט:</strong> כל מחלוקת תידון בבתי המשפט בת"א בלבד.</p>
-              </div>
 
               <div className="mt-6 space-y-4">
                 <div className="flex items-start gap-3 bg-blue-50/40 p-4 rounded-lg border border-blue-100/50">
