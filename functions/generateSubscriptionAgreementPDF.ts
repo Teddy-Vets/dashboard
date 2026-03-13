@@ -209,17 +209,10 @@ Deno.serve(async (req) => {
     doc.setTextColor(255, 255, 255);
     doc.text('Teddy Vets Network | www.teddyvets.co.il | This document was digitally generated', pageW / 2, pageH - 7, { align: 'center' });
 
-    const pdfBase64 = doc.output('datauristring');
-    const base64Data = pdfBase64.split(',')[1];
-    const binaryStr = atob(base64Data);
-    const bytes = new Uint8Array(binaryStr.length);
-    for (let i = 0; i < binaryStr.length; i++) {
-      bytes[i] = binaryStr.charCodeAt(i);
-    }
+    const pdfOutput = doc.output('blob');
+    const filename = `subscription_agreement_${(agreement.owner_name || agreement_id).replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
-    const filename = `subscription_agreement_${agreement.owner_name || agreement_id}.pdf`;
-
-    return new Response(bytes.buffer, {
+    return new Response(pdfOutput, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
