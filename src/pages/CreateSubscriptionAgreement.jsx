@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ArrowRight, Save, PawPrint, User, CreditCard } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import userService from "@/components/services/userService";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const PLANS = [
   { value: "teddy_basic", label: "טדי בייסיק", subtitle: "כלבים", monthly: 89, annual: 82 },
