@@ -86,15 +86,9 @@ export default function SubscriptionAgreementsPage() {
   const exportPDF = async (agreementId) => {
     setExportingPdfId(agreementId);
     try {
-      const response = await generateSubscriptionAgreementPDF({ agreement_id: agreementId });
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `subscription_agreement_${agreementId}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
+      await generatePDFClientSide(agreementId);
     } catch (e) {
+      console.error(e);
       alert("שגיאה בייצוא PDF. נסו שוב.");
     } finally {
       setExportingPdfId(null);
