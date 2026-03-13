@@ -18,7 +18,7 @@ Deno.serve(async (req) => {
     const { agreement_id } = await req.json();
     if (!agreement_id) return Response.json({ error: 'Missing agreement_id' }, { status: 400 });
 
-    const agreement = await base44.entities.SubscriptionAgreement.get(agreement_id);
+    const agreement = await base44.asServiceRole.entities.SubscriptionAgreement.get(agreement_id);
     if (!agreement) return Response.json({ error: 'Agreement not found' }, { status: 404 });
 
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
