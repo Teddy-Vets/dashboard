@@ -19,6 +19,7 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
   const [formData, setFormData] = useState({
     clinicId: clinicId || '',
     ownerName: '',
+    ownerIdNumber: '',
     phone: '',
     email: '',
     petName: '',
