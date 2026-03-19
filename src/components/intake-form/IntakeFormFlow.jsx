@@ -111,6 +111,7 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
       // יצירת טופס היכרות טיוטה עם מינימום פרטים
       const intakeData = {
         owner_name: formData.ownerName || '',
+        owner_id_number: formData.ownerIdNumber || '',
         owner_phone: formData.phone || '',
         owner_email: formData.email || '',
         pet_name: formData.petName || '',
