@@ -321,6 +321,17 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
               </div>
 
               <div>
+                <Label className="text-base font-medium text-slate-700">מספר תעודת זהות (אופציונלי)</Label>
+                <Input 
+                  value={formData.ownerIdNumber} 
+                  onChange={(e) => updateFormData('ownerIdNumber', e.target.value)} 
+                  className="mt-2" 
+                  placeholder="123456789"
+                  maxLength={9}
+                />
+              </div>
+
+              <div>
                 <Label className="text-base font-medium text-slate-700">טלפון *</Label>
                 <Input 
                   type="tel"
