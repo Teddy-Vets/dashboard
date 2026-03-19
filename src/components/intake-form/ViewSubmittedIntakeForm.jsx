@@ -64,6 +64,9 @@ export default function ViewSubmittedIntakeForm({ formData }) {
         <CardContent className="p-0">
           <div className="divide-y divide-gray-100">
             <DetailItem label="שם מלא" value={formData.owner_name} />
+            {formData.owner_id_number && (
+              <DetailItem label="תעודת זהות" value={formData.owner_id_number} />
+            )}
             <DetailItem label="טלפון" value={formData.owner_phone} />
             <DetailItem label="אימייל" value={formData.owner_email} />
             <DetailItem label="כתובת" value={formData.address} />
