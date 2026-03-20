@@ -66,6 +66,8 @@ export default function DashboardPage() {
   const [recentForms, setRecentForms] = useState([]);
   const [clinics, setClinics] = useState([]);
   const [formsByClinic, setFormsByClinic] = useState({});
+  const [intakeByClinic, setIntakeByClinic] = useState({});
+  const [consentByClinic, setConsentByClinic] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 10;
