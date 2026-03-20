@@ -391,12 +391,13 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-base font-medium text-slate-700">ממלא הטופס (אופציונלי)</Label>
+                  <Label className="text-base font-medium text-slate-700">ממלא הטופס *</Label>
                   <Input
                     value={formData.filledBy}
                     onChange={(e) => updateFormData('filledBy', e.target.value)}
                     className="mt-2"
-                    placeholder="שם הצוות הממלא"
+                    placeholder="שם נציג המרפאה"
+                    required
                   />
                 </div>
               </div>
