@@ -10,6 +10,7 @@ import { EmergencyTriage } from "@/entities/EmergencyTriage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   LayoutDashboard,
   ClipboardCheck,
@@ -27,7 +28,10 @@ import {
   AlertCircle,
   FileText,
   Eye,
-  Plus
+  Plus,
+  Search,
+  ChevronRight,
+  ChevronLeft
 } from "lucide-react";
 import { formatDateTimeInIsrael, isToday } from "@/components/utils/dateUtils";
 import { Link } from "react-router-dom";
