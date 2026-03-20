@@ -303,7 +303,7 @@ export default function DashboardPage() {
     const paginated = enableSearch ? filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) : filtered;
 
     return (
-    <div className="mb-6">
+      <div className="mb-6">
       {/* Desktop View - Hidden on mobile */}
       <Card className="hidden md:block bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
         <CardHeader className="border-b border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50">
