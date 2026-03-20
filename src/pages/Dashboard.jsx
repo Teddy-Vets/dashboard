@@ -439,7 +439,7 @@ export default function DashboardPage() {
       </div>
     </div>
     );
-    };
+  };
 
     if (isLoading) {
     return (
