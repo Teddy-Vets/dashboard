@@ -274,7 +274,7 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
           <img
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/d7815950c_Yourparagraphtext1.png"
             alt="טדי וטס"
-            className="mx-auto mb-4 w-64 h-auto object-contain"
+            className="mx-auto mb-4 w-44 h-auto object-contain"
           />
           <h1 className="text-3xl font-bold text-blue-900 mb-3">יצירת קישור לטופס היכרות</h1>
           <p className="text-slate-600">
