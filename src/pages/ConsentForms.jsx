@@ -615,7 +615,7 @@ export default function ConsentFormsPage() {
                                 <span className="text-sm text-slate-600">{clinicMap[form.clinic_id] || '-'}</span>
                               </TableCell>
                             )}
-                            
+
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 <Calendar className="w-4 h-4 text-slate-400" />
