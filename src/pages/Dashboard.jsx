@@ -565,11 +565,24 @@ export default function DashboardPage() {
           <>
             <div className="mb-4 px-4 md:px-0">
               <h2 className="text-xl md:text-2xl font-bold text-slate-800">טפסים אחרונים לפי מרפאה</h2>
-              <p className="text-sm md:text-base text-slate-600">15 הטפסים האחרונים מכל מרפאה</p>
+              <p className="text-sm md:text-base text-slate-600">5 הטפסים האחרונים לכל סוג, לכל מרפאה</p>
             </div>
             {clinics.map((clinic) => (
-              <div key={clinic.id}>
-                {renderFormsSection(formsByClinic[clinic.id] || [], clinic.name)}
+              <div key={clinic.id} className="mb-8">
+                <h3 className="text-lg font-bold text-slate-700 mb-3 px-4 md:px-0 flex items-center gap-2">
+                  <ClinicIcon className="w-5 h-5 text-blue-500" />
+                  {clinic.name}
+                </h3>
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-blue-700 mb-2 px-1">טפסי היכרות</p>
+                    {renderFormsSection(intakeByClinic[clinic.id] || [], null)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-purple-700 mb-2 px-1">טפסי הסכמה</p>
+                    {renderFormsSection(consentByClinic[clinic.id] || [], null)}
+                  </div>
+                </div>
               </div>
             ))}
           </>
