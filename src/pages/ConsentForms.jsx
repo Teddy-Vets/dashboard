@@ -54,6 +54,8 @@ export default function ConsentFormsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [clinics, setClinics] = useState([]);
+  const [clinicFilter, setClinicFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   
