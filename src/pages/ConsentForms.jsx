@@ -78,7 +78,12 @@ export default function ConsentFormsPage() {
 
       let formsData;
       if (user.role === "admin") {
-        formsData = await getEntityList(ConsentForm, {}, "-created_date", null, 'ConsentForm');
+        const [fetchedForms, fetchedClinics] = await Promise.all([
+          getEntityList(ConsentForm, {}, "-created_date", null, 'ConsentForm'),
+          getEntityList(Clinic, {}, "-created_date", null, 'Clinic')
+        ]);
+        formsData = fetchedForms;
+        setClinics(fetchedClinics || []);
       } else {
         if (!user.clinic_id) {
           throw new ApiError('משתמש לא משויך למרפאה', 400);
