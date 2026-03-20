@@ -19,10 +19,12 @@ import {
   Filter,
   Copy,
   Loader2,
-  FileCheck, // Added FileCheck icon
-  Shield, // Added Shield icon
-  User // NEW: Added User icon for mobile card
+  FileCheck,
+  Shield,
+  User,
+  Building2
 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { Link } from "react-router-dom";
