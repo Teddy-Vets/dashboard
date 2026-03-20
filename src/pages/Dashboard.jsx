@@ -438,10 +438,11 @@ export default function DashboardPage() {
         )}
       </div>
     </div>
+    </div>
     );
-  };
+    };
 
-  if (isLoading) {
+    if (isLoading) {
     return (
       <div className="p-4 md:p-6">
         <div className="max-w-7xl mx-auto space-y-6">
