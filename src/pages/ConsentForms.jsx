@@ -451,6 +451,20 @@ export default function ConsentFormsPage() {
                   className="pr-10"
                 />
               </div>
+              {currentUser?.role === "admin" && clinics.length > 0 && (
+                <Select value={clinicFilter} onValueChange={setClinicFilter}>
+                  <SelectTrigger className="w-full md:w-48">
+                    <Building2 className="w-4 h-4 ml-2 text-slate-400" />
+                    <SelectValue placeholder="כל המרפאות" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">כל המרפאות</SelectItem>
+                    {clinics.map(c => (
+                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
 
               <div className="flex gap-2 flex-wrap justify-end">
                 <Button
