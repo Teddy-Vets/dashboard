@@ -288,11 +288,12 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
           </CardHeader>
 
           <form onSubmit={handleSubmit}>
-            <CardContent className="p-8 space-y-6">
-              {currentUser?.role === 'admin' && (
+            <CardContent className="p-8 space-y-4">
+              {/* Row 1: Clinic + Owner Name */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-base font-medium text-slate-700">בחירת סניף המרפאה *</Label>
-                  <Select 
+                  <Select
                     value={formData.clinicId}
                     onValueChange={(value) => updateFormData('clinicId', value)}
                     disabled={clinics.length === 0}
@@ -308,81 +309,96 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
                     </SelectContent>
                   </Select>
                 </div>
-              )}
-
-              <div>
-                <Label className="text-base font-medium text-slate-700">שם הבעלים *</Label>
-                <Input 
-                  value={formData.ownerName} 
-                  onChange={(e) => updateFormData('ownerName', e.target.value)} 
-                  className="mt-2" 
-                  placeholder="הכניסו את שם הבעלים"
-                  required 
-                />
+                <div>
+                  <Label className="text-base font-medium text-slate-700">שם הבעלים *</Label>
+                  <Input
+                    value={formData.ownerName}
+                    onChange={(e) => updateFormData('ownerName', e.target.value)}
+                    className="mt-2"
+                    placeholder="הכניסו את שם הבעלים"
+                    required
+                  />
+                </div>
               </div>
 
-              <div>
-                <Label className="text-base font-medium text-slate-700">מספר תעודת זהות (אופציונלי)</Label>
-                <Input 
-                  value={formData.ownerIdNumber} 
-                  onChange={(e) => updateFormData('ownerIdNumber', e.target.value)} 
-                  className="mt-2" 
-                  placeholder="123456789"
-                  maxLength={9}
-                />
+              {/* Row 2: ID + Phone */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-base font-medium text-slate-700">מספר תעודת זהות (אופציונלי)</Label>
+                  <Input
+                    value={formData.ownerIdNumber}
+                    onChange={(e) => updateFormData('ownerIdNumber', e.target.value)}
+                    className="mt-2"
+                    placeholder="123456789"
+                    maxLength={9}
+                  />
+                </div>
+                <div>
+                  <Label className="text-base font-medium text-slate-700">טלפון *</Label>
+                  <Input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => updateFormData('phone', e.target.value)}
+                    className="mt-2"
+                    placeholder="05X-XXXXXXX"
+                    required
+                  />
+                </div>
               </div>
 
-              <div>
-                <Label className="text-base font-medium text-slate-700">טלפון *</Label>
-                <Input 
-                  type="tel"
-                  value={formData.phone} 
-                  onChange={(e) => updateFormData('phone', e.target.value)} 
-                  className="mt-2" 
-                  placeholder="05X-XXXXXXX"
-                  required 
-                />
+              {/* Row 3: Email + Pet Name */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-base font-medium text-slate-700">אימייל (אופציונלי)</Label>
+                  <Input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => updateFormData('email', e.target.value)}
+                    className="mt-2"
+                    placeholder="example@email.com"
+                  />
+                </div>
+                <div>
+                  <Label className="text-base font-medium text-slate-700">שם חיית המחמד (אופציונלי)</Label>
+                  <Input
+                    value={formData.petName}
+                    onChange={(e) => updateFormData('petName', e.target.value)}
+                    className="mt-2"
+                    placeholder="שם החיה"
+                  />
+                </div>
               </div>
 
-              <div>
-                <Label className="text-base font-medium text-slate-700">אימייל (אופציונלי)</Label>
-                <Input 
-                  type="email"
-                  value={formData.email} 
-                  onChange={(e) => updateFormData('email', e.target.value)} 
-                  className="mt-2" 
-                  placeholder="example@email.com"
-                />
-              </div>
-
-              <div>
-                <Label className="text-base font-medium text-slate-700">שם חיית המחמד (אופציונלי)</Label>
-                <Input 
-                  value={formData.petName} 
-                  onChange={(e) => updateFormData('petName', e.target.value)} 
-                  className="mt-2" 
-                  placeholder="שם החיה"
-                />
-              </div>
-
-              <div>
-                <Label className="text-base font-medium text-slate-700">שפת הטופס *</Label>
-                <Select 
-                  value={formData.language}
-                  onValueChange={(value) => updateFormData('language', value)}
-                  dir="rtl"
-                >
-                  <SelectTrigger className="mt-2">
-                    <SelectValue placeholder="בחר שפה" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="he">עברית</SelectItem>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="ru">Русский</SelectItem>
-                    <SelectItem value="fr">Français</SelectItem>
-                    <SelectItem value="ar">العربية</SelectItem>
-                  </SelectContent>
-                </Select>
+              {/* Row 4: Language + Filled By */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-base font-medium text-slate-700">שפת הטופס *</Label>
+                  <Select
+                    value={formData.language}
+                    onValueChange={(value) => updateFormData('language', value)}
+                    dir="rtl"
+                  >
+                    <SelectTrigger className="mt-2">
+                      <SelectValue placeholder="בחר שפה" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="he">עברית</SelectItem>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="ru">Русский</SelectItem>
+                      <SelectItem value="fr">Français</SelectItem>
+                      <SelectItem value="ar">العربية</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-base font-medium text-slate-700">ממלא הטופס (אופציונלי)</Label>
+                  <Input
+                    value={formData.filledBy}
+                    onChange={(e) => updateFormData('filledBy', e.target.value)}
+                    className="mt-2"
+                    placeholder="שם הצוות הממלא"
+                  />
+                </div>
               </div>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
