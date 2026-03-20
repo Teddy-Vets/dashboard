@@ -557,8 +557,8 @@ export default function ConsentFormsPage() {
                     <TableHead className="text-right">בעלים</TableHead>
                     <TableHead className="text-right">חיית מחמד</TableHead>
                     <TableHead className="text-right">הליך</TableHead>
-                    <TableHead className="text-right">תאריך הליך</TableHead>
                     {currentUser?.role === "admin" && <TableHead className="text-right">מרפאה</TableHead>}
+                    <TableHead className="text-right">תאריך הליך</TableHead>
                     <TableHead className="text-right">סטטוס</TableHead>
                     <TableHead className="text-right">נוצר</TableHead>
                     <TableHead className="text-right">פעולות</TableHead>
