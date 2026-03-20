@@ -289,7 +289,20 @@ export default function DashboardPage() {
     </motion.div>
   );
 
-  const renderFormsSection = (forms, title = null) => (
+  const renderFormsSection = (forms, title = null, enableSearch = false) => {
+    const filtered = enableSearch && searchQuery
+      ? forms.filter(f =>
+          (f.owner_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (f.pet_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (f.formTypeLabel || '').includes(searchQuery)
+        )
+      : forms;
+
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    const page = enableSearch ? currentPage : 1;
+    const paginated = enableSearch ? filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) : filtered;
+
+    return (
     <div className="mb-6">
       {/* Desktop View - Hidden on mobile */}
       <Card className="hidden md:block bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
