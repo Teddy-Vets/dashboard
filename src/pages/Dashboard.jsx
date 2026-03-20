@@ -572,10 +572,10 @@ export default function DashboardPage() {
         ) : (
           <>
             <div className="mb-4 px-4 md:px-0">
-              <h2 className="text-xl md:text-2xl font-bold text-slate-800">20 הטפסים האחרונים</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-slate-800">הטפסים האחרונים</h2>
               <p className="text-sm md:text-base text-slate-600">כל הטפסים שהוגשו לאחרונה במרפאה שלך</p>
             </div>
-            {renderFormsSection(recentForms)}
+            {renderFormsSection(recentForms, null, true)}
           </>
         )}
       </div>
