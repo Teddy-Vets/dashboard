@@ -123,6 +123,8 @@ export default function ConsentFormsPage() {
     }
   };
 
+  const clinicMap = clinics.reduce((acc, c) => { acc[c.id] = c.name; return acc; }, {});
+
   const filteredForms = forms.filter(form => {
     const matchesSearch = searchQuery === "" ||
       form.owner_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -130,8 +132,9 @@ export default function ConsentFormsPage() {
       form.procedure_type?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesStatus = statusFilter === "all" || form.status === statusFilter;
+    const matchesClinic = clinicFilter === "all" || form.clinic_id === clinicFilter;
 
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesClinic;
   });
 
   const getStats = () => {
