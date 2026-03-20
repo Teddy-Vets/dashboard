@@ -24,6 +24,7 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
     email: '',
     petName: '',
     language: 'he',
+    filledBy: '',
     ...prefilledData
   });
 
