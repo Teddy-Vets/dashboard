@@ -173,21 +173,23 @@ export default function DashboardPage() {
     setClinics(allClinics || []);
 
     // קיבוץ הטפסים לפי מרפאה בצד הלקוח
-    const formsByClinicData = {};
+    const intakeByClinicData = {};
+    const consentByClinicData = {};
     
     for (const clinic of (allClinics || [])) {
-      const clinicForms = [
-        ...(allIntake || []).filter(f => f.clinic_id === clinic.id).slice(0, 15).map(f => ({ ...f, formType: 'intake', formTypeLabel: 'טופס היכרות' })),
-        ...(allConsent || []).filter(f => f.clinic_id === clinic.id).slice(0, 15).map(f => ({ ...f, formType: 'consent', formTypeLabel: 'טופס הסכמה' })),
-        ...(allAnxiety || []).filter(f => f.clinic_id === clinic.id).slice(0, 15).map(f => ({ ...f, formType: 'anxiety', formTypeLabel: 'שאלון חרדה' })),
-        ...(allEmergency || []).filter(f => f.clinic_id === clinic.id).slice(0, 15).map(f => ({ ...f, formType: 'emergency', formTypeLabel: 'טריאז\' חירום' })),
-        ...(allAppointments || []).filter(f => f.clinic_id === clinic.id).slice(0, 15).map(f => ({ ...f, formType: 'appointment', formTypeLabel: 'בקשת תור' }))
-      ].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 15);
+      intakeByClinicData[clinic.id] = (allIntake || [])
+        .filter(f => f.clinic_id === clinic.id)
+        .slice(0, 5)
+        .map(f => ({ ...f, formType: 'intake', formTypeLabel: 'טופס היכרות' }));
 
-      formsByClinicData[clinic.id] = clinicForms;
+      consentByClinicData[clinic.id] = (allConsent || [])
+        .filter(f => f.clinic_id === clinic.id)
+        .slice(0, 5)
+        .map(f => ({ ...f, formType: 'consent', formTypeLabel: 'טופס הסכמה' }));
     }
 
-    setFormsByClinic(formsByClinicData);
+    setIntakeByClinic(intakeByClinicData);
+    setConsentByClinic(consentByClinicData);
 
     const todayIntake = allIntake?.filter(f => isToday(f.created_date)) || [];
     const todayConsent = allConsent?.filter(f => isToday(f.created_date)) || [];
