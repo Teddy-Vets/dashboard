@@ -306,14 +306,27 @@ export default function DashboardPage() {
     <div className="mb-6">
       {/* Desktop View - Hidden on mobile */}
       <Card className="hidden md:block bg-white/90 backdrop-blur-sm border-blue-100 shadow-lg">
-        {title && (
-          <CardHeader className="border-b border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50">
-            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-blue-500" />
-              {title}
-            </CardTitle>
-          </CardHeader>
-        )}
+        <CardHeader className="border-b border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50">
+          <div className="flex items-center justify-between gap-4">
+            {title && (
+              <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-500" />
+                {title}
+              </CardTitle>
+            )}
+            {enableSearch && (
+              <div className="relative w-64">
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input
+                  placeholder="חיפוש לפי בעלים, חיית מחמד..."
+                  value={searchQuery}
+                  onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                  className="pr-9 text-sm"
+                />
+              </div>
+            )}
+          </div>
+        </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -328,14 +341,14 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {forms.length === 0 ? (
+                {paginated.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="text-center text-slate-500 py-8">
                       אין טפסים להצגה
                     </td>
                   </tr>
                 ) : (
-                  forms.map((form, index) => (
+                  paginated.map((form, index) => (
                     <motion.tr
                       key={`${form.formType}-${form.id}`}
                       initial={{ opacity: 0, y: 20 }}
@@ -374,21 +387,59 @@ export default function DashboardPage() {
               </tbody>
             </table>
           </div>
+          {enableSearch && totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100">
+              <span className="text-sm text-slate-500">{filtered.length} תוצאות · עמוד {page} מתוך {totalPages}</span>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setCurrentPage(p => p - 1)}>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+                <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Mobile View - Cards */}
       <div className="md:hidden space-y-3 px-4">
-        {forms.length === 0 ? (
+        {enableSearch && (
+          <div className="relative">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input
+              placeholder="חיפוש..."
+              value={searchQuery}
+              onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+              className="pr-9 text-sm"
+            />
+          </div>
+        )}
+        {paginated.length === 0 ? (
           <Card className="bg-white/90 p-6">
             <p className="text-center text-slate-500">אין טפסים להצגה</p>
           </Card>
         ) : (
-          forms.map((form, index) => renderMobileFormCard(form, index))
+          paginated.map((form, index) => renderMobileFormCard(form, index))
+        )}
+        {enableSearch && totalPages > 1 && (
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm text-slate-500">עמוד {page} מתוך {totalPages}</span>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setCurrentPage(p => p - 1)}>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
         )}
       </div>
     </div>
-  );
+    );
+  };
 
   if (isLoading) {
     return (
