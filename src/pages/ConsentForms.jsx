@@ -609,6 +609,12 @@ export default function ConsentFormsPage() {
                             <TableCell>
                               <span className="text-slate-700">{form.procedure_type}</span>
                             </TableCell>
+
+                            {currentUser?.role === "admin" && (
+                              <TableCell>
+                                <span className="text-sm text-slate-600">{clinicMap[form.clinic_id] || '-'}</span>
+                              </TableCell>
+                            )}
                             
                             <TableCell>
                               <div className="flex items-center gap-2">
