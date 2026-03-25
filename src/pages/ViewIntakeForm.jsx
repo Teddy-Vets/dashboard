@@ -133,7 +133,7 @@ export default function ViewIntakeFormPage() {
         </div>
         
         {formData && formData.status === 'reviewed' && (
-          <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md mb-6" role="alert">
+          <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md mb-6 no-print" role="alert">
             <p className="font-bold">טופס זה ממתין ליצירת לקוח וחיית מחמד.</p>
             <p>לחץ על הכפתור כדי ליצור רשומות חדשות במערכת על סמך הפרטים בטופס.</p>
             <div className="mt-4">
