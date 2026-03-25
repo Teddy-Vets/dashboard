@@ -155,9 +155,7 @@ export default function ViewIntakeFormPage() {
           </div>
         )}
         
-        <div id="printable-intake-form">
-          {renderContent()}
-        </div>
+        {renderContent()}
       </div>
     </div>
   );
