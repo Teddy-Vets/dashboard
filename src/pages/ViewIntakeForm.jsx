@@ -113,10 +113,10 @@ export default function ViewIntakeFormPage() {
     <div className="p-6 bg-slate-50 min-h-screen" dir="rtl">
       <style>{`
         @media print {
-          body * { visibility: hidden; }
-          #printable-intake-form, #printable-intake-form * { visibility: visible; }
-          #printable-intake-form { position: absolute; top: 0; left: 0; width: 100%; }
           .no-print { display: none !important; }
+          nav, header, aside, [class*="sidebar"], [class*="lg:flex lg:w-64"] { display: none !important; }
+          .lg\\:mr-64 { margin-right: 0 !important; }
+          body { background: white !important; }
         }
       `}</style>
       <div className="max-w-4xl mx-auto">
