@@ -102,6 +102,42 @@ export default function ViewIntakeFormPage() {
     }
   };
 
+  const handlePrint = () => {
+    const printContent = document.getElementById('printable-content');
+    if (!printContent) return;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html dir="rtl">
+        <head>
+          <meta charset="utf-8" />
+          <title>טופס היכרות</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;600;700&display=swap');
+            * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans Hebrew', sans-serif; }
+            body { background: white; padding: 20px; color: #1a1a1a; font-size: 13px; }
+            .card { border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+            .card-header { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+            .detail-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 16px; border-bottom: 1px solid #f1f5f9; }
+            .detail-row:last-child { border-bottom: none; }
+            .detail-label { color: #64748b; font-weight: 500; }
+            .detail-value { text-align: right; max-width: 65%; }
+            .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+            .badge-green { background: #dcfce7; color: #166534; }
+            .badge-red { background: #fee2e2; color: #991b1b; }
+            .badge-blue { background: #dbeafe; color: #1e40af; }
+            .badge-orange { background: #ffedd5; color: #9a3412; }
+            .badge-gray { background: #f1f5f9; color: #475569; }
+            svg { display: none; }
+          </style>
+        </head>
+        <body>${printContent.innerHTML}</body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
+  };
+
   const renderContent = () => {
     if (isLoading) return <div className="text-center p-8"><LoadingSpinner size="xl" /></div>;
     if (error) return <ErrorMessage error={error} onRetry={() => window.location.reload()} />;
