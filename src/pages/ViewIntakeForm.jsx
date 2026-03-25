@@ -111,8 +111,16 @@ export default function ViewIntakeFormPage() {
 
   return (
     <div className="p-6 bg-slate-50 min-h-screen" dir="rtl">
+      <style>{`
+        @media print {
+          body * { visibility: hidden; }
+          #printable-intake-form, #printable-intake-form * { visibility: visible; }
+          #printable-intake-form { position: absolute; top: 0; left: 0; width: 100%; }
+          .no-print { display: none !important; }
+        }
+      `}</style>
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-6 no-print">
           <Button variant="outline" onClick={() => navigate(createPageUrl('IntakeFormsList'))}>
             <ArrowRight className="w-4 h-4 ml-2" />
             חזור לרשימה
