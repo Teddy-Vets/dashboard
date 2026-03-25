@@ -147,14 +147,7 @@ export default function ViewIntakeFormPage() {
 
   return (
     <div className="p-6 bg-slate-50 min-h-screen" dir="rtl">
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          nav, header, aside, [class*="sidebar"], [class*="lg:flex lg:w-64"] { display: none !important; }
-          .lg\\:mr-64 { margin-right: 0 !important; }
-          body { background: white !important; }
-        }
-      `}</style>
+
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6 no-print">
           <Button variant="outline" onClick={() => navigate(createPageUrl('IntakeFormsList'))}>
