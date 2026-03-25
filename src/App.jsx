@@ -1,5 +1,6 @@
 import './App.css'
 import SubscriptionAgreements from './pages/SubscriptionAgreements'
+import StatsDashboard from './pages/StatsDashboard'
 import CreateSubscriptionAgreement from './pages/CreateSubscriptionAgreement'
 import PublicSubscriptionAgreement from './pages/PublicSubscriptionAgreement'
 import ViewSubscriptionAgreement from './pages/ViewSubscriptionAgreement'
@@ -57,6 +58,7 @@ const AuthenticatedApp = () => {
         <Route path="/CreateSubscriptionAgreement" element={<CreateSubscriptionAgreement />} />
         <Route path="/PublicSubscriptionAgreement" element={<PublicSubscriptionAgreement />} />
         <Route path="/ViewSubscriptionAgreement" element={<ViewSubscriptionAgreement />} />
+        <Route path="/StatsDashboard" element={<LayoutWrapper currentPageName="StatsDashboard"><StatsDashboard /></LayoutWrapper>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>

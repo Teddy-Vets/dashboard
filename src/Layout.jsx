@@ -64,6 +64,7 @@ const navItems = [
   { href: "/ConsentForms", icon: ClipboardCheck, label: "טפסי הסכמה", roles: ['admin', 'user'] },
   { href: "/SubscriptionAgreements", icon: ClipboardCheck, label: "הסכמי מנויים", roles: ['admin', 'user'] },
   { type: 'divider', label: 'ניהול' },
+  { href: "/StatsDashboard", icon: TrendingUp, label: "סטטיסטיקות", roles: ['admin', 'user'] },
   { href: "/SystemManagement", icon: TrendingUp, label: "ניהול המערכת", roles: ['admin', 'user'] },
   { href: "/UserManagement", icon: Users, label: "ניהול משתמשים", roles: ['admin'] },
   { href: "/Clinics", icon: ClinicIcon, label: "מרפאות", roles: ['admin'] },
