@@ -34,15 +34,15 @@ const getAnxietyColor = (level) => {
 };
 
 const DetailItem = ({ label, value, children, isBadge, badgeClass }) => (
-  <div className="py-3 px-6 border-b border-gray-100 last:border-b-0">
-    <div className="flex justify-between items-start">
-      <span className="text-sm font-medium text-gray-600 mb-1">{label}:</span>
-      <div className="text-right">
+  <div className="py-3 px-4 sm:px-6 border-b border-gray-100 last:border-b-0">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
+      <span className="text-sm font-medium text-gray-500">{label}:</span>
+      <div className="text-right sm:max-w-[65%]">
         {children ? children : (
           isBadge ? (
             <Badge className={badgeClass}>{value || 'לא צוין'}</Badge>
           ) : (
-            <span className="text-sm text-gray-900">{value || 'לא צוין'}</span>
+            <span className="text-sm text-gray-900 break-words">{value || 'לא צוין'}</span>
           )
         )}
       </div>
