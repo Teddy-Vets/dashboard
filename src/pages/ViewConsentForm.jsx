@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label"; // Added Label import
-import { ArrowRight, Calendar, User, Clock, Shield, CheckCircle, FileText, Printer } from "lucide-react"; // Updated lucide-react imports
+import { ArrowRight, Calendar, User, Clock, Shield, CheckCircle, FileText, Printer, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { motion } from "framer-motion";
@@ -118,11 +118,22 @@ export default function ViewConsentFormPage() {
             <h1 className="text-3xl font-bold text-slate-800">צפייה בטופס הכנה לניתוח</h1>
             <p className="text-slate-600 mt-1">מספר טופס: {form.id.substring(0, 8)}</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Badge className={`${config.color} border flex items-center gap-1`}>
               <StatusIcon className="w-4 h-4" />
               {config.label}
             </Badge>
+            {form.status !== 'legally_sealed' && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate(`/EditConsentForm?id=${form.id}`)}
+                className="flex items-center gap-1 border-amber-300 text-amber-700 hover:bg-amber-50"
+              >
+                <Pencil className="w-4 h-4" />
+                ערוך ושלח מחדש
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"

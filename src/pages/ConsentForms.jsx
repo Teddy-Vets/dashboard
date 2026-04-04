@@ -22,7 +22,8 @@ import {
   FileCheck,
   Shield,
   User,
-  Building2
+  Building2,
+  Pencil
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
@@ -291,17 +292,28 @@ export default function ConsentFormsPage() {
 
         {/* Actions */}
         <div className="space-y-2">
-          <div className="flex gap-2">
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => viewConsentForm(form.id)}
+            className="flex-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+          >
+            <Eye className="w-4 h-4 ml-1" />
+            צפייה
+          </Button>
+          {form.status !== 'legally_sealed' && (
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => viewConsentForm(form.id)}
-              className="flex-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+              onClick={() => window.open(createPageUrl("EditConsentForm", { id: form.id }), "_self")}
+              className="flex-1 text-amber-600 hover:text-amber-800 hover:bg-amber-50"
             >
-              <Eye className="w-4 h-4 ml-1" />
-              צפייה
+              <Pencil className="w-4 h-4 ml-1" />
+              ערוך
             </Button>
-            {form.status === "pending" && !generatedLink && (
+          )}
+          {form.status === "pending" && !generatedLink && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -657,6 +669,17 @@ export default function ConsentFormsPage() {
                                       <Eye className="w-4 h-4 ml-1" />
                                       צפייה
                                     </Button>
+                                    {form.status !== 'legally_sealed' && (
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-amber-600 hover:text-amber-800 hover:bg-amber-50"
+                                        onClick={() => window.open(createPageUrl("EditConsentForm", { id: form.id }), "_self")}
+                                      >
+                                        <Pencil className="w-4 h-4 ml-1" />
+                                        ערוך
+                                      </Button>
+                                    )}
                                     {form.status === "pending" && !generatedLink && (
                                       <Button
                                         variant="ghost"
