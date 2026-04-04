@@ -20,8 +20,19 @@ import {
   Copy,
   Share2,
   User,
-  PawPrint
+  PawPrint,
+  Trash2
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { Link, useNavigate } from "react-router-dom";
@@ -57,6 +68,8 @@ export default function IntakeFormsListPage() {
   const [clinics, setClinics] = useState([]);
 
   const [generatingLink, setGeneratingLink] = useState({ id: null, url: null, error: null });
+  const [deleteFormId, setDeleteFormId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -140,6 +153,15 @@ export default function IntakeFormsListPage() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!deleteFormId) return;
+    setIsDeleting(true);
+    await IntakeForm.delete(deleteFormId);
+    setForms(prev => prev.filter(f => f.id !== deleteFormId));
+    setDeleteFormId(null);
+    setIsDeleting(false);
+  };
+
   const viewForm = (form) => {
     navigate(createPageUrl('ViewIntakeForm', { id: form.id }));
   };
@@ -200,6 +222,15 @@ export default function IntakeFormsListPage() {
           >
             <Edit className="w-4 h-4 ml-1" />
             ערוך
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setDeleteFormId(form.id)}
+            className="flex-1 text-red-600 hover:text-red-800 hover:bg-red-50"
+          >
+            <Trash2 className="w-4 h-4 ml-1" />
+            מחק
           </Button>
           {form.status === 'draft' && (
             <Button
@@ -394,13 +425,14 @@ export default function IntakeFormsListPage() {
                                     <div className="flex gap-2">
                                       <Button variant="ghost" size="sm" onClick={() => viewForm(form)}><Eye className="w-4 h-4 ml-1" />צפייה</Button>
                                       <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl("EditIntakeForm", { id: form.id }))} className="text-amber-600 hover:text-amber-800 hover:bg-amber-50"><Edit className="w-4 h-4 ml-1" />ערוך</Button>
+                                      <Button variant="ghost" size="sm" onClick={() => setDeleteFormId(form.id)} className="text-red-600 hover:text-red-800 hover:bg-red-50"><Trash2 className="w-4 h-4 ml-1" />מחק</Button>
                                       {form.status === 'draft' && (
                                         <Button variant="ghost" size="sm" onClick={() => handleSendLink(form)} disabled={isGenerating}>
                                           {isGenerating ? <Loader2 className="w-4 h-4 animate-spin ml-1" /> : <Send className="w-4 h-4 ml-1" />}
                                           שלח קישור
                                         </Button>
                                       )}
-                                    </div>
+                                      </div>
                                   </TableCell>
                                 </motion.tr>
                               );
@@ -465,6 +497,7 @@ export default function IntakeFormsListPage() {
                                 <div className="flex gap-2">
                                   <Button variant="ghost" size="sm" onClick={() => viewForm(form)}><Eye className="w-4 h-4 ml-1" />צפייה</Button>
                                   <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl("EditIntakeForm", { id: form.id }))} className="text-amber-600 hover:text-amber-800 hover:bg-amber-50"><Edit className="w-4 h-4 ml-1" />ערוך</Button>
+                                  <Button variant="ghost" size="sm" onClick={() => setDeleteFormId(form.id)} className="text-red-600 hover:text-red-800 hover:bg-red-50"><Trash2 className="w-4 h-4 ml-1" />מחק</Button>
                                   {form.status === 'draft' && (
                                     <Button variant="ghost" size="sm" onClick={() => handleSendLink(form)} disabled={isGenerating}>
                                       {isGenerating ? <Loader2 className="w-4 h-4 animate-spin ml-1" /> : <Send className="w-4 h-4 ml-1" />}
@@ -484,6 +517,29 @@ export default function IntakeFormsListPage() {
             </Card>
           </>
         )}
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={!!deleteFormId} onOpenChange={(open) => { if (!open) setDeleteFormId(null); }}>
+          <AlertDialogContent dir="rtl">
+            <AlertDialogHeader>
+              <AlertDialogTitle>מחיקת טופס היכרות</AlertDialogTitle>
+              <AlertDialogDescription>
+                האם אתה בטוח שברצונך למחוק את הטופס? פעולה זו אינה ניתנת לביטול.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="flex-row-reverse gap-2">
+              <AlertDialogCancel>ביטול</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : <Trash2 className="w-4 h-4 ml-2" />}
+                מחק
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <Dialog open={!!generatingLink.url || !!generatingLink.error} onOpenChange={() => setGeneratingLink({ id: null, url: null, error: null })}>
           <DialogContent dir="rtl">
