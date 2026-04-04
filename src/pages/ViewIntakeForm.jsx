@@ -4,7 +4,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorMessage from '@/components/common/ErrorMessage';
 import ViewSubmittedIntakeForm from '@/components/intake-form/ViewSubmittedIntakeForm';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, UserPlus, PawPrint, Loader2, Printer } from "lucide-react";
+import { ArrowRight, UserPlus, PawPrint, Loader2, Printer, Pencil } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/components/utils/urlHelpers";
 import { getEntityById, createEntity, updateEntity, ApiError } from '@/components/utils/apiHelpers';
@@ -227,10 +227,16 @@ export default function ViewIntakeFormPage() {
             חזור לרשימה
           </Button>
           <h1 className="text-2xl font-bold">צפייה בטופס היכרות</h1>
-          <Button variant="outline" onClick={handlePrint} className="flex items-center gap-1">
-            <Printer className="w-4 h-4" />
-            הדפס / שמור כ-PDF בתיק לקוח
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate(createPageUrl("EditIntakeForm", { id: formData?.id }))} className="flex items-center gap-1 border-amber-300 text-amber-700 hover:bg-amber-50" disabled={!formData}>
+              <Pencil className="w-4 h-4" />
+              ערוך
+            </Button>
+            <Button variant="outline" onClick={handlePrint} className="flex items-center gap-1">
+              <Printer className="w-4 h-4" />
+              הדפס / שמור כ-PDF
+            </Button>
+          </div>
         </div>
         
         {formData && formData.status === 'reviewed' && (

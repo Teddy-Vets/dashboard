@@ -182,7 +182,7 @@ export default function IntakeFormsListPage() {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button
             variant="ghost"
             size="sm"
@@ -191,6 +191,15 @@ export default function IntakeFormsListPage() {
           >
             <Eye className="w-4 h-4 ml-1" />
             צפייה
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(createPageUrl("EditIntakeForm", { id: form.id }))}
+            className="flex-1 text-amber-600 hover:text-amber-800 hover:bg-amber-50"
+          >
+            <Edit className="w-4 h-4 ml-1" />
+            ערוך
           </Button>
           {form.status === 'draft' && (
             <Button
@@ -384,6 +393,7 @@ export default function IntakeFormsListPage() {
                                   <TableCell className="text-right">
                                     <div className="flex gap-2">
                                       <Button variant="ghost" size="sm" onClick={() => viewForm(form)}><Eye className="w-4 h-4 ml-1" />צפייה</Button>
+                                      <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl("EditIntakeForm", { id: form.id }))} className="text-amber-600 hover:text-amber-800 hover:bg-amber-50"><Edit className="w-4 h-4 ml-1" />ערוך</Button>
                                       {form.status === 'draft' && (
                                         <Button variant="ghost" size="sm" onClick={() => handleSendLink(form)} disabled={isGenerating}>
                                           {isGenerating ? <Loader2 className="w-4 h-4 animate-spin ml-1" /> : <Send className="w-4 h-4 ml-1" />}
@@ -454,6 +464,7 @@ export default function IntakeFormsListPage() {
                               <TableCell>
                                 <div className="flex gap-2">
                                   <Button variant="ghost" size="sm" onClick={() => viewForm(form)}><Eye className="w-4 h-4 ml-1" />צפייה</Button>
+                                  <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl("EditIntakeForm", { id: form.id }))} className="text-amber-600 hover:text-amber-800 hover:bg-amber-50"><Edit className="w-4 h-4 ml-1" />ערוך</Button>
                                   {form.status === 'draft' && (
                                     <Button variant="ghost" size="sm" onClick={() => handleSendLink(form)} disabled={isGenerating}>
                                       {isGenerating ? <Loader2 className="w-4 h-4 animate-spin ml-1" /> : <Send className="w-4 h-4 ml-1" />}
