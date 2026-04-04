@@ -23,8 +23,19 @@ import {
   Shield,
   User,
   Building2,
-  Pencil
+  Pencil,
+  Trash2
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
@@ -65,6 +76,10 @@ export default function ConsentFormsPage() {
   // State for link generation
   const [generatingLinkId, setGeneratingLinkId] = useState(null);
   const [generatedLinks, setGeneratedLinks] = useState({});
+
+  // State for delete confirmation
+  const [deleteFormId, setDeleteFormId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -193,6 +208,15 @@ export default function ConsentFormsPage() {
     }
   };
   
+  const handleDelete = async () => {
+    if (!deleteFormId) return;
+    setIsDeleting(true);
+    await ConsentForm.delete(deleteFormId);
+    setForms(prev => prev.filter(f => f.id !== deleteFormId));
+    setDeleteFormId(null);
+    setIsDeleting(false);
+  };
+
   const handleCopy = async (text) => {
     try {
         await copyToClipboard(text);
@@ -311,6 +335,17 @@ export default function ConsentFormsPage() {
             >
               <Pencil className="w-4 h-4 ml-1" />
               ערוך
+            </Button>
+          )}
+          {form.status !== 'legally_sealed' && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setDeleteFormId(form.id)}
+              className="flex-1 text-red-600 hover:text-red-800 hover:bg-red-50"
+            >
+              <Trash2 className="w-4 h-4 ml-1" />
+              מחק
             </Button>
           )}
           {form.status === "pending" && !generatedLink && (
@@ -680,6 +715,17 @@ export default function ConsentFormsPage() {
                                         ערוך
                                       </Button>
                                     )}
+                                    {form.status !== 'legally_sealed' && (
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                                        onClick={() => setDeleteFormId(form.id)}
+                                      >
+                                        <Trash2 className="w-4 h-4 ml-1" />
+                                        מחק
+                                      </Button>
+                                    )}
                                     {form.status === "pending" && !generatedLink && (
                                       <Button
                                         variant="ghost"
@@ -724,6 +770,29 @@ export default function ConsentFormsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteFormId} onOpenChange={(open) => { if (!open) setDeleteFormId(null); }}>
+        <AlertDialogContent dir="rtl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>מחיקת טופס הסכמה</AlertDialogTitle>
+            <AlertDialogDescription>
+              האם אתה בטוח שברצונך למחוק את הטופס? פעולה זו אינה ניתנת לביטול.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row-reverse gap-2">
+            <AlertDialogCancel>ביטול</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : <Trash2 className="w-4 h-4 ml-2" />}
+              מחק
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
