@@ -1,0 +1,101 @@
+{
+  "name": "FormLinks",
+  "type": "object",
+  "properties": {
+    "token": {
+      "type": "string",
+      "description": "\u05d8\u05d5\u05e7\u05df \u05d9\u05d9\u05d7\u05d5\u05d3\u05d9 \u05dc\u05e7\u05d9\u05e9\u05d5\u05e8 \u05d4\u05e6\u05d9\u05d1\u05d5\u05e8\u05d9",
+      "format": "uuid"
+    },
+    "form_type": {
+      "type": "string",
+      "enum": [
+        "intake",
+        "consent",
+        "rabies_declaration",
+        "anxiety_questionnaire",
+        "spay_neuter_instructions",
+        "dental_care_instructions",
+        "post_surgery_instructions"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05d4\u05d8\u05d5\u05e4\u05e1 - \u05d4\u05d9\u05db\u05e8\u05d5\u05ea, \u05d4\u05e1\u05db\u05de\u05d4, \u05d4\u05e6\u05d4\u05e8\u05ea \u05db\u05dc\u05d1\u05ea, \u05e9\u05d0\u05dc\u05d5\u05df \u05d7\u05e8\u05d3\u05d4, \u05d4\u05e0\u05d7\u05d9\u05d5\u05ea \u05e2\u05d9\u05e7\u05d5\u05e8/\u05e1\u05d9\u05e8\u05d5\u05e1, \u05d4\u05e0\u05d7\u05d9\u05d5\u05ea \u05d8\u05d9\u05e4\u05d5\u05dc \u05e9\u05d9\u05e0\u05d9\u05d9\u05dd, \u05d0\u05d5 \u05d4\u05e0\u05d7\u05d9\u05d5\u05ea \u05e9\u05d7\u05e8\u05d5\u05e8"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05dc\u05e7\u05d5\u05d7 \u05d4\u05de\u05e9\u05d5\u05d9\u05da \u05dc\u05d8\u05d5\u05e4\u05e1"
+    },
+    "clinic_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05de\u05e8\u05e4\u05d0\u05d4 \u05d4\u05de\u05e9\u05d5\u05d9\u05db\u05ea \u05dc\u05d8\u05d5\u05e4\u05e1"
+    },
+    "form_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05d8\u05d5\u05e4\u05e1 \u05d4\u05e1\u05e4\u05e6\u05d9\u05e4\u05d9 (\u05d0\u05dd \u05e7\u05d9\u05d9\u05dd \u05d8\u05d9\u05d5\u05d8\u05d4)"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "\u05e0\u05ea\u05d5\u05e0\u05d9\u05dd \u05e0\u05d5\u05e1\u05e4\u05d9\u05dd \u05dc\u05d8\u05d5\u05e4\u05e1",
+      "properties": {
+        "owner_name": {
+          "type": "string"
+        },
+        "pet_name": {
+          "type": "string"
+        },
+        "procedure_type": {
+          "type": "string"
+        }
+      }
+    },
+    "used_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05de\u05d5\u05e2\u05d3 \u05d4\u05e9\u05d9\u05de\u05d5\u05e9 \u05d1\u05e7\u05d9\u05e9\u05d5\u05e8 (\u05d7\u05d3-\u05e4\u05e2\u05de\u05d9)"
+    },
+    "used_by_ip": {
+      "type": "string",
+      "description": "\u05db\u05ea\u05d5\u05d1\u05ea IP \u05e9\u05d4\u05e9\u05ea\u05de\u05e9\u05d4 \u05d1\u05e7\u05d9\u05e9\u05d5\u05e8"
+    },
+    "access_count": {
+      "type": "number",
+      "default": 0,
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05e4\u05e2\u05de\u05d9\u05dd \u05e9\u05d4\u05e7\u05d9\u05e9\u05d5\u05e8 \u05e0\u05d5\u05e6\u05dc"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05de\u05d5\u05e2\u05d3 \u05ea\u05e4\u05d5\u05d2\u05ea \u05d4\u05e7\u05d9\u05e9\u05d5\u05e8 (72 \u05e9\u05e2\u05d5\u05ea \u05de\u05d9\u05e6\u05d9\u05e8\u05d4)"
+    }
+  },
+  "required": [
+    "token",
+    "form_type",
+    "clinic_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": "{{user.data.clinic_id}}"
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": "{{user.data.clinic_id}}"
+        }
+      ]
+    }
+  }
+}

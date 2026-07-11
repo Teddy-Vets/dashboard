@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   LayoutDashboard,
   ClipboardCheck,
@@ -68,6 +69,12 @@ export default function DashboardPage() {
   const [formsByClinic, setFormsByClinic] = useState({});
   const [intakeByClinic, setIntakeByClinic] = useState({});
   const [consentByClinic, setConsentByClinic] = useState({});
+  const [allIntake, setAllIntake] = useState([]);
+  const [allConsent, setAllConsent] = useState([]);
+  const [allAnxiety, setAllAnxiety] = useState([]);
+  const [allAppointments, setAllAppointments] = useState([]);
+  const [allEmergency, setAllEmergency] = useState([]);
+  const [selectedClinicId, setSelectedClinicId] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 10;
@@ -171,6 +178,11 @@ export default function DashboardPage() {
     ]);
 
     setClinics(allClinics || []);
+    setAllIntake(allIntake || []);
+    setAllConsent(allConsent || []);
+    setAllAnxiety(allAnxiety || []);
+    setAllAppointments(allAppointments || []);
+    setAllEmergency(allEmergency || []);
 
     // קיבוץ הטפסים לפי מרפאה בצד הלקוח
     const intakeByClinicData = {};
@@ -563,28 +575,77 @@ export default function DashboardPage() {
         {/* Forms Lists */}
         {currentUser?.role === "admin" ? (
           <>
-            <div className="mb-4 px-4 md:px-0">
-              <h2 className="text-xl md:text-2xl font-bold text-slate-800">טפסים אחרונים לפי מרפאה</h2>
-              <p className="text-sm md:text-base text-slate-600">5 הטפסים האחרונים לכל סוג, לכל מרפאה</p>
-            </div>
-            {clinics.map((clinic) => (
-              <div key={clinic.id} className="mb-8">
-                <h3 className="text-lg font-bold text-slate-700 mb-3 px-4 md:px-0 flex items-center gap-2">
-                  <ClinicIcon className="w-5 h-5 text-blue-500" />
-                  {clinic.name}
-                </h3>
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-semibold text-blue-700 mb-2 px-1">טפסי היכרות</p>
-                    {renderFormsSection(intakeByClinic[clinic.id] || [], null)}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-purple-700 mb-2 px-1">טפסי הסכמה</p>
-                    {renderFormsSection(consentByClinic[clinic.id] || [], null)}
-                  </div>
-                </div>
+            <div className="mb-4 px-4 md:px-0 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold text-slate-800">טפסים לפי מרפאה</h2>
+                <p className="text-sm md:text-base text-slate-600">
+                  {selectedClinicId === "all"
+                    ? "5 הטפסים האחרונים לכל סוג, לכל מרפאה"
+                    : "כל הטפסים של המרפאה שנבחרה"}
+                </p>
               </div>
-            ))}
+              <div className="flex items-center gap-2 min-w-[260px]">
+                <ClinicIcon className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <Select value={selectedClinicId} onValueChange={(v) => { setSelectedClinicId(v); setSearchQuery(""); setCurrentPage(1); }}>
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue placeholder="בחירת מרפאה" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">כל המרפאות</SelectItem>
+                    {clinics.map((clinic) => (
+                      <SelectItem key={clinic.id} value={clinic.id}>
+                        {clinic.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {selectedClinicId === "all" ? (
+              <>
+                {clinics.map((clinic) => (
+                  <div key={clinic.id} className="mb-8">
+                    <h3 className="text-lg font-bold text-slate-700 mb-3 px-4 md:px-0 flex items-center gap-2">
+                      <ClinicIcon className="w-5 h-5 text-blue-500" />
+                      {clinic.name}
+                    </h3>
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm font-semibold text-blue-700 mb-2 px-1">טפסי היכרות</p>
+                        {renderFormsSection(intakeByClinic[clinic.id] || [], null)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-purple-700 mb-2 px-1">טפסי הסכמה</p>
+                        {renderFormsSection(consentByClinic[clinic.id] || [], null)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              (() => {
+                const clinicForms = [
+                  ...allIntake.filter(f => f.clinic_id === selectedClinicId).map(f => ({ ...f, formType: 'intake', formTypeLabel: 'טופס היכרות' })),
+                  ...allConsent.filter(f => f.clinic_id === selectedClinicId).map(f => ({ ...f, formType: 'consent', formTypeLabel: 'טופס הסכמה' })),
+                  ...allAnxiety.filter(f => f.clinic_id === selectedClinicId).map(f => ({ ...f, formType: 'anxiety', formTypeLabel: 'שאלון חרדה' })),
+                  ...allEmergency.filter(f => f.clinic_id === selectedClinicId).map(f => ({ ...f, formType: 'emergency', formTypeLabel: 'טריאז\' חירום' })),
+                  ...allAppointments.filter(f => f.clinic_id === selectedClinicId).map(f => ({ ...f, formType: 'appointment', formTypeLabel: 'בקשת תור' }))
+                ].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+
+                const selectedClinic = clinics.find(c => c.id === selectedClinicId);
+                return (
+                  <div className="mb-8">
+                    <h3 className="text-lg font-bold text-slate-700 mb-3 px-4 md:px-0 flex items-center gap-2">
+                      <ClinicIcon className="w-5 h-5 text-blue-500" />
+                      {selectedClinic?.name || 'מרפאה'}
+                      <span className="text-sm font-normal text-slate-500">({clinicForms.length} טפסים)</span>
+                    </h3>
+                    {renderFormsSection(clinicForms, null, true)}
+                  </div>
+                );
+              })()
+            )}
           </>
         ) : (
           <>

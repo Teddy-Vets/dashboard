@@ -1,0 +1,183 @@
+{
+  "name": "SubscriptionAgreement",
+  "type": "object",
+  "properties": {
+    "clinic_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05de\u05e8\u05e4\u05d0\u05d4"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05dc\u05e7\u05d5\u05d7 \u05d1\u05de\u05e2\u05e8\u05db\u05ea"
+    },
+    "owner_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05dc\u05e7\u05d5\u05d7"
+    },
+    "owner_id_number": {
+      "type": "string",
+      "description": "\u05ea\u05e2\u05d5\u05d3\u05ea \u05d6\u05d4\u05d5\u05ea"
+    },
+    "owner_address": {
+      "type": "string",
+      "description": "\u05db\u05ea\u05d5\u05d1\u05ea"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "\u05d0\u05d9\u05de\u05d9\u05d9\u05dc"
+    },
+    "owner_phone": {
+      "type": "string",
+      "description": "\u05d8\u05dc\u05e4\u05d5\u05df"
+    },
+    "pet_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "pet_type": {
+      "type": "string",
+      "enum": [
+        "\u05db\u05dc\u05d1",
+        "\u05d7\u05ea\u05d5\u05dc",
+        "\u05d0\u05d7\u05e8"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05d4\u05d7\u05d9\u05d4"
+    },
+    "pet_breed": {
+      "type": "string",
+      "description": "\u05d2\u05d6\u05e2"
+    },
+    "pet_microchip": {
+      "type": "string",
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05e9\u05d1\u05d1"
+    },
+    "selected_plan": {
+      "type": "string",
+      "enum": [
+        "teddy_basic",
+        "teddy_plus",
+        "teddy_platinum",
+        "teddy_royal",
+        "teddy_insured"
+      ],
+      "description": "\u05de\u05e1\u05dc\u05d5\u05dc \u05e0\u05d1\u05d7\u05e8"
+    },
+    "payment_frequency": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "annual"
+      ],
+      "default": "monthly",
+      "description": "\u05ea\u05d3\u05d9\u05e8\u05d5\u05ea \u05ea\u05e9\u05dc\u05d5\u05dd"
+    },
+    "agreed_to_terms": {
+      "type": "boolean",
+      "description": "\u05d4\u05e1\u05db\u05de\u05d4 \u05dc\u05ea\u05e0\u05d0\u05d9\u05dd"
+    },
+    "agreed_to_marketing": {
+      "type": "boolean",
+      "description": "\u05d4\u05e1\u05db\u05de\u05d4 \u05dc\u05d3\u05d9\u05d5\u05d5\u05e8"
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05d6\u05de\u05df \u05d7\u05ea\u05d9\u05de\u05d4"
+    },
+    "signature_data": {
+      "type": "string",
+      "description": "\u05e0\u05ea\u05d5\u05e0\u05d9 \u05d4\u05d7\u05ea\u05d9\u05de\u05d4 \u05d4\u05d3\u05d9\u05d2\u05d9\u05d8\u05dc\u05d9\u05ea"
+    },
+    "signature_hash": {
+      "type": "string",
+      "description": "Hash \u05e9\u05dc \u05d4\u05d7\u05ea\u05d9\u05de\u05d4 (SHA-256)"
+    },
+    "form_content_hash": {
+      "type": "string",
+      "description": "Hash \u05e9\u05dc \u05ea\u05d5\u05db\u05df \u05d4\u05d8\u05d5\u05e4\u05e1 \u05d1\u05d6\u05de\u05df \u05d4\u05d7\u05ea\u05d9\u05de\u05d4"
+    },
+    "signature_ip": {
+      "type": "string",
+      "description": "\u05db\u05ea\u05d5\u05d1\u05ea IP \u05e9\u05dc \u05d4\u05d7\u05d5\u05ea\u05dd"
+    },
+    "signature_user_agent": {
+      "type": "string",
+      "description": "User-Agent \u05e9\u05dc \u05d4\u05d3\u05e4\u05d3\u05e4\u05df \u05d1\u05e2\u05ea \u05d4\u05d7\u05ea\u05d9\u05de\u05d4"
+    },
+    "signature_timestamp": {
+      "type": "number",
+      "description": "\u05d7\u05d5\u05ea\u05de\u05ea \u05d6\u05de\u05df Unix \u05d1\u05de\u05d9\u05dc\u05d9\u05e9\u05e0\u05d9\u05d5\u05ea"
+    },
+    "signature_verification_data": {
+      "type": "object",
+      "description": "\u05e0\u05ea\u05d5\u05e0\u05d9\u05dd \u05e0\u05d5\u05e1\u05e4\u05d9\u05dd \u05dc\u05d0\u05d9\u05de\u05d5\u05ea \u05d4\u05d7\u05ea\u05d9\u05de\u05d4",
+      "properties": {
+        "browser_fingerprint": {
+          "type": "string"
+        },
+        "screen_resolution": {
+          "type": "string"
+        },
+        "timezone": {
+          "type": "string"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "signed",
+        "legally_sealed"
+      ],
+      "default": "pending",
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05d8\u05d5\u05e4\u05e1"
+    },
+    "immutable_record": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u05d4\u05d0\u05dd \u05d4\u05e8\u05e9\u05d5\u05de\u05d4 \u05d0\u05d8\u05d5\u05de\u05d4 \u05de\u05e2\u05d3\u05db\u05d5\u05e0\u05d9\u05dd"
+    }
+  },
+  "required": [
+    "clinic_id",
+    "owner_name",
+    "pet_name",
+    "selected_plan"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": "{{user.data.clinic_id}}"
+        }
+      ]
+    },
+    "write": {
+      "$and": [
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "data.clinic_id": "{{user.data.clinic_id}}"
+            }
+          ]
+        },
+        {
+          "oldData.immutable_record": {
+            "$ne": true
+          }
+        }
+      ]
+    }
+  }
+}

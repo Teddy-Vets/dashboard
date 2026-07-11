@@ -1,0 +1,143 @@
+{
+  "name": "PostSurgeryInstructions",
+  "type": "object",
+  "properties": {
+    "clinic_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05de\u05e8\u05e4\u05d0\u05d4"
+    },
+    "pet_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "owner_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05d1\u05e2\u05dc\u05d9\u05dd"
+    },
+    "surgery_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05d4\u05e0\u05d9\u05ea\u05d5\u05d7"
+    },
+    "surgery_type": {
+      "type": "string",
+      "description": "\u05e1\u05d5\u05d2 \u05d4\u05e0\u05d9\u05ea\u05d5\u05d7 \u05e9\u05d1\u05d5\u05e6\u05e2"
+    },
+    "fasting_until_hour": {
+      "type": "string",
+      "description": "\u05e9\u05e2\u05ea \u05e1\u05d9\u05d5\u05dd \u05d4\u05e6\u05d5\u05dd"
+    },
+    "feeding_instructions": {
+      "type": "string",
+      "description": "\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea \u05d4\u05d0\u05db\u05dc\u05d4",
+      "default": "\u05de\u05d6\u05d5\u05df \u05e7\u05dc \u05dc\u05de\u05d7\u05e8\u05ea \u05d4\u05e0\u05d9\u05ea\u05d5\u05d7"
+    },
+    "wound_location": {
+      "type": "string",
+      "description": "\u05de\u05d9\u05e7\u05d5\u05dd \u05d4\u05ea\u05e4\u05e8/\u05d7\u05ea\u05da"
+    },
+    "antibiotic_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05d0\u05e0\u05d8\u05d9\u05d1\u05d9\u05d5\u05d8\u05d9\u05e7\u05d4"
+    },
+    "antibiotic_instructions": {
+      "type": "string",
+      "description": "\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea \u05de\u05ea\u05df \u05d0\u05e0\u05d8\u05d9\u05d1\u05d9\u05d5\u05d8\u05d9\u05e7\u05d4"
+    },
+    "pain_medication_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05de\u05e9\u05db\u05da \u05d4\u05db\u05d0\u05d1\u05d9\u05dd"
+    },
+    "pain_medication_instructions": {
+      "type": "string",
+      "description": "\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea \u05de\u05ea\u05df \u05de\u05e9\u05db\u05da \u05db\u05d0\u05d1\u05d9\u05dd"
+    },
+    "additional_medication_name": {
+      "type": "string",
+      "description": "\u05ea\u05e8\u05d5\u05e4\u05d4 \u05e0\u05d5\u05e1\u05e4\u05ea"
+    },
+    "additional_medication_instructions": {
+      "type": "string",
+      "description": "\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea \u05ea\u05e8\u05d5\u05e4\u05d4 \u05e0\u05d5\u05e1\u05e4\u05ea"
+    },
+    "followup_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05d1\u05d3\u05d9\u05e7\u05ea \u05d1\u05d9\u05e7\u05d5\u05e8\u05ea"
+    },
+    "special_instructions": {
+      "type": "string",
+      "description": "\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea \u05de\u05d9\u05d5\u05d7\u05d3\u05d5\u05ea \u05e0\u05d5\u05e1\u05e4\u05d5\u05ea"
+    },
+    "veterinarian_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05d5\u05d5\u05d8\u05e8\u05d9\u05e0\u05e8 \u05d4\u05de\u05d8\u05e4\u05dc"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "sent",
+        "archived"
+      ],
+      "default": "draft",
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea - draft=\u05d8\u05d9\u05d5\u05d8\u05d4, published=\u05de\u05e4\u05d5\u05e8\u05e1\u05dd \u05d5\u05de\u05d5\u05db\u05df \u05dc\u05e9\u05dc\u05d9\u05d7\u05d4, sent=\u05e0\u05e9\u05dc\u05d7 \u05dc\u05dc\u05e7\u05d5\u05d7, archived=\u05d1\u05d0\u05e8\u05db\u05d9\u05d5\u05df"
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05de\u05d5\u05e2\u05d3 \u05e4\u05e8\u05e1\u05d5\u05dd \u05d4\u05d2\u05e8\u05e1\u05d4 (\u05db\u05e9\u05de\u05e9\u05e0\u05d9\u05dd \u05de\u05d8\u05d9\u05d5\u05d8\u05d4 \u05dc\u05de\u05e4\u05d5\u05e8\u05e1\u05dd)"
+    },
+    "published_by": {
+      "type": "string",
+      "description": "\u05de\u05d9 \u05e4\u05e8\u05e1\u05dd \u05d0\u05ea \u05d4\u05d2\u05e8\u05e1\u05d4 (\u05d0\u05d9\u05de\u05d9\u05d9\u05dc \u05de\u05e9\u05ea\u05de\u05e9)"
+    },
+    "version_number": {
+      "type": "number",
+      "default": 1,
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05d2\u05e8\u05e1\u05d4 (\u05e2\u05d5\u05dc\u05d4 \u05d1\u05db\u05dc \u05e4\u05e8\u05e1\u05d5\u05dd)"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05d6\u05de\u05df \u05e9\u05dc\u05d9\u05d7\u05d4 \u05dc\u05dc\u05e7\u05d5\u05d7"
+    },
+    "pdf_url": {
+      "type": "string",
+      "description": "\u05e7\u05d9\u05e9\u05d5\u05e8 \u05dc\u05e7\u05d5\u05d1\u05e5 PDF \u05e9\u05dc \u05d4\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea"
+    }
+  },
+  "required": [
+    "clinic_id",
+    "pet_name",
+    "owner_name",
+    "surgery_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": "{{user.data.clinic_id}}"
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": "{{user.data.clinic_id}}"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,253 @@
+{
+  "name": "EmergencyTriage",
+  "type": "object",
+  "description": "\u05e9\u05d0\u05dc\u05d5\u05df \u05d8\u05e8\u05d9\u05d0\u05d6' \u05d7\u05d9\u05e8\u05d5\u05dd \u05dc\u05d7\u05d9\u05d5\u05ea \u05de\u05d7\u05de\u05d3 - \u05d4\u05e2\u05e8\u05db\u05ea \u05d3\u05d7\u05d9\u05e4\u05d5\u05ea \u05d5\u05de\u05d9\u05d5\u05df",
+  "properties": {
+    "clinic_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05de\u05e8\u05e4\u05d0\u05d4 (nullable \u05e2\u05d3 \u05dc\u05e9\u05dc\u05d1 \u05d4\u05e0\u05d9\u05ea\u05d5\u05d1)"
+    },
+    "owner_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05d1\u05e2\u05dc\u05d9\u05dd"
+    },
+    "owner_phone": {
+      "type": "string",
+      "description": "\u05d8\u05dc\u05e4\u05d5\u05df \u05d4\u05d1\u05e2\u05dc\u05d9\u05dd - \u05d7\u05d5\u05d1\u05d4 \u05dc\u05d9\u05e6\u05d9\u05e8\u05ea \u05e7\u05e9\u05e8"
+    },
+    "owner_email": {
+      "type": "string",
+      "format": "email",
+      "description": "\u05d0\u05d9\u05de\u05d9\u05d9\u05dc \u05d4\u05d1\u05e2\u05dc\u05d9\u05dd (\u05d0\u05d5\u05e4\u05e6\u05d9\u05d5\u05e0\u05dc\u05d9)"
+    },
+    "pet_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "pet_species": {
+      "type": "string",
+      "enum": [
+        "\u05db\u05dc\u05d1",
+        "\u05d7\u05ea\u05d5\u05dc",
+        "\u05d0\u05d7\u05e8"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "pet_breed": {
+      "type": "string",
+      "description": "\u05d2\u05d6\u05e2 \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "pet_age_category": {
+      "type": "string",
+      "enum": [
+        "\u05d2\u05d5\u05e8 (<12\u05d7')",
+        "\u05d1\u05d5\u05d2\u05e8",
+        "\u05e7\u05e9\u05d9\u05e9"
+      ],
+      "description": "\u05e7\u05d8\u05d2\u05d5\u05e8\u05d9\u05d9\u05ea \u05d2\u05d9\u05dc"
+    },
+    "pet_sex_neutered": {
+      "type": "string",
+      "enum": [
+        "\u05d6\u05db\u05e8 \u05dc\u05d0 \u05de\u05e1\u05d5\u05e8\u05e1",
+        "\u05d6\u05db\u05e8 \u05de\u05e1\u05d5\u05e8\u05e1",
+        "\u05e0\u05e7\u05d1\u05d4 \u05dc\u05d0 \u05de\u05e2\u05d5\u05e7\u05e8\u05ea",
+        "\u05e0\u05e7\u05d1\u05d4 \u05de\u05e2\u05d5\u05e7\u05e8\u05ea"
+      ],
+      "description": "\u05de\u05d9\u05df \u05d5\u05e1\u05d8\u05d8\u05d5\u05e1 \u05e2\u05d9\u05e7\u05d5\u05e8/\u05e1\u05d9\u05e8\u05d5\u05e1"
+    },
+    "pet_weight_kg": {
+      "type": "number",
+      "description": "\u05de\u05e9\u05e7\u05dc \u05d1\u05e7\u05d9\u05dc\u05d5\u05d2\u05e8\u05de\u05d9\u05dd"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "RED",
+        "ORANGE",
+        "YELLOW",
+        "GREEN"
+      ],
+      "description": "\u05e8\u05de\u05ea \u05d3\u05d7\u05d9\u05e4\u05d5\u05ea \u05de\u05d7\u05d5\u05e9\u05d1\u05ea"
+    },
+    "risk_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "\u05ea\u05d2\u05d9\u05d5\u05ea \u05d2\u05d5\u05e8\u05de\u05d9 \u05e1\u05d9\u05db\u05d5\u05df \u05de\u05d6\u05d5\u05d4\u05d9\u05dd (FLUTD, \u05d1\u05e8\u05db\u05d9\u05e6\u05e4\u05dc\u05d9, \u05d7\u05d6\u05d4 \u05e2\u05de\u05d5\u05e7, \u05d2\u05d9\u05dc \u05d1\u05e1\u05d9\u05db\u05d5\u05df, \u05de\u05e9\u05e7\u05dc \u05e0\u05de\u05d5\u05da)"
+    },
+    "red_flags": {
+      "type": "object",
+      "description": "\u05d3\u05d2\u05dc\u05d9\u05dd \u05d0\u05d3\u05d5\u05de\u05d9\u05dd (\u05d7\u05d9\u05e8\u05d5\u05dd \u05de\u05d9\u05d9\u05d3\u05d9)",
+      "properties": {
+        "breathing": {
+          "type": "boolean"
+        },
+        "bleeding": {
+          "type": "boolean"
+        },
+        "bloat": {
+          "type": "boolean"
+        },
+        "toxin": {
+          "type": "boolean"
+        },
+        "seizure": {
+          "type": "boolean"
+        },
+        "trauma": {
+          "type": "boolean"
+        },
+        "male_cat_urinary": {
+          "type": "boolean"
+        },
+        "dystocia": {
+          "type": "boolean"
+        }
+      }
+    },
+    "orange_flags": {
+      "type": "object",
+      "description": "\u05d3\u05d2\u05dc\u05d9\u05dd \u05db\u05ea\u05d5\u05de\u05d9\u05dd (\u05d3\u05d7\u05d5\u05e3 \u05d4\u05d9\u05d5\u05dd)",
+      "properties": {
+        "vomit": {
+          "type": "boolean"
+        },
+        "eye": {
+          "type": "boolean"
+        },
+        "skin_wound": {
+          "type": "boolean"
+        }
+      }
+    },
+    "yellow_flags": {
+      "type": "object",
+      "description": "\u05d3\u05d2\u05dc\u05d9\u05dd \u05e6\u05d4\u05d5\u05d1\u05d9\u05dd (\u05de\u05e2\u05e7\u05d1 \u05d1\u05d9\u05ea\u05d9)",
+      "properties": {
+        "mild": {
+          "type": "boolean"
+        }
+      }
+    },
+    "symptoms_onset": {
+      "type": "string",
+      "description": "\u05de\u05ea\u05d9 \u05d4\u05ea\u05d7\u05d9\u05dc\u05d5 \u05d4\u05e1\u05d9\u05de\u05e0\u05d9\u05dd"
+    },
+    "previous_conditions": {
+      "type": "string",
+      "description": "\u05de\u05d7\u05dc\u05d5\u05ea \u05e8\u05e7\u05e2 / \u05d0\u05d1\u05d7\u05e0\u05d5\u05ea \u05e7\u05d5\u05d3\u05de\u05d5\u05ea"
+    },
+    "current_medications": {
+      "type": "string",
+      "description": "\u05ea\u05e8\u05d5\u05e4\u05d5\u05ea \u05e7\u05d1\u05d5\u05e2\u05d5\u05ea / \u05ea\u05d5\u05e1\u05e4\u05d9\u05dd"
+    },
+    "exposure_details": {
+      "type": "string",
+      "description": "\u05d7\u05e9\u05d9\u05e4\u05d5\u05ea \u05d0\u05e4\u05e9\u05e8\u05d9\u05d5\u05ea (\u05e8\u05e2\u05dc\u05d9\u05dd/\u05ea\u05e8\u05d5\u05e4\u05d5\u05ea/\u05e6\u05de\u05d7\u05d9\u05dd/\u05de\u05d6\u05d5\u05df)"
+    },
+    "media_urls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "image",
+              "video"
+            ]
+          },
+          "filename": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "\u05ea\u05de\u05d5\u05e0\u05d5\u05ea/\u05e1\u05e8\u05d8\u05d5\u05e0\u05d9\u05dd \u05e9\u05d4\u05d5\u05e2\u05dc\u05d5"
+    },
+    "user_location": {
+      "type": "object",
+      "description": "\u05de\u05d9\u05e7\u05d5\u05dd \u05d4\u05de\u05e9\u05ea\u05de\u05e9 (\u05d0\u05dd \u05e9\u05d5\u05ea\u05e3)",
+      "properties": {
+        "latitude": {
+          "type": "number"
+        },
+        "longitude": {
+          "type": "number"
+        }
+      }
+    },
+    "recommended_clinic_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05de\u05e8\u05e4\u05d0\u05d4 \u05d4\u05de\u05d5\u05de\u05dc\u05e6\u05ea (\u05d4\u05e7\u05e8\u05d5\u05d1\u05d4 \u05d5\u05d4\u05e4\u05ea\u05d5\u05d7\u05d4)"
+    },
+    "distance_to_clinic_km": {
+      "type": "number",
+      "description": "\u05de\u05e8\u05d7\u05e7 \u05dc\u05de\u05e8\u05e4\u05d0\u05d4 \u05d4\u05de\u05d5\u05de\u05dc\u05e6\u05ea \u05d1\u05e7\"\u05dd"
+    },
+    "eta_minutes": {
+      "type": "number",
+      "description": "\u05d6\u05de\u05df \u05e0\u05e1\u05d9\u05e2\u05d4 \u05de\u05e9\u05d5\u05e2\u05e8 \u05dc\u05de\u05e8\u05e4\u05d0\u05d4 \u05d4\u05de\u05d5\u05de\u05dc\u05e6\u05ea"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "submitted",
+        "contacted",
+        "arrived",
+        "cancelled"
+      ],
+      "default": "draft",
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05d8\u05d9\u05e4\u05d5\u05dc \u05d1\u05d8\u05d5\u05e4\u05e1"
+    },
+    "staff_notes": {
+      "type": "string",
+      "description": "\u05d4\u05e2\u05e8\u05d5\u05ea \u05e6\u05d5\u05d5\u05ea \u05e4\u05e0\u05d9\u05de\u05d9\u05d5\u05ea"
+    },
+    "contacted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05de\u05ea\u05d9 \u05e6\u05d5\u05d5\u05ea \u05d4\u05de\u05e8\u05e4\u05d0\u05d4 \u05d9\u05e6\u05e8 \u05e7\u05e9\u05e8"
+    },
+    "contacted_by": {
+      "type": "string",
+      "description": "\u05de\u05d9 \u05de\u05d4\u05e6\u05d5\u05d5\u05ea \u05d9\u05e6\u05e8 \u05e7\u05e9\u05e8"
+    }
+  },
+  "required": [
+    "owner_phone",
+    "pet_species",
+    "severity"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": "{{user.data.clinic_id}}"
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": "{{user.data.clinic_id}}"
+        }
+      ]
+    }
+  }
+}

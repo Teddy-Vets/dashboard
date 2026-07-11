@@ -1,0 +1,257 @@
+{
+  "name": "IntakeForm",
+  "type": "object",
+  "properties": {
+    "clinic_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05de\u05e8\u05e4\u05d0\u05d4 \u05d4\u05de\u05e9\u05d5\u05d9\u05d9\u05d9\u05db\u05ea"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05dc\u05e7\u05d5\u05d7 (\u05d0\u05dd \u05e0\u05d5\u05e6\u05e8)"
+    },
+    "pet_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3 (\u05d0\u05dd \u05e0\u05d5\u05e6\u05e8\u05ea)"
+    },
+    "owner_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05d1\u05e2\u05dc\u05d9\u05dd"
+    },
+    "owner_id_number": {
+      "type": "string",
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05ea\u05e2\u05d5\u05d3\u05ea \u05d6\u05d4\u05d5\u05ea \u05d4\u05d1\u05e2\u05dc\u05d9\u05dd"
+    },
+    "owner_phone": {
+      "type": "string",
+      "description": "\u05d8\u05dc\u05e4\u05d5\u05df \u05d4\u05d1\u05e2\u05dc\u05d9\u05dd"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "\u05d0\u05d9\u05de\u05d9\u05d9\u05dc \u05d4\u05d1\u05e2\u05dc\u05d9\u05dd"
+    },
+    "address": {
+      "type": "string",
+      "description": "\u05db\u05ea\u05d5\u05d1\u05ea \u05de\u05d2\u05d5\u05e8\u05d9\u05dd \u05e9\u05dc \u05d4\u05d1\u05e2\u05dc\u05d9\u05dd"
+    },
+    "first_ever_pet": {
+      "type": "string",
+      "enum": [
+        "yes",
+        "no"
+      ],
+      "description": "\u05d4\u05d0\u05dd \u05d6\u05d5 \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3 \u05d4\u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 \u05d1\u05de\u05e9\u05e4\u05d7\u05d4"
+    },
+    "first_pet_story": {
+      "type": "string",
+      "description": "\u05e1\u05d9\u05e4\u05d5\u05e8 \u05e2\u05dc \u05d0\u05d9\u05da \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3 \u05d4\u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 \u05d4\u05d2\u05d9\u05e2\u05d4 \u05dc\u05de\u05e9\u05e4\u05d7\u05d4"
+    },
+    "not_first_pet_info": {
+      "type": "string",
+      "description": "\u05de\u05d9\u05d3\u05e2 \u05e2\u05dc \u05d7\u05d9\u05d9\u05ea \u05de\u05d7\u05de\u05d3 \u05e9\u05d0\u05d9\u05e0\u05d4 \u05e8\u05d0\u05e9\u05d5\u05e0\u05d4, \u05d5\u05de\u05d9 \u05d4\u05de\u05d8\u05e4\u05dc \u05d4\u05e2\u05d9\u05e7\u05e8\u05d9"
+    },
+    "pet_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "pet_type": {
+      "type": "string",
+      "description": "\u05e1\u05d5\u05d2 \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "pet_breed": {
+      "type": "string",
+      "description": "\u05d2\u05d6\u05e2 \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "pet_age": {
+      "type": "string",
+      "description": "\u05d2\u05d9\u05dc \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "previous_treatments_file_url": {
+      "type": "string",
+      "description": "\u05e7\u05d9\u05e9\u05d5\u05e8 \u05dc\u05e7\u05d5\u05d1\u05e5 \u05e1\u05d9\u05db\u05d5\u05dd \u05d8\u05d9\u05e4\u05d5\u05dc\u05d9\u05dd \u05e7\u05d5\u05d3\u05de\u05d9\u05dd"
+    },
+    "pet_gender": {
+      "type": "string",
+      "description": "\u05de\u05d9\u05df \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "pet_neutered": {
+      "type": "string",
+      "description": "\u05d4\u05d0\u05dd \u05de\u05e1\u05d5\u05e8\u05e1/\u05de\u05e2\u05d5\u05e7\u05e8\u05ea"
+    },
+    "has_insurance": {
+      "type": "string",
+      "enum": [
+        "yes",
+        "no",
+        "considering"
+      ],
+      "description": "\u05d4\u05d0\u05dd \u05e8\u05db\u05e9\u05ea\u05dd \u05d1\u05d9\u05d8\u05d5\u05d7 - \u05db\u05df/\u05dc\u05d0/\u05de\u05ea\u05dc\u05d1\u05d8\u05d9\u05dd"
+    },
+    "insurance_company": {
+      "type": "string",
+      "enum": [
+        "merpet",
+        "libera",
+        "haphoenix",
+        "be_friend",
+        "hayota",
+        "other"
+      ],
+      "description": "\u05d7\u05d1\u05e8\u05ea \u05d4\u05d1\u05d9\u05d8\u05d5\u05d7 - \u05d0\u05dd \u05d4\u05ea\u05e9\u05d5\u05d1\u05d4 \u05db\u05df"
+    },
+    "insurance_company_other": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d7\u05d1\u05e8\u05ea \u05d1\u05d9\u05d8\u05d5\u05d7 \u05d0\u05d7\u05e8\u05ea - \u05d0\u05dd \u05e0\u05d1\u05d7\u05e8 '\u05d0\u05d7\u05e8'"
+    },
+    "no_insurance_reason": {
+      "type": "string",
+      "description": "\u05d4\u05e1\u05d9\u05d1\u05d4 \u05dc\u05d0\u05d9 \u05e8\u05db\u05d9\u05e9\u05ea \u05d1\u05d9\u05d8\u05d5\u05d7 - \u05d0\u05dd \u05d4\u05ea\u05e9\u05d5\u05d1\u05d4 \u05dc\u05d0"
+    },
+    "considering_insurance_notes": {
+      "type": "string",
+      "description": "\u05d4\u05e2\u05e8\u05d5\u05ea/\u05e9\u05d0\u05dc\u05d5\u05ea \u05dc\u05d2\u05d1\u05d9 \u05d1\u05d9\u05d8\u05d5\u05d7 - \u05d0\u05dd \u05de\u05ea\u05dc\u05d1\u05d8\u05d9\u05dd"
+    },
+    "pet_microchip": {
+      "type": "string",
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05e9\u05d1\u05d1"
+    },
+    "pet_picture_url": {
+      "type": "string",
+      "description": "\u05e7\u05d9\u05e9\u05d5\u05e8 \u05dc\u05ea\u05de\u05d5\u05e0\u05ea \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3"
+    },
+    "vaccine_book_url": {
+      "type": "string",
+      "description": "\u05e7\u05d9\u05e9\u05d5\u05e8 \u05dc\u05e7\u05d5\u05d1\u05e5 \u05e4\u05e0\u05e7\u05e1 \u05d7\u05d9\u05e1\u05d5\u05e0\u05d9\u05dd"
+    },
+    "first_visit": {
+      "type": "string",
+      "enum": [
+        "yes",
+        "no"
+      ],
+      "description": "\u05d4\u05d0\u05dd \u05d6\u05d4\u05d5 \u05d1\u05d9\u05e7\u05d5\u05e8 \u05e8\u05d0\u05e9\u05d5\u05df"
+    },
+    "how_heard_about_us": {
+      "type": "string",
+      "description": "\u05d0\u05d9\u05da \u05e9\u05de\u05e2\u05d5 \u05e2\u05dc \u05d4\u05de\u05e8\u05e4\u05d0\u05d4"
+    },
+    "previous_clinic_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05de\u05e8\u05e4\u05d0\u05d4/\u05d4\u05d5\u05d5\u05d8\u05e8\u05d9\u05e0\u05e8 \u05d4\u05e7\u05d5\u05d3\u05dd"
+    },
+    "previous_pet_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3 \u05e9\u05d8\u05d5\u05e4\u05dc\u05d4 \u05d1\u05e2\u05d1\u05e8 \u05d0\u05e6\u05dc\u05e0\u05d5"
+    },
+    "prev_vet_likes": {
+      "type": "string",
+      "description": "\u05de\u05d4 \u05d0\u05d4\u05d1 \u05d1\u05d5\u05d5\u05d8\u05e8\u05d9\u05e0\u05e8 \u05d4\u05e7\u05d5\u05d3\u05dd"
+    },
+    "needs_from_us": {
+      "type": "string",
+      "description": "\u05de\u05d4 \u05de\u05e6\u05e4\u05d4 \u05de\u05d0\u05d9\u05ea\u05e0\u05d5"
+    },
+    "known_medical_issues": {
+      "type": "string",
+      "description": "\u05d1\u05e2\u05d9\u05d5\u05ea \u05e8\u05e4\u05d5\u05d0\u05d9\u05d5\u05ea \u05d9\u05d3\u05d5\u05e2\u05d5\u05ea"
+    },
+    "diet_food_type": {
+      "type": "string",
+      "description": "\u05e1\u05d5\u05d2 \u05d4\u05de\u05d6\u05d5\u05df"
+    },
+    "behavioral_issues": {
+      "type": "string",
+      "description": "\u05d1\u05e2\u05d9\u05d5\u05ea \u05d4\u05ea\u05e0\u05d4\u05d2\u05d5\u05ea\u05d9\u05d5\u05ea"
+    },
+    "vet_anxiety_level": {
+      "type": "number",
+      "description": "\u05e8\u05de\u05ea \u05d7\u05e8\u05d3\u05d4 \u05d0\u05e6\u05dc \u05d5\u05d8\u05e8\u05d9\u05e0\u05e8"
+    },
+    "anxiety_help_suggestions": {
+      "type": "string",
+      "description": "\u05d4\u05e6\u05e2\u05d5\u05ea \u05dc\u05d4\u05e7\u05dc\u05ea \u05d7\u05e8\u05d3\u05d4 - \u05de\u05d5\u05e6\u05d2 \u05db\u05d0\u05e9\u05e8 \u05e8\u05de\u05ea \u05d4\u05d7\u05e8\u05d3\u05d4 5 \u05d5\u05de\u05e2\u05dc\u05d4"
+    },
+    "visit_reason_main": {
+      "type": "string",
+      "description": "\u05e1\u05d9\u05d1\u05ea \u05d4\u05d1\u05d9\u05e7\u05d5\u05e8 \u05d4\u05e2\u05d9\u05e7\u05e8\u05d9\u05ea"
+    },
+    "visit_reason_details": {
+      "type": "string",
+      "description": "\u05e4\u05d9\u05e8\u05d5\u05d8 \u05e1\u05d9\u05d1\u05ea \u05d4\u05d1\u05d9\u05e7\u05d5\u05e8"
+    },
+    "other_topics": {
+      "type": "string",
+      "description": "\u05e0\u05d5\u05e9\u05d0\u05d9\u05dd \u05e0\u05d5\u05e1\u05e4\u05d9\u05dd \u05dc\u05d3\u05d9\u05d5\u05df"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "submitted",
+        "reviewed",
+        "completed",
+        "archived"
+      ],
+      "default": "draft",
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05d8\u05d5\u05e4\u05e1"
+    },
+    "staff_notes": {
+      "type": "string",
+      "description": "\u05d4\u05e2\u05e8\u05d5\u05ea \u05e6\u05d5\u05d5\u05ea \u05e4\u05e0\u05d9\u05de\u05d9\u05d5\u05ea"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05d6\u05de\u05df \u05d4\u05e9\u05dc\u05de\u05ea \u05d4\u05d8\u05d5\u05e4\u05e1"
+    },
+    "reviewed_by": {
+      "type": "string",
+      "description": "\u05de\u05d9 \u05d1\u05d3\u05e7 \u05d0\u05ea \u05d4\u05d8\u05d5\u05e4\u05e1"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05d6\u05de\u05df \u05d1\u05d3\u05d9\u05e7\u05ea \u05d4\u05d8\u05d5\u05e4\u05e1"
+    },
+    "client_consent": {
+      "type": "boolean",
+      "description": "\u05d4\u05d0\u05dd \u05d4\u05dc\u05e7\u05d5\u05d7 \u05d0\u05d9\u05e9\u05e8 \u05d0\u05ea \u05d4\u05d8\u05d5\u05e4\u05e1"
+    },
+    "consent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05d0\u05d9\u05e9\u05d5\u05e8 \u05d4\u05dc\u05e7\u05d5\u05d7"
+    }
+  },
+  "required": [
+    "clinic_id",
+    "owner_name",
+    "pet_name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": "{{user.data.clinic_id}}"
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": "{{user.data.clinic_id}}"
+        }
+      ]
+    }
+  }
+}
