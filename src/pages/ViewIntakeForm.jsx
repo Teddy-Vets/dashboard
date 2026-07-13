@@ -36,7 +36,7 @@ export default function ViewIntakeFormPage() {
       const form = await getEntityById(IntakeForm, formId, 'IntakeForm');
       setFormData(form);
 
-      if (form.status === 'submitted') {
+      if (form.status === 'submitted' || form.status === 'draft') {
         await updateEntity(IntakeForm, form.id, { status: 'reviewed' }, 'IntakeForm');
         setFormData(prev => ({ ...prev, status: 'reviewed' }));
       }
