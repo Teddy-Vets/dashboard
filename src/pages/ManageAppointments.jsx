@@ -30,8 +30,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/components/utils/urlHelpers";
 
 import userService from "@/components/services/userService";
-import { getEntityList, updateEntity, ApiError } from "@/components/utils/apiHelpers";
+import { getEntityList, getEntityById, updateEntity, ApiError } from "@/components/utils/apiHelpers";
 import { base44 } from "@/api/base44Client";
+import { Switch } from "@/components/ui/switch";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { TableSkeleton } from "@/components/common/LoadingSkeleton";
@@ -49,6 +50,8 @@ export default function ManageAppointmentsPage() {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [clinicBookingEnabled, setClinicBookingEnabled] = useState(true);
+  const [isTogglingBooking, setIsTogglingBooking] = useState(false);
 
   const navigate = useNavigate();
 
@@ -76,6 +79,12 @@ export default function ManageAppointmentsPage() {
         appointmentsData = await getEntityList(AppointmentRequest, {}, "-created_date", null, 'AppointmentRequest');
       } else if (user.clinic_id) {
         appointmentsData = await getEntityList(AppointmentRequest, { clinic_id: user.clinic_id }, "-created_date", null, 'AppointmentRequest');
+        try {
+          const clinic = await getEntityById(Clinic, user.clinic_id, 'Clinic');
+          setClinicBookingEnabled(clinic.settings?.allow_appointments !== false);
+        } catch (e) {
+          console.error("Error loading clinic settings:", e);
+        }
       } else {
         appointmentsData = [];
       }
@@ -220,6 +229,26 @@ export default function ManageAppointmentsPage() {
       alert("שגיאה בעדכון התור: " + error.message);
     } finally {
       setIsUpdating(false);
+    }
+  };
+
+  const handleToggleBooking = async (checked) => {
+    const clinicId = currentUser?.clinic_id;
+    if (!clinicId) return;
+    setIsTogglingBooking(true);
+    try {
+      const clinic = await getEntityById(Clinic, clinicId, 'Clinic');
+      const currentSettings = clinic.settings || {};
+      await updateEntity(Clinic, clinicId, {
+        settings: { ...currentSettings, allow_appointments: checked }
+      }, 'Clinic');
+      setClinicBookingEnabled(checked);
+    } catch (error) {
+      console.error("Error toggling booking:", error);
+      alert("שגיאה בעדכון הגדרות תיאום התורים: " + error.message);
+      setClinicBookingEnabled(!checked);
+    } finally {
+      setIsTogglingBooking(false);
     }
   };
 
@@ -426,6 +455,37 @@ export default function ManageAppointmentsPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* כפתור פתיחה/סגירה של תיאום תורים */}
+        {currentUser?.role !== "admin" && currentUser?.clinic_id && (
+          <Card className={`mb-4 md:mb-6 shadow-lg border-2 ${clinicBookingEnabled ? 'border-green-200 bg-green-50/80' : 'border-red-200 bg-red-50/80'} backdrop-blur-sm`}>
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3">
+                  <Calendar className={`w-6 h-6 md:w-8 md:h-8 ${clinicBookingEnabled ? 'text-green-500' : 'text-red-500'}`} />
+                  <div>
+                    <h3 className="text-sm md:text-base font-bold text-slate-800">
+                      תיאום תורים אונליין
+                    </h3>
+                    <p className="text-xs md:text-sm text-slate-600">
+                      {clinicBookingEnabled ? 'פתוח לקביעת תורים על ידי לקוחות' : 'סגור - לקוחות לא יכולים לקבוע תורים אונליין'}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className={`text-sm font-medium ${clinicBookingEnabled ? 'text-green-700' : 'text-red-700'}`}>
+                    {clinicBookingEnabled ? 'פתוח' : 'סגור'}
+                  </span>
+                  <Switch
+                    checked={clinicBookingEnabled}
+                    onCheckedChange={handleToggleBooking}
+                    disabled={isTogglingBooking}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* סינונים */}
         <Card className="bg-white/80 backdrop-blur-sm border-blue-100 shadow-lg mb-4 md:mb-6">

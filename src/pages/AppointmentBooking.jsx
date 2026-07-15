@@ -81,7 +81,8 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
     async function fetchClinics() {
       try {
         const clinicList = await getEntityList(Clinic, { is_active: true });
-        setClinics(clinicList);
+        const bookingEnabledClinics = clinicList.filter(c => c.settings?.allow_appointments !== false);
+        setClinics(bookingEnabledClinics);
         // הסרת ברירת מחדל - הלקוח יבחר בעצמו
       } catch (error) {
         console.error("Failed to load clinics", error);
@@ -109,6 +110,12 @@ const ContactDetailsScreen = ({ formData, setFormData, onNext, onBack }) => {
             <div className="flex justify-center py-8">
                 <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
               </div> :
+            clinics.length === 0 ?
+            <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-gray-200">
+              <Calendar className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-600 font-medium">תיאום התורים האונליין סגור כעת</p>
+              <p className="text-gray-500 text-sm mt-1">אנא צרו קשר טלפוני לקביעת תור</p>
+            </div> :
 
             <div className="grid grid-cols-3 gap-3">
                 {clinics.map((clinic) =>

@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Power, PowerOff, Settings, Calendar, Check, X } from 'lucide-react';
+import { ExternalLink, Power, PowerOff, Settings, Calendar, Check, X, CalendarClock } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 import PageHeader from '@/components/common/PageHeader';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorMessage from '@/components/common/ErrorMessage';
@@ -87,6 +88,21 @@ export default function ClinicSettings() {
         } catch (error) {
             console.error('Error disconnecting:', error);
             toast.error('שגיאה בניתוק Google Calendar');
+        }
+    };
+
+    const handleToggleAppointments = async (clinicId, checked) => {
+        try {
+            const clinic = clinics.find(c => c.id === clinicId);
+            const currentSettings = clinic.settings || {};
+            await base44.entities.Clinic.update(clinicId, {
+                settings: { ...currentSettings, allow_appointments: checked }
+            });
+            toast.success(checked ? 'תיאום תורים אונליין נפתח' : 'תיאום תורים אונליין נסגר');
+            queryClient.invalidateQueries(['clinics']);
+        } catch (error) {
+            console.error('Error toggling appointments:', error);
+            toast.error('שגיאה בעדכון הגדרות תיאום תורים');
         }
     };
 
@@ -186,6 +202,53 @@ export default function ClinicSettings() {
                                         );
                                     })}
                                 </div>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <CalendarClock className="w-5 h-5 text-blue-600" />
+                            <span>הגדרות תיאום תורים</span>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-gray-600 text-sm mb-4">
+                            פתחו או סגרו את אפשרות תיאום התורים האונליין עבור כל מרפאה:
+                        </p>
+                        {!isLoading && !isError && clinics && (
+                            <div className="space-y-3">
+                                {clinics.map((clinic) => {
+                                    const isEnabled = clinic.settings?.allow_appointments !== false;
+                                    return (
+                                        <Card key={clinic.id} className="border">
+                                            <CardContent className="p-4">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-3">
+                                                        <CalendarClock className={`w-5 h-5 ${isEnabled ? 'text-green-500' : 'text-gray-400'}`} />
+                                                        <div>
+                                                            <h3 className="font-medium text-gray-900">{clinic.name}</h3>
+                                                            <p className="text-sm text-gray-500">
+                                                                {isEnabled ? 'פתוח לתורים אונליין' : 'סגור לתורים אונליין'}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <Badge className={isEnabled ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200'}>
+                                                            {isEnabled ? 'פתוח' : 'סגור'}
+                                                        </Badge>
+                                                        <Switch
+                                                            checked={isEnabled}
+                                                            onCheckedChange={(checked) => handleToggleAppointments(clinic.id, checked)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    );
+                                })}
                             </div>
                         )}
                     </CardContent>
