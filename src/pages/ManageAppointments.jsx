@@ -52,6 +52,8 @@ export default function ManageAppointmentsPage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [clinicBookingEnabled, setClinicBookingEnabled] = useState(true);
   const [isTogglingBooking, setIsTogglingBooking] = useState(false);
+  const [adminClinics, setAdminClinics] = useState([]);
+  const [togglingClinicId, setTogglingClinicId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -77,6 +79,12 @@ export default function ManageAppointmentsPage() {
       let appointmentsData;
       if (user.role === "admin") {
         appointmentsData = await getEntityList(AppointmentRequest, {}, "-created_date", null, 'AppointmentRequest');
+        try {
+          const clinicsData = await getEntityList(Clinic, { is_active: true }, null, null, 'Clinic');
+          setAdminClinics(clinicsData || []);
+        } catch (e) {
+          console.error("Error loading admin clinics:", e);
+        }
       } else if (user.clinic_id) {
         appointmentsData = await getEntityList(AppointmentRequest, { clinic_id: user.clinic_id }, "-created_date", null, 'AppointmentRequest');
         try {
@@ -249,6 +257,23 @@ export default function ManageAppointmentsPage() {
       setClinicBookingEnabled(!checked);
     } finally {
       setIsTogglingBooking(false);
+    }
+  };
+
+  const handleToggleBookingAdmin = async (clinicId, checked) => {
+    setTogglingClinicId(clinicId);
+    try {
+      const clinic = adminClinics.find(c => c.id === clinicId) || {};
+      const currentSettings = clinic.settings || {};
+      await updateEntity(Clinic, clinicId, {
+        settings: { ...currentSettings, allow_appointments: checked }
+      }, 'Clinic');
+      setAdminClinics(prev => prev.map(c => c.id === clinicId ? { ...c, settings: { ...currentSettings, allow_appointments: checked } } : c));
+    } catch (error) {
+      console.error("Error toggling booking:", error);
+      alert("שגיאה בעדכון הגדרות תיאום התורים: " + error.message);
+    } finally {
+      setTogglingClinicId(null);
     }
   };
 
@@ -482,6 +507,59 @@ export default function ManageAppointmentsPage() {
                     disabled={isTogglingBooking}
                   />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* ניהול תיאום תורים פר-מרפאה עבור מנהל מערכת */}
+        {currentUser?.role === "admin" && (
+          <Card className="mb-4 md:mb-6 shadow-lg border-2 border-blue-100 bg-white/80 backdrop-blur-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm md:text-base font-bold text-slate-800 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-blue-500" />
+                ניהול תיאום תורים אונליין
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs md:text-sm text-slate-600 mb-4">
+                פתחו או סגרו את אפשרות תיאום התורים האונליין עבור כל מרפאה בנפרד:
+              </p>
+              <div className="space-y-3">
+                {isLoading ? (
+                  <div className="flex justify-center py-4"><LoadingSpinner /></div>
+                ) : adminClinics.length === 0 ? (
+                  <p className="text-sm text-slate-500 text-center py-4">אין מרפאות פעילות</p>
+                ) : (
+                  adminClinics.map((clinic) => {
+                    const isEnabled = clinic.settings?.allow_appointments !== false;
+                    return (
+                      <div key={clinic.id} className={`flex items-center justify-between p-3 rounded-lg border ${isEnabled ? 'border-green-200 bg-green-50/50' : 'border-red-200 bg-red-50/50'}`}>
+                        <div className="flex items-center gap-3">
+                          <div className={`flex-shrink-0 ${isEnabled ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                            <Calendar className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-semibold text-slate-800">{clinic.name}</h4>
+                            <p className="text-xs text-slate-500">
+                              {isEnabled ? 'פתוח לתורים אונליין' : 'סגור לתורים אונליין'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className={isEnabled ? 'border-green-300 text-green-700 bg-green-50' : 'border-red-300 text-red-700 bg-red-50'}>
+                            {isEnabled ? 'פתוח' : 'סגור'}
+                          </Badge>
+                          <Switch
+                            checked={isEnabled}
+                            onCheckedChange={(checked) => handleToggleBookingAdmin(clinic.id, checked)}
+                            disabled={togglingClinicId === clinic.id}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </CardContent>
           </Card>
