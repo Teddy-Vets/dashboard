@@ -56,6 +56,14 @@ import {
   DialogDescription,
   DialogFooter
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Pagination from "@/components/common/Pagination";
 
 export default function IntakeFormsListPage() {
   const navigate = useNavigate();
@@ -66,6 +74,10 @@ export default function IntakeFormsListPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [clinics, setClinics] = useState([]);
+  const [clinicFilter, setClinicFilter] = useState("all");
+  const [page, setPage] = useState(0);
+  const [clinicPages, setClinicPages] = useState({});
+  const PER_PAGE = 15;
 
   const [generatingLink, setGeneratingLink] = useState({ id: null, url: null, error: null });
   const [deleteFormId, setDeleteFormId] = useState(null);
@@ -74,6 +86,11 @@ export default function IntakeFormsListPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    setPage(0);
+    setClinicPages({});
+  }, [searchQuery, statusFilter, clinicFilter]);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -116,9 +133,13 @@ export default function IntakeFormsListPage() {
       form.pet_name?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesStatus = statusFilter === "all" || form.status === statusFilter;
+    const matchesClinic = clinicFilter === "all" || form.clinic_id === clinicFilter;
 
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesClinic;
   });
+
+  const flatTotalPages = Math.ceil(filteredForms.length / PER_PAGE);
+  const pagedForms = filteredForms.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
 
   const getStats = () => {
     const total = forms.length;
@@ -327,6 +348,21 @@ export default function IntakeFormsListPage() {
                   className="pr-10 text-sm md:text-base"
                 />
               </div>
+              {currentUser?.role === 'admin' && clinics.length > 0 && (
+                <div className="md:w-64">
+                  <Select value={clinicFilter} onValueChange={setClinicFilter}>
+                    <SelectTrigger className="text-sm md:text-base">
+                      <SelectValue placeholder="כל המרפאות" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">כל המרפאות</SelectItem>
+                      {clinics.map(clinic => (
+                        <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               <div className="flex gap-2 flex-wrap">
                 {Object.entries(statusConfig).map(([statusKey, { label }]) => (
                   <Button
@@ -367,20 +403,24 @@ export default function IntakeFormsListPage() {
             actionLabel="הוסף טופס היכרות"
             onAction={() => navigate(createPageUrl("IntakeForm"))}
           />
-        ) : currentUser?.role === 'admin' ? (
+        ) : currentUser?.role === 'admin' && clinicFilter === "all" ? (
           clinics.map(clinic => {
             const clinicForms = filteredForms.filter(form => form.clinic_id === clinic.id);
             if (clinicForms.length === 0) return null;
 
+            const currentClinicPage = clinicPages[clinic.id] || 0;
+            const totalPages = Math.ceil(clinicForms.length / PER_PAGE);
+            const pagedClinicForms = clinicForms.slice(currentClinicPage * PER_PAGE, (currentClinicPage + 1) * PER_PAGE);
+
             return (
               <div key={clinic.id} className="mb-8">
                 <h2 className="text-2xl font-bold text-slate-800 mb-4">{clinic.name}</h2>
-                
+
                 {/* Mobile View - Cards */}
                 <div className="md:hidden space-y-3">
-                    {clinicForms.map((form, index) => (
-                      <IntakeFormMobileCard key={form.id} form={form} index={index} />
-                    ))}
+                  {pagedClinicForms.map((form, index) => (
+                    <IntakeFormMobileCard key={form.id} form={form} index={index} />
+                  ))}
                 </div>
 
                 {/* Desktop View - Table */}
@@ -403,54 +443,60 @@ export default function IntakeFormsListPage() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {clinicForms.map((form, index) => {
-                              const config = statusConfig[form.status] || {};
-                              const StatusIcon = config.icon;
-                              const isGenerating = generatingLink.id === form.id && !generatingLink.url && !generatingLink.error;
+                          {pagedClinicForms.map((form, index) => {
+                            const config = statusConfig[form.status] || {};
+                            const StatusIcon = config.icon;
+                            const isGenerating = generatingLink.id === form.id && !generatingLink.url && !generatingLink.error;
 
-                              return (
-                                <motion.tr key={form.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.05 }}>
-                                  <TableCell className="text-right">
-                                    <p className="font-medium">{form.owner_name}</p>
-                                    <p className="text-sm text-slate-500">{form.pet_name} ({form.pet_type})</p>
-                                  </TableCell>
-                                  <TableCell className="text-right">{format(new Date(form.created_date), "d MMM yyyy, HH:mm", { locale: he })}</TableCell>
-                                  <TableCell className="text-right">
-                                    <Badge variant="secondary" className={`${config.color} gap-1`}>
-                                      {StatusIcon && <StatusIcon className="w-3 h-3" />}
-                                      {config.label}
-                                    </Badge>
-                                  </TableCell>
-                                  <TableCell className="text-right">
-                                    <div className="flex gap-2">
-                                      <Button variant="ghost" size="sm" onClick={() => viewForm(form)}><Eye className="w-4 h-4 ml-1" />צפייה</Button>
-                                      <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl("EditIntakeForm", { id: form.id }))} className="text-amber-600 hover:text-amber-800 hover:bg-amber-50"><Edit className="w-4 h-4 ml-1" />ערוך</Button>
-                                      <Button variant="ghost" size="sm" onClick={() => setDeleteFormId(form.id)} className="text-red-600 hover:text-red-800 hover:bg-red-50"><Trash2 className="w-4 h-4 ml-1" />מחק</Button>
-                                      {form.status === 'draft' && (
-                                        <Button variant="ghost" size="sm" onClick={() => handleSendLink(form)} disabled={isGenerating}>
-                                          {isGenerating ? <Loader2 className="w-4 h-4 animate-spin ml-1" /> : <Send className="w-4 h-4 ml-1" />}
-                                          שלח קישור
-                                        </Button>
-                                      )}
-                                      </div>
-                                  </TableCell>
-                                </motion.tr>
-                              );
-                            })}
+                            return (
+                              <motion.tr key={form.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.05 }}>
+                                <TableCell className="text-right">
+                                  <p className="font-medium">{form.owner_name}</p>
+                                  <p className="text-sm text-slate-500">{form.pet_name} ({form.pet_type})</p>
+                                </TableCell>
+                                <TableCell className="text-right">{format(new Date(form.created_date), "d MMM yyyy, HH:mm", { locale: he })}</TableCell>
+                                <TableCell className="text-right">
+                                  <Badge variant="secondary" className={`${config.color} gap-1`}>
+                                    {StatusIcon && <StatusIcon className="w-3 h-3" />}
+                                    {config.label}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <div className="flex gap-2">
+                                    <Button variant="ghost" size="sm" onClick={() => viewForm(form)}><Eye className="w-4 h-4 ml-1" />צפייה</Button>
+                                    <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl("EditIntakeForm", { id: form.id }))} className="text-amber-600 hover:text-amber-800 hover:bg-amber-50"><Edit className="w-4 h-4 ml-1" />ערוך</Button>
+                                    <Button variant="ghost" size="sm" onClick={() => setDeleteFormId(form.id)} className="text-red-600 hover:text-red-800 hover:bg-red-50"><Trash2 className="w-4 h-4 ml-1" />מחק</Button>
+                                    {form.status === 'draft' && (
+                                      <Button variant="ghost" size="sm" onClick={() => handleSendLink(form)} disabled={isGenerating}>
+                                        {isGenerating ? <Loader2 className="w-4 h-4 animate-spin ml-1" /> : <Send className="w-4 h-4 ml-1" />}
+                                        שלח קישור
+                                      </Button>
+                                    )}
+                                  </div>
+                                </TableCell>
+                              </motion.tr>
+                            );
+                          })}
                         </TableBody>
                       </Table>
                     </div>
                   </CardContent>
                 </Card>
+
+                <Pagination
+                  currentPage={currentClinicPage}
+                  totalPages={totalPages}
+                  onPageChange={(p) => setClinicPages(prev => ({ ...prev, [clinic.id]: p }))}
+                />
               </div>
-            )
+            );
           })
         ) : (
           <>
-            {/* View for non-admin user */}
+            {/* Flat view - non-admin or admin with specific clinic selected */}
             <div className="md:hidden space-y-3">
               <AnimatePresence>
-                {filteredForms.map((form, index) => (
+                {pagedForms.map((form, index) => (
                   <IntakeFormMobileCard key={form.id} form={form} index={index} />
                 ))}
               </AnimatePresence>
@@ -475,7 +521,7 @@ export default function IntakeFormsListPage() {
                     </TableHeader>
                     <TableBody>
                       <AnimatePresence>
-                        {filteredForms.map((form, index) => {
+                        {pagedForms.map((form, index) => {
                           const config = statusConfig[form.status] || {};
                           const StatusIcon = config.icon;
                           const isGenerating = generatingLink.id === form.id && !generatingLink.url && !generatingLink.error;
@@ -515,6 +561,11 @@ export default function IntakeFormsListPage() {
                 </div>
               </CardContent>
             </Card>
+            <Pagination
+              currentPage={page}
+              totalPages={flatTotalPages}
+              onPageChange={setPage}
+            />
           </>
         )}
 
