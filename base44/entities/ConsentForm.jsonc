@@ -162,7 +162,7 @@
         "legally_sealed"
       ],
       "default": "pending",
-      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05d8\u05d5\u05e4\u05e1 - legally_sealed = \u05d7\u05ea\u05d5\u05dd \u05d5\u05d0\u05d8\u05d5\u05dd \u05de\u05e9\u05e4\u05d8\u05d9\u05ea"
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05d8\u05d5\u05e4\u05e1"
     },
     "immutable_record": {
       "type": "boolean",
@@ -185,6 +185,11 @@
           }
         },
         {
+          "data.clinic_id": {
+            "$in": "{{user.data.clinic_ids}}"
+          }
+        },
+        {
           "data.clinic_id": "{{user.data.clinic_id}}"
         }
       ]
@@ -199,12 +204,17 @@
               }
             },
             {
+              "data.clinic_id": {
+                "$in": "{{user.data.clinic_ids}}"
+              }
+            },
+            {
               "data.clinic_id": "{{user.data.clinic_id}}"
             }
           ]
         },
         {
-          "oldData.immutable_record": {
+          "data.immutable_record": {
             "$ne": true
           }
         }
