@@ -154,6 +154,11 @@
           }
         },
         {
+          "data.clinic_id": {
+            "$in": "{{user.data.clinic_ids}}"
+          }
+        },
+        {
           "data.clinic_id": "{{user.data.clinic_id}}"
         }
       ]
@@ -168,12 +173,17 @@
               }
             },
             {
+              "data.clinic_id": {
+                "$in": "{{user.data.clinic_ids}}"
+              }
+            },
+            {
               "data.clinic_id": "{{user.data.clinic_id}}"
             }
           ]
         },
         {
-          "oldData.immutable_record": {
+          "data.immutable_record": {
             "$ne": true
           }
         }
