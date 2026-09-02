@@ -29,8 +29,7 @@
     },
     "feeding_instructions": {
       "type": "string",
-      "description": "\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea \u05d4\u05d0\u05db\u05dc\u05d4",
-      "default": "\u05de\u05d6\u05d5\u05df \u05e7\u05dc \u05dc\u05de\u05d7\u05e8\u05ea \u05d4\u05e0\u05d9\u05ea\u05d5\u05d7"
+      "description": "\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea \u05d4\u05d0\u05db\u05dc\u05d4"
     },
     "wound_location": {
       "type": "string",
@@ -82,7 +81,7 @@
         "archived"
       ],
       "default": "draft",
-      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea - draft=\u05d8\u05d9\u05d5\u05d8\u05d4, published=\u05de\u05e4\u05d5\u05e8\u05e1\u05dd \u05d5\u05de\u05d5\u05db\u05df \u05dc\u05e9\u05dc\u05d9\u05d7\u05d4, sent=\u05e0\u05e9\u05dc\u05d7 \u05dc\u05dc\u05e7\u05d5\u05d7, archived=\u05d1\u05d0\u05e8\u05db\u05d9\u05d5\u05df"
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05d4\u05e0\u05d7\u05d9\u05d5\u05ea"
     },
     "published_at": {
       "type": "string",
@@ -123,6 +122,11 @@
           }
         },
         {
+          "data.clinic_id": {
+            "$in": "{{user.data.clinic_ids}}"
+          }
+        },
+        {
           "data.clinic_id": "{{user.data.clinic_id}}"
         }
       ]
@@ -132,6 +136,11 @@
         {
           "user_condition": {
             "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": {
+            "$in": "{{user.data.clinic_ids}}"
           }
         },
         {
