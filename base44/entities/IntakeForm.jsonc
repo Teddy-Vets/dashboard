@@ -4,7 +4,7 @@
   "properties": {
     "clinic_id": {
       "type": "string",
-      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05de\u05e8\u05e4\u05d0\u05d4 \u05d4\u05de\u05e9\u05d5\u05d9\u05d9\u05d9\u05db\u05ea"
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05de\u05e8\u05e4\u05d0\u05d4 \u05d4\u05de\u05e9\u05d5\u05d9\u05d9\u05db\u05ea"
     },
     "client_id": {
       "type": "string",
@@ -12,7 +12,7 @@
     },
     "pet_id": {
       "type": "string",
-      "description": "\u05de\u05d6\u05d4\u05d4 \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3 (\u05d0\u05dd \u05e0\u05d5\u05e6\u05e8\u05ea)"
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d7\u05d9\u05d9\u05ea \u05d4\u05de\u05d7\u05de\u05d3 (\u05d0\u05dd \u05e0\u05d5\u05e6\u05e8\u05d4)"
     },
     "owner_name": {
       "type": "string",
@@ -237,6 +237,11 @@
           }
         },
         {
+          "data.clinic_id": {
+            "$in": "{{user.data.clinic_ids}}"
+          }
+        },
+        {
           "data.clinic_id": "{{user.data.clinic_id}}"
         }
       ]
@@ -246,6 +251,11 @@
         {
           "user_condition": {
             "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": {
+            "$in": "{{user.data.clinic_ids}}"
           }
         },
         {
