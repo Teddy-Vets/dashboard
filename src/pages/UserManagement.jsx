@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Users, Edit, Mail, Building2, Shield, Search, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
@@ -26,6 +27,7 @@ export default function UserManagement() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState("user");
   const [isInviting, setIsInviting] = useState(false);
+  const [inviteClinicIds, setInviteClinicIds] = useState([]);
 
   useEffect(() => {
     loadData();
@@ -58,7 +60,8 @@ export default function UserManagement() {
       full_name: user.full_name,
       email: user.email,
       role: user.role || 'user',
-      clinic_id: user.clinic_id || ''
+      clinic_id: user.clinic_id || '',
+      clinic_ids: user.clinic_ids || (user.clinic_id ? [user.clinic_id] : [])
     });
     setIsDialogOpen(true);
   };
@@ -70,7 +73,8 @@ export default function UserManagement() {
     try {
       await base44.entities.User.update(editingUser.id, {
         role: editingUser.role,
-        clinic_id: editingUser.clinic_id || null
+        clinic_ids: editingUser.clinic_ids || [],
+        clinic_id: editingUser.clinic_ids?.[0] || null
       });
 
       toast.success("המשתמש עודכן בהצלחה");
@@ -90,10 +94,29 @@ export default function UserManagement() {
     setIsInviting(true);
     try {
       await base44.users.inviteUser(inviteEmail, inviteRole);
+
+      // Assign clinics after invite
+      if (inviteClinicIds.length > 0) {
+        try {
+          const updatedUsers = await base44.entities.User.list();
+          const newUser = updatedUsers.find(u => u.email === inviteEmail);
+          if (newUser) {
+            await base44.entities.User.update(newUser.id, {
+              clinic_ids: inviteClinicIds,
+              clinic_id: inviteClinicIds[0]
+            });
+          }
+        } catch (e) {
+          console.error("Could not assign clinics immediately:", e);
+        }
+      }
+
       toast.success(`הזמנה נשלחה ל-${inviteEmail}`);
       setIsInviteDialogOpen(false);
       setInviteEmail("");
       setInviteRole("user");
+      setInviteClinicIds([]);
+      await loadData();
     } catch (err) {
       console.error("Error inviting user:", err);
       toast.error("שגיאה בשליחת ההזמנה");
@@ -217,7 +240,16 @@ export default function UserManagement() {
                           </Badge>
                         </td>
                         <td className="p-3">
-                          {user.clinic_id ? (
+                          {(user.clinic_ids && user.clinic_ids.length > 0) ? (
+                            <div className="flex flex-wrap gap-1">
+                              {user.clinic_ids.map(cid => (
+                                <Badge key={cid} variant="outline" className="text-xs gap-1">
+                                  <Building2 className="w-3 h-3 text-blue-500" />
+                                  {getClinicName(cid)}
+                                </Badge>
+                              ))}
+                            </div>
+                          ) : user.clinic_id ? (
                             <div className="flex items-center gap-2 text-slate-700">
                               <Building2 className="w-4 h-4 text-blue-500" />
                               {getClinicName(user.clinic_id)}
@@ -274,9 +306,30 @@ export default function UserManagement() {
                   </SelectContent>
                 </Select>
               </div>
-              <p className="text-xs text-slate-500">
-                המשתמש יקבל אימייל עם הזמנה להצטרף למערכת. לאחר ההצטרפות תוכל לשייך אותו למרפאה.
-              </p>
+              <div>
+                <Label>מרפאות משויכות</Label>
+                <div className="space-y-2 max-h-48 overflow-y-auto border rounded-lg p-3">
+                  {clinics.map((clinic) => (
+                    <div key={clinic.id} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`invite-clinic-${clinic.id}`}
+                        checked={inviteClinicIds.includes(clinic.id)}
+                        onCheckedChange={(checked) => {
+                          setInviteClinicIds(prev =>
+                            checked ? [...prev, clinic.id] : prev.filter(id => id !== clinic.id)
+                          );
+                        }}
+                      />
+                      <Label htmlFor={`invite-clinic-${clinic.id}`} className="cursor-pointer font-normal">
+                        {clinic.name}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-500 mt-1">
+                  ניתן לבחור מספר מרפאות. המשתמש יקבל גישה לכל המרפאות הנבחרות.
+                </p>
+              </div>
               <div className="flex justify-end gap-2 pt-2">
                 <Button variant="outline" onClick={() => setIsInviteDialogOpen(false)} disabled={isInviting}>
                   ביטול
@@ -328,28 +381,31 @@ export default function UserManagement() {
                 </div>
 
                 <div>
-                  <Label>מרפאה משויכת</Label>
-                  <Select
-                    value={editingUser.clinic_id || "none"}
-                    onValueChange={(value) => setEditingUser({ 
-                      ...editingUser, 
-                      clinic_id: value === "none" ? null : value 
-                    })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="בחר מרפאה" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">ללא מרפאה</SelectItem>
-                      {clinics.map((clinic) => (
-                        <SelectItem key={clinic.id} value={clinic.id}>
+                  <Label>מרפאות משויכות</Label>
+                  <div className="space-y-2 max-h-48 overflow-y-auto border rounded-lg p-3">
+                    {clinics.map((clinic) => (
+                      <div key={clinic.id} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`edit-clinic-${clinic.id}`}
+                          checked={(editingUser.clinic_ids || []).includes(clinic.id)}
+                          onCheckedChange={(checked) => {
+                            setEditingUser(prev => {
+                              const currentIds = prev.clinic_ids || [];
+                              const newIds = checked
+                                ? [...currentIds, clinic.id]
+                                : currentIds.filter(id => id !== clinic.id);
+                              return { ...prev, clinic_ids: newIds, clinic_id: newIds[0] || null };
+                            });
+                          }}
+                        />
+                        <Label htmlFor={`edit-clinic-${clinic.id}`} className="cursor-pointer font-normal">
                           {clinic.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
                   <p className="text-xs text-slate-500 mt-1">
-                    משתמש חייב להיות משויך למרפאה כדי לגשת למערכת
+                    ניתן לבחור מספר מרפאות. המשתמש יקבל גישה לכל המרפאות הנבחרות.
                   </p>
                 </div>
 
