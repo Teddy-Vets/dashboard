@@ -130,6 +130,11 @@
           }
         },
         {
+          "data.clinic_id": {
+            "$in": "{{user.data.clinic_ids}}"
+          }
+        },
+        {
           "data.clinic_id": "{{user.data.clinic_id}}"
         }
       ]
@@ -139,6 +144,11 @@
         {
           "user_condition": {
             "role": "admin"
+          }
+        },
+        {
+          "data.clinic_id": {
+            "$in": "{{user.data.clinic_ids}}"
           }
         },
         {
