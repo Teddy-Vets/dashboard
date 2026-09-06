@@ -211,21 +211,32 @@ export default function CreateSubscriptionAgreementPage() {
                   <RadioGroupItem value="monthly" id="pay-monthly" />
                 </div>
                 <div className="flex items-center gap-2 flex-row-reverse justify-end w-full">
-                  <Label htmlFor="pay-annual" className="cursor-pointer">תשלום שנתי מראש (חודש מתנה)</Label>
+                  <Label htmlFor="pay-annual" className="cursor-pointer">תשלום שנתי מראש חד-פעמי (חודש מתנה)</Label>
                   <RadioGroupItem value="annual" id="pay-annual" />
+                </div>
+                <div className="flex items-center gap-2 flex-row-reverse justify-end w-full">
+                  <Label htmlFor="pay-annual-recurring" className="cursor-pointer">תשלום שנתי מתחדש (חודש מתנה)</Label>
+                  <RadioGroupItem value="annual_recurring" id="pay-annual-recurring" />
                 </div>
               </RadioGroup>
             </div>
 
-            {selectedPlan && (
-              <div className="mt-4 bg-purple-50 border border-purple-200 rounded-xl p-4">
-                <p className="font-bold text-purple-800">{selectedPlan.label} · {form.payment_frequency === 'annual' ? 'שנתי' : 'חודשי'}</p>
-                <p className="text-purple-700 text-lg font-bold mt-1">
-                  ₪{form.payment_frequency === 'annual' ? selectedPlan.annual : selectedPlan.monthly} לחודש
-                  {form.payment_frequency === 'annual' && <span className="text-sm font-normal mr-2">(סה״כ ₪{selectedPlan.annual * 11} לשנה)</span>}
-                </p>
-              </div>
-            )}
+            {selectedPlan && (() => {
+              const isAnnual = form.payment_frequency === 'annual' || form.payment_frequency === 'annual_recurring';
+              const freqLabel = form.payment_frequency === 'monthly' ? 'חודשי' : form.payment_frequency === 'annual' ? 'שנתי חד-פעמי' : 'שנתי מתחדש';
+              return (
+                <div className="mt-4 bg-purple-50 border border-purple-200 rounded-xl p-4">
+                  <p className="font-bold text-purple-800">{selectedPlan.label} · {freqLabel}</p>
+                  <p className="text-purple-700 text-lg font-bold mt-1">
+                    ₪{isAnnual ? selectedPlan.annual : selectedPlan.monthly} לחודש
+                    {isAnnual && <span className="text-sm font-normal mr-2">(סה״כ ₪{selectedPlan.annual * 11} לשנה)</span>}
+                  </p>
+                  {form.payment_frequency === 'annual_recurring' && (
+                    <p className="text-purple-600 text-xs mt-1">החיוב יתחדש אוטומטית מדי שנה עד לביטול.</p>
+                  )}
+                </div>
+              );
+            })()}
           </CardContent>
         </Card>
 

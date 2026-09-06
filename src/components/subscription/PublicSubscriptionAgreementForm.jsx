@@ -111,7 +111,11 @@ export default function PublicSubscriptionAgreementForm({ linkData, token }) {
     );
   }
 
-  const paymentFrequencyLabel = form.payment_frequency === 'annual' ? 'חיוב שנתי מראש' : 'חיוב חודשי מתחדש';
+  const paymentFrequencyLabel = form.payment_frequency === 'annual'
+    ? 'חיוב שנתי מראש (חד-פעמי)'
+    : form.payment_frequency === 'annual_recurring'
+      ? 'חיוב שנתי מתחדש'
+      : 'חיוב חודשי מתחדש';
 
   return (
     <div className="min-h-screen p-4 md:p-8 bg-gray-50" dir="rtl">

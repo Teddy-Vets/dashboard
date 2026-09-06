@@ -66,7 +66,8 @@
       "type": "string",
       "enum": [
         "monthly",
-        "annual"
+        "annual",
+        "annual_recurring"
       ],
       "default": "monthly",
       "description": "\u05ea\u05d3\u05d9\u05e8\u05d5\u05ea \u05ea\u05e9\u05dc\u05d5\u05dd"
