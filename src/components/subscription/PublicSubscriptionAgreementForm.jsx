@@ -8,19 +8,21 @@ import { Check, Loader2, FileText, AlertCircle, Shield } from "lucide-react";
 import { submitSubscriptionAgreement } from "@/functions/submitSubscriptionAgreement";
 
 const PLAN_LABELS = {
-  teddy_basic: "טדי בייסיק (כלבים) - ₪89/חודש",
-  teddy_plus: "טדי פלוס (כלבים) - ₪129/חודש",
-  teddy_platinum: "טדי פלטינום (כלבים) - ₪169/חודש",
-  teddy_royal: "טדי רויאל (חתולים) - ₪79/חודש",
-  teddy_insured: "טדי בטוח (לבעלי ביטוח פרטי) - ₪79/חודש",
+  teddy_basic: "טדי בייסיק",
+  teddy_plus: "טדי פלוס",
+  teddy_platinum: "טדי פלטינום",
+  teddy_royal: "טדי רויאל",
+  teddy_insured: "טדי בטוח",
 };
 
 export default function PublicSubscriptionAgreementForm({ linkData, token }) {
   const form = linkData?.form || {};
 
   const [ownerName, setOwnerName] = useState(form.owner_name || '');
-  const [confirmedTerms, setConfirmedTerms] = useState(false);
+  const [confirmedRead, setConfirmedRead] = useState(false);
+  const [confirmedServices, setConfirmedServices] = useState(false);
   const [confirmedPayment, setConfirmedPayment] = useState(false);
+  const [confirmedRenewal, setConfirmedRenewal] = useState(false);
   const [confirmedMarketing, setConfirmedMarketing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
@@ -57,8 +59,8 @@ export default function PublicSubscriptionAgreementForm({ linkData, token }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!confirmedTerms || !confirmedPayment) {
-      setSubmitError("יש לאשר את ההסכמות הנדרשות לפני שליחה.");
+    if (!confirmedRead || !confirmedServices || !confirmedPayment || !confirmedRenewal) {
+      setSubmitError("יש לאשר את כל ההסכמות הנדרשות (המסומנות בכוכבית) לפני שליחה.");
       return;
     }
     if (!signature) {
@@ -71,6 +73,7 @@ export default function PublicSubscriptionAgreementForm({ linkData, token }) {
       const response = await submitSubscriptionAgreement({
         token,
         signature_data: signature,
+        agreed_to_marketing: confirmedMarketing,
         signature_verification_data: {
           browser_fingerprint: navigator.userAgent,
           screen_resolution: `${window.screen.width}x${window.screen.height}`,
@@ -98,7 +101,7 @@ export default function PublicSubscriptionAgreementForm({ linkData, token }) {
               <Check className="w-10 h-10 text-green-600" />
             </div>
             <h2 className="text-3xl font-bold text-slate-800">ההסכם נחתם בהצלחה!</h2>
-            <p className="text-slate-600 text-lg">תודה רבה על הצטרפותכם לתוכנית המנויים. נציג המרפאה יצור קשר בקרוב.</p>
+            <p className="text-slate-600 text-lg">תודה רבה על הצטרפותכם לתוכנית הבריאות. נציג המרפאה יצור קשר בקרוב.</p>
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
               <p className="text-sm text-blue-800">לשאלות נוספות, אנא צרו קשר עם המרפאה.</p>
             </div>
@@ -108,275 +111,272 @@ export default function PublicSubscriptionAgreementForm({ linkData, token }) {
     );
   }
 
+  const paymentFrequencyLabel = form.payment_frequency === 'annual' ? 'חיוב שנתי מראש' : 'חיוב חודשי מתחדש';
+
   return (
     <div className="min-h-screen p-4 md:p-8 bg-gray-50" dir="rtl">
       <div className="max-w-4xl mx-auto">
         {/* Logo */}
         <div className="text-center mb-8">
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/d7815950c_Yourparagraphtext1.png" alt="טדי וטס" className="mx-auto mb-6 w-64 h-auto object-contain" />
+          <img
+            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687b78971cad562073ed5929/d7815950c_Yourparagraphtext1.png"
+            alt="טדי וטס"
+            className="mx-auto mb-6 w-64 h-auto object-contain"
+          />
         </div>
 
         <Card className="bg-white shadow-md mb-6">
           <CardHeader className="border-b border-gray-100 bg-gradient-to-r from-purple-50/30 to-pink-50/30">
             <CardTitle className="text-2xl font-bold text-slate-800 flex items-center gap-3">
               <FileText className="w-8 h-8 text-purple-400" />
-              הסכם הצטרפות לתוכנית המנויים
+              הסכם הצטרפות לתוכניות הבריאות Teddy Health Plans
             </CardTitle>
-            <p className="text-slate-500 mt-2">רשת מרפאות Teddy Vets · גרסה 12/2025</p>
+            <p className="text-slate-500 mt-2 text-sm">
+              הסכם זה נערך בין החברה המפעילה את המרפאה בה בוצעה ההצטרפות, כחלק מרשת Teddy Vets, לבין הלקוח שפרטיו מפורטים בהסכם זה.
+            </p>
           </CardHeader>
 
           <CardContent className="p-6 md:p-8 space-y-8">
 
-            {/* Section A – Parties */}
+            {/* חלק א׳ – פרטי ההצטרפות */}
             <div className="bg-blue-50/30 p-6 rounded-xl border border-blue-100/50">
-              <h3 className="text-xl font-bold text-slate-700 mb-4">חלק א׳ – פרטי ההסכם</h3>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
-                <div><span className="font-semibold text-slate-600">צד א׳ (הרשת):</span><span className="mr-2 text-slate-700">טדי וטס נכסים בע"מ / טדי וטס חולון בע"מ</span></div>
-                <div><span className="font-semibold text-slate-600">צד ב׳ (הלקוח):</span><span className="mr-2 text-slate-700">{form.owner_name || '-'}</span></div>
-                {form.owner_id_number && <div><span className="font-semibold text-slate-600">ת.ז.:</span><span className="mr-2 text-slate-700">{form.owner_id_number}</span></div>}
-                {form.owner_phone && <div><span className="font-semibold text-slate-600">טלפון:</span><span className="mr-2 text-slate-700">{form.owner_phone}</span></div>}
-                {form.owner_email && <div><span className="font-semibold text-slate-600">מייל:</span><span className="mr-2 text-slate-700">{form.owner_email}</span></div>}
-                {form.owner_address && <div className="md:col-span-2"><span className="font-semibold text-slate-600">כתובת:</span><span className="mr-2 text-slate-700">{form.owner_address}</span></div>}
+              <h3 className="text-xl font-bold text-slate-700 mb-5 pb-2 border-b border-blue-100">חלק א׳ – פרטי ההצטרפות</h3>
+
+              {/* פרטי הלקוח */}
+              <div className="mb-6">
+                <h4 className="font-bold text-slate-700 mb-3 text-base">פרטי הלקוח</h4>
+                <div className="grid md:grid-cols-2 gap-3 text-sm">
+                  <div className="flex gap-2">
+                    <span className="font-semibold text-slate-600 min-w-fit">שם החברה המתקשרת / ח.פ.:</span>
+                    <span className="text-slate-700">טדי וטס נכסים בע"מ / טדי וטס חולון בע"מ</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <span className="font-semibold text-slate-600 min-w-fit">מרפאת ההצטרפות:</span>
+                    <span className="text-slate-700">{form.clinic_name || '-'}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <span className="font-semibold text-slate-600 min-w-fit">שם הלקוח:</span>
+                    <span className="text-slate-700">{form.owner_name || '-'}</span>
+                  </div>
+                  {form.owner_id_number && (
+                    <div className="flex gap-2">
+                      <span className="font-semibold text-slate-600 min-w-fit">ז״ת:</span>
+                      <span className="text-slate-700">{form.owner_id_number}</span>
+                    </div>
+                  )}
+                  {form.owner_phone && (
+                    <div className="flex gap-2">
+                      <span className="font-semibold text-slate-600 min-w-fit">טלפון:</span>
+                      <span className="text-slate-700">{form.owner_phone}</span>
+                    </div>
+                  )}
+                  {form.owner_email && (
+                    <div className="flex gap-2">
+                      <span className="font-semibold text-slate-600 min-w-fit">דוא״ל:</span>
+                      <span className="text-slate-700">{form.owner_email}</span>
+                    </div>
+                  )}
+                  {form.owner_address && (
+                    <div className="flex gap-2 md:col-span-2">
+                      <span className="font-semibold text-slate-600 min-w-fit">כתובת:</span>
+                      <span className="text-slate-700">{form.owner_address}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* פרטי חיית המחמד */}
+              <div className="mb-6">
+                <h4 className="font-bold text-slate-700 mb-3 text-base">פרטי חיית המחמד</h4>
+                <div className="grid md:grid-cols-2 gap-3 text-sm bg-white p-4 rounded-lg border border-blue-100">
+                  <div className="flex gap-2">
+                    <span className="font-semibold text-slate-600 min-w-fit">שם:</span>
+                    <span className="text-slate-700">{form.pet_name || '-'}</span>
+                  </div>
+                  {form.pet_microchip && (
+                    <div className="flex gap-2">
+                      <span className="font-semibold text-slate-600 min-w-fit">מספר שבב:</span>
+                      <span className="text-slate-700">{form.pet_microchip}</span>
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <span className="font-semibold text-slate-600 min-w-fit">סוג:</span>
+                    <span className="text-slate-700">{form.pet_type || '-'}</span>
+                  </div>
+                  {form.pet_breed && (
+                    <div className="flex gap-2">
+                      <span className="font-semibold text-slate-600 min-w-fit">גזע:</span>
+                      <span className="text-slate-700">{form.pet_breed}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* פרטי המנוי */}
+              <div>
+                <h4 className="font-bold text-slate-700 mb-3 text-base">פרטי המנוי</h4>
+                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 text-sm space-y-2">
+                  <div className="flex gap-2">
+                    <span className="font-bold text-purple-800 min-w-fit">המסלול שנבחר:</span>
+                    <span className="font-bold text-purple-900">{PLAN_LABELS[form.selected_plan] || form.selected_plan || '-'}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <span className="font-semibold text-slate-600 min-w-fit">אופן התשלום:</span>
+                    <span className="text-slate-700">{paymentFrequencyLabel}</span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-2 pt-2 border-t border-purple-100">
+                    * פירוט השירותים וההטבות של המסלול שנבחר, כפי שנמסר ללקוח במועד ההצטרפות, מצורף להסכם זה כנספח א׳ ומהווה חלק בלתי נפרד ממנו.
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Pet Details */}
-            <div className="bg-orange-50/20 p-6 rounded-xl border border-orange-100/50">
-              <h3 className="text-xl font-bold text-slate-700 mb-4">1. פרטי חיית המחמד</h3>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
-                <div><span className="font-semibold text-slate-600">שם:</span><span className="mr-2 text-slate-700">{form.pet_name || '-'}</span></div>
-                <div><span className="font-semibold text-slate-600">מין/סוג:</span><span className="mr-2 text-slate-700">{form.pet_type || '-'}</span></div>
-                {form.pet_breed && <div><span className="font-semibold text-slate-600">גזע:</span><span className="mr-2 text-slate-700">{form.pet_breed}</span></div>}
-                {form.pet_microchip && <div><span className="font-semibold text-slate-600">מספר שבב:</span><span className="mr-2 text-slate-700">{form.pet_microchip}</span></div>}
-              </div>
-            </div>
-
-            {/* Plan */}
-            <div className="bg-purple-50/30 p-6 rounded-xl border border-purple-100/50">
-              <h3 className="text-xl font-bold text-slate-700 mb-4">2. בחירת מסלול ותדירות תשלום</h3>
-
-              {/* Plans Table */}
-              <div className="overflow-x-auto mb-4">
-                <table className="w-full text-sm border-collapse">
-                  <thead>
-                    <tr className="bg-purple-100 text-purple-900">
-                      <th className="border border-purple-200 px-3 py-2 text-right font-bold">מסלול</th>
-                      <th className="border border-purple-200 px-3 py-2 text-right font-bold">תשלום חודשי בהו"ק</th>
-                      <th className="border border-purple-200 px-3 py-2 text-right font-bold">תשלום שנתי מראש (כולל חודש מתנה)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      { plan: 'teddy_basic', label: 'טדי בייסיק (כלבים)', monthly: '₪89 לחודש', annual: '₪82 לחודש (תשלום מראש לשנה)' },
-                      { plan: 'teddy_plus', label: 'טדי פלוס (כלבים)', monthly: '₪129 לחודש', annual: '₪118 לחודש (תשלום מראש לשנה)' },
-                      { plan: 'teddy_platinum', label: 'טדי פלטינום (כלבים)', monthly: '₪169 לחודש', annual: '₪155 לחודש (תשלום מראש לשנה)' },
-                      { plan: 'teddy_royal', label: 'טדי רויאל (חתולים)', monthly: '₪79 לחודש', annual: '₪72 לחודש (תשלום מראש לשנה)' },
-                      { plan: 'teddy_insured', label: 'טדי בטוח (לבעלי ביטוח פרטי)', monthly: '₪79 לחודש', annual: '₪72 לחודש (תשלום מראש לשנה)' },
-                    ].map(row => (
-                      <tr key={row.plan} className={form.selected_plan === row.plan ? 'bg-purple-50 font-bold' : 'bg-white'}>
-                        <td className="border border-purple-100 px-3 py-2">
-                          {form.selected_plan === row.plan && <span className="inline-block w-2 h-2 rounded-full bg-purple-500 ml-1 mb-0.5" />}
-                          {row.label}
-                        </td>
-                        <td className="border border-purple-100 px-3 py-2">{row.monthly}</td>
-                        <td className="border border-purple-100 px-3 py-2">{row.annual}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="bg-white p-4 rounded-lg border border-purple-200 mb-4">
-                <p className="font-bold text-purple-800 text-base">המסלול הנבחר: {PLAN_LABELS[form.selected_plan] || form.selected_plan || '-'}</p>
-                <p className="text-slate-600 mt-1 text-sm">תשלום: <span className="font-semibold">{form.payment_frequency === 'annual' ? 'שנתי מראש (כולל חודש מתנה)' : 'הוראת קבע חודשית'}</span></p>
-              </div>
-
-              <div className="mt-2 text-sm text-slate-600 space-y-1 bg-yellow-50/50 p-3 rounded-lg border border-yellow-100">
-                <p className="font-semibold text-slate-700 mb-1">הערות מחיר ותשלום:</p>
-                <p>• תקופת המנוי הינה 12 חודשים.</p>
-                <p>• מחירי המנויים עשויים להיות צמודים למדד ואינם כוללים אגרות ממשלתיות (לדוגמה: אגרת חיסון כלבת).</p>
-                <p>• התשלום יבוצע בתשלום חד פעמי לשנה או הוראת קבע חודשית.</p>
-                <p>• במקרה של כשל בגבייה תישלח התראה, ואם לא יבוצע תשלום בתוך 7 ימים ממועד ההתראה, הרשת רשאית להשעות או לבטל את המנוי.</p>
-              </div>
-            </div>
-
-            {/* Part B – Full Terms */}
+            {/* חלק ב׳ – תנאי ההתקשרות */}
             <div className="bg-slate-50/60 p-6 rounded-xl border border-slate-200/60">
-              <h3 className="text-xl font-bold text-slate-700 mb-1">חלק ב׳ – תנאי ההסכם</h3>
-              <p className="text-xs text-slate-500 mb-5">(תנאי הצטרפות ושימוש בתוכנית המנויים)</p>
+              <h3 className="text-xl font-bold text-slate-700 mb-1">חלק ב׳ – תנאי ההתקשרות</h3>
 
               <div className="space-y-5 text-sm text-slate-600">
+
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">1. כללי</p>
-                  <p>1.1 תקנון זה מסדיר את תנאי ההצטרפות, השימוש, הזכאות, הביטול, האחריות וההתחייבויות במסגרת תוכניות המנויים של רשת המרפאות הווטרינריות Teddy Vets.</p>
-                  <p>1.2 התקנון מנוסח בלשון זכר מטעמי נוחות בלבד ומתייחס לכל המינים באופן שווה.</p>
-                  <p>1.3 כל לקוח המצטרף לתוכנית מנויים מאשר כי קרא, הבין והסכים לכל תנאי התקנון.</p>
-                  <p>1.4 במקרה של סתירה בין הוראות התקנון לבין פרסום שיווקי כלשהו – הוראות תקנון זה תגברנה.</p>
+                  <p className="font-bold text-slate-800 mb-2">1. מטרת ההסכם ומסמכי ההתקשרות</p>
+                  <p className="mb-1">1.1 החברה מפעילה תוכניות בריאות לחיות מחמד הכוללות שירותים, הטבות והנחות בהתאם למסלול שנבחר.</p>
+                  <p className="mb-1">1.2 הסכם זה, נספח א׳, תקנון תוכנית המנויים ומדיניות הפרטיות של הרשת מהווים יחד את מסמכי ההתקשרות. במקרה של סתירה ביחס למחיר או להטבה ספציפית שנמסרו ללקוח במועד ההצטרפות, יגברו הפרטים המפורשים שנרשמו בהסכם זה ובנספח א׳, בכפוף לכל דין.</p>
+                  <p>1.3 הלקוח מאשר כי לפני ההצטרפות קיבל אפשרות לעיין בפירוט המסלול, בתקנון המנויים ובמדיניות הפרטיות, וכי נמסר לו מידע מהותי בדבר תקופת המנוי, המחיר, אופן התשלום, השירותים, ההחרגות ודרכי הביטול.</p>
                 </div>
 
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">2. תוכניות המנויים</p>
-                  <p>2.1 הרשת מציעה מספר תוכניות מנויים: טדי בייסיק, טדי פלוס, טדי פלטינום, טדי רויאל (לחתולים), טדי בטוח (לבעלי ביטוח פרטי).</p>
-                  <p>2.2 כל תוכנית כוללת סל שירותים והטבות שונה, כפי שמפורט בפרסום העדכני באתר הרשת ובמרפאות.</p>
-                  <p>2.3 השירותים עשויים לכלול: חיסונים שנתיים, טיפולים מונעים, בדיקות רפואיות, שירותי חירום, ייעוץ וטרינרי מרחוק, ניקוי שיניים, בדיקות סקר, טיפולים פיזיותרפיים, הטבות לרכישת מוצרים ועוד.</p>
-                  <p>2.4 השירותים ניתנים לפי שיקול דעת רפואי ובהתאם להנחיות משרד החקלאות והרגולציה הרלוונטית.</p>
+                  <p className="font-bold text-slate-800 mb-2">2. השירותים והיקף הזכאות</p>
+                  <p className="mb-1">2.1 החברה תעניק לחיית המחמד את השירותים וההטבות הכלולים במסלול שנבחר ובכפוף לתנאיו. שירות או הטבה שלא נכללו במפורש במסלול אינם כלולים במנוי.</p>
+                  <p className="mb-1">2.2 כל החלטה רפואית תתקבל על ידי וטרינר/ית מטפל/ת לפי לשיקול דעת מקצועי, מצבה הרפואי של חיית המחמד והדין החל. המנוי אינו מקנה זכות לדרוש טיפול שאינו נדרש או שאינו מאושר רפואית.</p>
+                  <p className="mb-1">2.3 תוכנית המנוי אינה פוליסת ביטוח ואינה מבטיחה מניעת מחלה, ריפוי מלא, מימון של כל טיפול רפואי או כיסוי של שירותים שאינם כלולים במסלול.</p>
+                  <p className="mb-1">2.4 המנוי אישי לחיית המחמד הרשומה בלבד ואינו ניתן להעברה לחיית מחמד אחרת או לבעלים אחר, אלא באישור החברה מראש ובכתב.</p>
+                  <p className="mb-1">2.5 המנוי אינו מזכה בהחזר רטרואקטיבי בגין טיפול או שירות שניתן לפני מועד תחילתו. טיפולים חיצוניים לרשת אינם כלולים, אלא אם צוין במפורש אחרת במסלול.</p>
+                  <p>2.6 המנוי תקף בכל סניפי Teddy Vets, בהתאם לזמינות התורים, כוח האדם, הציוד והשירותים בכל מרפאה.</p>
                 </div>
 
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">3. תקופת המנוי ותשלום</p>
-                  <p>3.1 המנוי הינו לתקופה של 12 חודשים.</p>
-                  <p>3.2 הלקוח יכול לבחור בין תשלום חודשי לבין תשלום שנתי מראש (הכולל חודש מתנה).</p>
-                  <p>3.3 התשלום מתבצע באמצעות כרטיס אשראי תקף או הוראת קבע.</p>
-                  <p>3.4 במקרה של כשל בגבייה – תישלח ללקוח התראה. אם לא יבוצע תשלום תוך 7 ימים, הרשת שומרת לעצמה את הזכות להשעות או לבטל את המנוי.</p>
-                  <p>3.5 מחירי המנויים צמודים למדד ואינם כוללים אגרות ממשלתיות (לדוג' אגרת חיסון כלבת).</p>
+                  <p className="font-bold text-slate-800 mb-2">3. קבלת שירות, תורים ומימוש הטבות</p>
+                  <p className="mb-1">3.1 יש לקבוע תור מראש לכל שירות, למעט מקרה חירום שבו יש לפעול בהתאם להנחיות המרפאה. זמני התור המובטחים, ככל שקיימים במסלול, מתייחסים לזמינות בהתאם לתנאי המסלול ולשעות פעילות המרפאות.</p>
+                  <p className="mb-1">3.2 תור שלא בוטל תוחפות 4 שעות מראש רשאי להיחשב כתור שמומש, ככל שהדבר רלוונטי לסכמת השירות במסלול.</p>
+                  <p className="mb-1">3.3 שירותים והטבות שלא מומשו בתקופת המנוי אינם נצברים לתקופה הבאה, אינם ניתנים להעברה ואינם ניתנים להמרה בכסף, אלא אם נאמר במפורש אחרת.</p>
+                  <p>3.4 הנחות והטבות חלות כל עוד המנוי פעיל והתשלומים עבורו מעודכנים, ואין כפל מבצעים או הנחות אלא אם צוין במפורש אחרת.</p>
                 </div>
 
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">4. זכאות והיקף הכיסוי</p>
-                  <p>4.1 כל מנוי תקף עבור חיית מחמד אחת בלבד. לא ניתן להעביר את המנוי לבעלים או לחיה אחרת.</p>
-                  <p>4.2 חיה אשר חלתה או טופלה טרם ההצטרפות – לא תהיה זכאית להחזר בגין טיפול רטרואקטיבי.</p>
-                  <p>4.3 טיפולים כרוניים, אשפוזים, או מצבים הדורשים בדיקות מעבדה מתקדמות – יינתנו לפי התנאים וההנחות של כל מסלול.</p>
-                  <p>4.4 טיפולים חיצוניים (אצל מומחים חיצוניים לרשת) אינם כלולים במנוי, אלא אם צוין אחרת.</p>
+                  <p className="font-bold text-slate-800 mb-2">4. הצהרות והתחייבויות הלקוח</p>
+                  <p className="mb-1">4.1 הלקוח מצהיר כי כל הפרטים שמסר נכונים, מלאים ומעודכנים, ומתחייב לעדכן את החברה ללא איחוב בכל שינוי מהותי, לרבות שינוי בעלות, פרטי התקשרות או פטירת חיית המחמד.</p>
+                  <p className="mb-1">4.2 מסירת מידע כוזב או מהותי באופן חסר עלולה למנוע מתן שירות או להביא לסיום המנוי, בכפוף לדין ולנסיבות העניין.</p>
+                  <p>4.3 הלקוח מתחייב לנהוג בכבוד כלפי צוות המרפאות ולא לעשות שימוש לרעה במנוי, לרבות קביעת תורים פיקטיביים, שימוש מסחרי או ניסיון להעביר את המנוי לאחר.</p>
                 </div>
 
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">5. קבלת שירות והזמנת תורים</p>
-                  <p>5.1 לקוח זכאי לקבל את השירותים הכלולים בתוכניתו במהלך תקופת המנוי בלבד.</p>
-                  <p>5.2 יש לקבוע תור מראש לכל שירות – למעט מקרי חירום.</p>
-                  <p>5.3 תורים יתואמו בהתאם לזמינות הצוות והמרפאה. אין התחייבות למועד מסוים למעט תוכניות הכוללות הבטחת תור.</p>
-                  <p>5.4 שירותים שאינם מומשו בתקופת המנוי – לא יצברו לשנה הבאה ולא יינתן עבורם החזר.</p>
-                  <p>5.5 תור שלא בוטל לפחות 4 שעות מראש – ייחשב כמומש.</p>
+                  <p className="font-bold text-slate-800 mb-2">5. תקופת המנוי, תשלום וחידוש</p>
+                  <p className="mb-1">5.1 המנוי הינו מנוי מתחדש באופן חודשי/שנתי ללא הגבלה של זמן (להרחבה ראה נספח ב), או מנוי בתשלום שנתי מראש מוגבל לשנה (להרחבה ראה נספח ג).</p>
+                  <p className="mb-1">5.2 במסלול מתחדש יבוצע חיוב חודשי/שנתי בהתאם לבחירת הלקוח. במסלול שנתי יבוצע חיוב אחד מראש עבור תקופת המנוי, בהתאם למחיר שנרשם בחלק א׳. ככל שניתנה הטבת חודש ללא עלות בתשלום שנתי, היא מחושבת במחיר השנתי שנרשם.</p>
+                  <p className="mb-1">5.3 הלקוח מאשר לחברה לחייב את אמצעי התשלום שמסר בהתאם למסלול שנבחר. אי-כיבוד חיוב אינו מהווה הודעת ביטול.</p>
+                  <p className="mb-1">5.4 במקרה של כשל בגבייה החברה רשאית, לאחר מתן התראה ובכפוף לדין, להשעות את המנוי עד לסדרת החוב. שירותים שניתנו בתקופת ההשעיה עשויים להיות מחויבים במחיר מלא.</p>
+                  <p>5.5 חידוש המנוי לאחר מות התקופה הראשונה ייעשה רק בהתאם למנגנון החידוש שנמסר ללקוח ובכפוף להוראות הדין. מחיר החידוש יהיה המחיר הקפה במועד החידוש, אלא אם נמסרה ללקוח הודעה כנדרש בדין.</p>
                 </div>
 
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">6. מימוש הטבות והנחות</p>
-                  <p>6.1 ההטבות במסלול תקפות רק כל עוד המנוי פעיל ותשלומיו מעודכנים.</p>
-                  <p>6.2 הנחות ברכישת מוצרים או טיפולים ניתנות במקום בלבד ואינן תקפות לאתר.</p>
-                  <p>6.3 ניקוי שיניים ללא עלות (בטדי פלטינום) או בהנחה – יינתן אחת לשנה בלבד.</p>
-                  <p>6.4 לא ניתן לצבור טיפולים שלא מומשו.</p>
+                  <p className="font-bold text-slate-800 mb-2">6. ביטול וסיום מוקדם</p>
+                  <p className="mb-1">6.1 בקשת ביטול המנוי תימסר בהודעה בכתב למרפאה שבה מנוהל המנוי, באמצעות אמצעי התקשרות בכתב שהמרפאה מעמידה לרשות לקוחותיה. לעמן הסר ספק, אין בהוראה זו כדי לגרוע מזכות הלקוח למסור הודעת ביטול בדרך נוספת שהחברה מחויבת לאפשר לפי דין.</p>
+                  <p className="mb-1">6.2 עם ביטול המנוי תיערך התחשבנות בגין תקופת המנוי הנוכחית בדרך של קיזוז בין שווי השירותים וההטבות שנוצלו בפועל עד למועד הביטול לבין הסכומים שנשלמו בפועל. שווי השירותים וההטבות שנוצלו יחושב לפי המחירון המלא שהיה בתוקף במועד קבלתם, ובניכוי כל סכום ששולם עבורם. ככל שלאחר הקיזוז תיוותר יתרה לחובת הלקוח, הלקוח ישלים את ההפרש; ככל שתיוותר יתרה לזכות הלקוח, היא תושב לו, והכול בכפוף להוראות הדין.</p>
+                  <p className="mb-1">6.3 במקרה של פטירת חיית המחמד, המנוי יבוטל באופן מיידי עם מסירת הודעה למרפאה, ללא התחשבנות או חיוב נוסף לפי סעיף 6.2. החברה רשאית לבקש אסמכתא הסבירה לפטירה, מבלי לעכב בשל כך את עצם הביטול.</p>
+                  <p className="mb-1">6.4 במקרה של כשל שירותי קהבומ או נסיבות חריגות אחרות, החברה רשאית לוותר, כולו או חלקו, על סכום גמר החשבון, לפי שיקול דעת סביר ובכפוף לדין.</p>
+                  <p>6.5 אין באמור בסעיף זה כדי לגרוע מזכויות ביטול, השבה או תרופות אחרות הנקוות ללקוח לפי הוראות דין קוגנטי.</p>
                 </div>
 
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">7. ייעוץ מרחוק</p>
-                  <p>7.1 שירות שיחה/וידאו עם וטרינר מחוץ לשעות הפעילות יינתן בהתאם למדיניות הרשת.</p>
-                  <p>7.2 השירות אינו מהווה תחליף לבדיקה רפואית פיזית.</p>
-                  <p>7.3 הרשת אינה מתחייבת למענה מיידי, אך תעשה מאמץ לתת מענה תוך זמן סביר.</p>
+                  <p className="font-bold text-slate-800 mb-2">7. סיום המנוי על ידי החברה</p>
+                  <p className="mb-1">7.1 החברה רשאית להשעות או לסיים את המנוי, לאחר התראה ככל שהנסיבות מאפשרות, במקרה של אי-תשלום, מסירת מידע כוזב מהותי, שימוש לרעה בתוכנית, הפרה יסודית של ההסכם או התנהגות אלימה, מאיימת, גסה או פוגענית כלפי צוות המרפאה.</p>
+                  <p>7.2 סיום על ידי החברה לא יגרע מזכות הלקוח לקבלת החזר בגין סכומים ששולמו מראש עבור תקופה שלא אסופקה, ככל שמגיע החזר לפי דין ובכפוף לקיזוז סכומים שהלקוח חייב כדין.</p>
                 </div>
 
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">8. ביטול ושינוי מסלול</p>
-                  <p>8.1 ניתן לבטל את המנוי בכל עת בהודעה בכתב לפחות 14 יום מראש.</p>
-                  <p>8.2 במקרה של תשלום חודשי – יחויב הלקוח עד סוף החודש בו נמסרה הודעת הביטול.</p>
-                  <p>8.3 במקרה של תשלום שנתי מראש – ייערך חישוב לפי חודשים מנוצלים, בניכוי חודש המתנה, והיתרה תוחזר.</p>
-                  <p>8.4 שינוי מסלול (שדרוג או מעבר למסלול אחר) יתאפשר רק באישור הנהלת הרשת ובהתאם למדיניות.</p>
+                  <p className="font-bold text-slate-800 mb-2">8. פרטיות, תיק רפואי והודעות</p>
+                  <p className="mb-1">8.1 החברה תשמור ותעבד מידע אישי ומידע הנוגע לחיית המחמד לצורך ניהול המנוי, מתן שירותים רפואיים, ניהול התיק הרפואי, גבייה, שירות לקוחות, אבטחה ועמידה בדרישות דין, בהתאם למדיניות הפרטיות של Teddy Vets ולהוראות הדין.</p>
+                  <p className="mb-1">8.2 לצורך רצף טיפולי, סניפי הרשת יהיו רשאים לעיין ולעדכן את התיק הרפואי של חיית המחמד בהתאם לאישרויות ולמדיניות החברה.</p>
+                  <p>8.3 הלקוח מסכים לקבל הודעות שירות ותזכורות הנחוצות לניהול המנוי והטיפול, באמצעי הקשר שמסר. הסכמה לקבלת דברי פרסומת, ככל שתינתן, היא נפרדת ואינה תנאי להצטרפות למנוי.</p>
                 </div>
-              </div>
 
-              {/* Cancellation Scenarios Table */}
-              <div className="mt-6">
-                <p className="font-bold text-slate-800 mb-3 text-sm">טבלת תרחישי ביטול:</p>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm border-collapse">
-                    <thead>
-                      <tr className="bg-slate-200 text-slate-800">
-                        <th className="border border-slate-300 px-3 py-2 text-right font-bold">תרחיש</th>
-                        <th className="border border-slate-300 px-3 py-2 text-right font-bold">הפעולה במערכת</th>
-                        <th className="border border-slate-300 px-3 py-2 text-right font-bold">התחשבנות כספית</th>
-                        <th className="border border-slate-300 px-3 py-2 text-right font-bold">המסר ללקוח</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="bg-white">
-                        <td className="border border-slate-200 px-3 py-2 font-semibold">פטירת בעל החיים 🐾</td>
-                        <td className="border border-slate-200 px-3 py-2">ביטול מנוי מיידי</td>
-                        <td className="border border-slate-200 px-3 py-2"><strong>ספיגת חוב:</strong> לא גובים יתרה, גם אם ניצל שירותים רבים.</td>
-                        <td className="border border-slate-200 px-3 py-2 text-slate-600">"משתתפים בצערכם, דאגנו לעצור את כל החיובים העתידיים. שלא תדעו צער."</td>
-                      </tr>
-                      <tr className="bg-slate-50/50">
-                        <td className="border border-slate-200 px-3 py-2 font-semibold">מעבר דירה / מסירה 🏠</td>
-                        <td className="border border-slate-200 px-3 py-2">ביטול בכפוף לגמר חשבון</td>
-                        <td className="border border-slate-200 px-3 py-2"><strong>השוואת ערך:</strong> (שווי טיפולים) פחות (מה ששולם). הלקוח משלים את ההפרש.</td>
-                        <td className="border border-slate-200 px-3 py-2 text-slate-600">"מכיוון שההנחות ניתנו על בסיס שנתי, אנו מחשבים את העלות היחסית וסוגרים את החשבון."</td>
-                      </tr>
-                      <tr className="bg-white">
-                        <td className="border border-slate-200 px-3 py-2 font-semibold">ביטול מרצון (סתם כי רוצה)</td>
-                        <td className="border border-slate-200 px-3 py-2">ביטול בכפוף לגמר חשבון</td>
-                        <td className="border border-slate-200 px-3 py-2"><strong>הזול מביניהם:</strong> הלקוח בוחר אם להשלים את ההפרש למחירון מלא, או לשלם את יתרת המנוי.</td>
-                        <td className="border border-slate-200 px-3 py-2 text-slate-600">"המנוי הוא התחייבות שנתית שנותנת הנחות ענק. ניתן לבטל, אך אז ההנחות מתבטלות רטרואקטיבית."</td>
-                      </tr>
-                      <tr className="bg-slate-50/50">
-                        <td className="border border-slate-200 px-3 py-2 font-semibold">חוסר שביעות רצון (תלונה)</td>
-                        <td className="border border-slate-200 px-3 py-2">שיקול דעת מנהל</td>
-                        <td className="border border-slate-200 px-3 py-2"><strong>גמיש:</strong> במקרה של כשל שירותי מובהק, נהוג לבטל ללא קנס.</td>
-                        <td className="border border-slate-200 px-3 py-2 text-slate-600">"חשוב לנו שתצאו בהרגשה טובה. במקרה הזה נבוא לקראתכם ונבטל ללא חיוב נוסף."</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div>
+                  <p className="font-bold text-slate-800 mb-2">9. שונות</p>
+                  <p className="mb-1">9.1 החברה רשאית לעדכן את מחיר המנוי לתקופת חידוש עתידית וכן לעדכן את סל השירותים לתקופות עתידיות, בכפוף להודעה מראש ולהוראות הדין. שינוי במהלך תקופת מנוי פעילה לא יגרע מהטבות שכבר הוקנו ללקוח לפי הסכם זה ונספחיו, אלא אם הדין מאפשר אחרת או שהשינוי מיטיב עם הלקוח.</p>
+                  <p className="mb-1">9.2 החברה לא תיחשב כמפרה התחייבות אם אי-מתן שירות נגרם בעקבות נסיבות שאינן בשליטתה הסבירה, לרבות מצב חירום, מלחמה, מגפה, שביתה, הנחיית רשות מוסמכת או כוח עליון, ובלבד שתפעל ככל שניתן לצמצום הפגיעה בשירות.</p>
+                  <p className="mb-1">9.3 על הסכם זה יחולו דיני מדינת ישראל. סמכות השיפוט תיקבע בהתאם להוראות הדין ואין באמור בהסכם כדי לגרוע מסמכות מקומית קוגנטית הנקומה לצרכן.</p>
+                  <p>9.4 אם הוראה מהוראות הסכם זה תימצא בלתי חוקית או בלתי ניתנת לאכיפה, יתר הוראות ההסכם ימשיכו לעמוד בתוקפן ככל שניתן.</p>
                 </div>
-              </div>
 
-              <div className="space-y-3 mt-6 text-sm text-slate-600">
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">9. סיום חד-צדדי ע"י הרשת</p>
-                  <p>9.1 הרשת שומרת לעצמה את הזכות להפסיק מנוי באופן חד-צדדי במקרה של: התנהגות פוגענית או מאיימת מצד הלקוח, אי עמידה בתנאי התשלום, ניצול לרעה של שירותי המנוי.</p>
-                </div>
-                <div>
-                  <p className="font-bold text-slate-800 mb-1">10. אחריות רפואית ומגבלות</p>
-                  <p>10.1 כל שירות רפואי יבוצע ע"י צוות מקצועי מוסמך בהתאם לסטנדרטים הנהוגים ברשת.</p>
-                  <p>10.2 המנוי אינו מבטיח מניעת מחלה או ריפוי מלא, אלא גישה זמינה, משתלמת ורציפה לשירותים וטרינריים.</p>
-                  <p>10.3 השירותים ניתנים בהתאם לשיקול דעת רפואי בלבד, ואין לדרוש טיפול שאינו מאושר ע"י רופא.</p>
-                </div>
-                <div>
-                  <p className="font-bold text-slate-800 mb-1">11. הגנת פרטיות ודיוור</p>
-                  <p>11.1 הצטרפות לתוכנית המנויים מהווה אישור להעברת דיוור שיווקי (לרבות SMS ודוא"ל) בנושאים הקשורים למנוי.</p>
-                  <p>11.2 ניתן להסיר את ההרשאה בכל עת ע"י פניה לשירות הלקוחות.</p>
-                </div>
-                <div>
-                  <p className="font-bold text-slate-800 mb-1">12. שונות</p>
-                  <p>12.1 הרשת רשאית לעדכן מעת לעת את תנאי התקנון, סל השירותים או המחירים, תוך מתן הודעה מראש של 30 יום למנויים הפעילים.</p>
-                  <p>12.2 מובהר כי אין כפל מבצעים, הטבות או הנחות – למעט אם נאמר במפורש אחרת.</p>
-                  <p>12.3 כל מחלוקת תידון בבתי המשפט המוסמכים בת"א בלבד.</p>
+                  <p className="font-bold text-slate-800 mb-2">10. קישורים למסמכים מקוונים</p>
+                  <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-1 text-xs">
+                    <p><span className="font-semibold">פירוט תוכניות הבריאות:</span> <a href="https://teddyvets.co.il/teddy-health-plans/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">https://teddyvets.co.il/teddy-health-plans/</a></p>
+                    <p><span className="font-semibold">תקנון תוכנית המנויים:</span> <a href="https://teddyvets.co.il/wp-content/uploads/2026/01/teddyvets-membership-terms-2025-12.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">teddyvets-membership-terms-2025-12.pdf</a></p>
+                    <p><span className="font-semibold">תנאי שימוש ומדיניות פרטיות:</span> <a href="https://teddyvets.co.il/terms-privacy/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">https://teddyvets.co.il/terms-privacy/</a></p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Section 3 – Declarations */}
+            {/* אישור הלקוח */}
             <div className="bg-slate-50/60 p-6 rounded-xl border border-slate-200/60">
-              <h3 className="text-xl font-bold text-slate-700 mb-4">3. הסכמות והצהרות</h3>
+              <h3 className="text-xl font-bold text-slate-700 mb-5">אישור הלקוח</h3>
 
-              <div className="mt-6 space-y-4">
+              <div className="space-y-4">
                 <div className="flex items-start gap-3 bg-blue-50/40 p-4 rounded-lg border border-blue-100/50">
-                  <Checkbox id="terms" checked={confirmedTerms} onCheckedChange={setConfirmedTerms} className="mt-1 flex-shrink-0" />
-                  <Label htmlFor="terms" className="text-sm text-slate-700 cursor-pointer leading-relaxed font-medium">
-                    אני מאשר/ת כי קראתי והבנתי את תנאי הסכם זה ואת תקנון תוכנית המנויים (עודכן דצמבר 2025), וכי הם מהווים חלק בלתי נפרד מהסכם זה. כל הפרטים שמסרתי נכונים ומעודכנים. <span className="text-red-500 font-bold">*</span>
+                  <Checkbox id="read" checked={confirmedRead} onCheckedChange={setConfirmedRead} className="mt-1 flex-shrink-0" />
+                  <Label htmlFor="read" className="text-sm text-slate-700 cursor-pointer leading-relaxed">
+                    קראתי את הסכם ההצטרפות והבנתי את תנאיו. <span className="text-red-500 font-bold">*</span>
+                  </Label>
+                </div>
+                <div className="flex items-start gap-3 bg-blue-50/40 p-4 rounded-lg border border-blue-100/50">
+                  <Checkbox id="services" checked={confirmedServices} onCheckedChange={setConfirmedServices} className="mt-1 flex-shrink-0" />
+                  <Label htmlFor="services" className="text-sm text-slate-700 cursor-pointer leading-relaxed">
+                    קיבלתי את פירוט השירותים, ההטבות וההחרגות של המסלול שבחרתי (נספח א׳). <span className="text-red-500 font-bold">*</span>
                   </Label>
                 </div>
                 <div className="flex items-start gap-3 bg-yellow-50/40 p-4 rounded-lg border border-yellow-100/50">
                   <Checkbox id="payment" checked={confirmedPayment} onCheckedChange={setConfirmedPayment} className="mt-1 flex-shrink-0" />
-                  <Label htmlFor="payment" className="text-sm text-slate-700 cursor-pointer leading-relaxed font-medium">
-                    אני מאשר/ת את הסדר התשלום הנבחר ומתחייב/ת לשאת בעלויות המנוי בהתאם לתנאים. <span className="text-red-500 font-bold">*</span>
+                  <Label htmlFor="payment" className="text-sm text-slate-700 cursor-pointer leading-relaxed">
+                    אני מאשר/ת לחייב את אמצעי התשלום שמסרתי בהתאם למסלול התשלום שבחרתי. <span className="text-red-500 font-bold">*</span>
+                  </Label>
+                </div>
+                <div className="flex items-start gap-3 bg-orange-50/40 p-4 rounded-lg border border-orange-100/50">
+                  <Checkbox id="renewal" checked={confirmedRenewal} onCheckedChange={setConfirmedRenewal} className="mt-1 flex-shrink-0" />
+                  <Label htmlFor="renewal" className="text-sm text-slate-700 cursor-pointer leading-relaxed">
+                    קיבלתי מידע על תקופת המנוי, אופן החידוש ודרכי הביטול וגמר החשבון במקרה של סיום מוקדם. <span className="text-red-500 font-bold">*</span>
                   </Label>
                 </div>
                 <div className="flex items-start gap-3 bg-green-50/40 p-4 rounded-lg border border-green-100/50">
                   <Checkbox id="marketing" checked={confirmedMarketing} onCheckedChange={setConfirmedMarketing} className="mt-1 flex-shrink-0" />
                   <Label htmlFor="marketing" className="text-sm text-slate-700 cursor-pointer leading-relaxed">
-                    אני מאשר/ת קבלת הודעות שירות הקשורות למנוי (לרבות SMS/וואטסאפ/דוא"ל). ניתן לבטל בכל עת.
+                    אני מסכים/ה לקבלת דברי פרסומת (SMS, וואטסאפ, דוא"ל) מרשת Teddy Vets. ניתן לבטל בכל עת.
                   </Label>
                 </div>
               </div>
             </div>
 
-            {/* Section 4 – Signature */}
+            {/* חתימה דיגיטלית */}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="bg-blue-50/30 p-6 rounded-xl border border-blue-100/50 space-y-4">
                 <h3 className="text-xl font-bold text-slate-700 flex items-center gap-2">
                   <Shield className="w-5 h-5 text-purple-500" />
-                  4. חתימה דיגיטלית
+                  חתימה
                 </h3>
-                <div className="bg-white p-4 rounded-lg border border-blue-100/50">
-                  <p className="text-slate-600 leading-relaxed">
-                    בחתימתי על הסכם זה, אני מאשר/ת את הצטרפותי לתוכנית המנויים של רשת Teddy Vets בהתאם לתנאים הנ"ל. <span className="text-red-500 font-bold">*</span>
-                  </p>
+                <div className="grid md:grid-cols-3 gap-4 text-sm bg-white p-4 rounded-lg border border-blue-100 mb-4">
+                  <div className="text-center">
+                    <p className="font-bold text-slate-700 mb-1">שם הלקוח</p>
+                    <p className="text-slate-600">{form.owner_name || '-'}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-bold text-slate-700 mb-1">חתימה</p>
+                    <p className="text-slate-400 text-xs">(בשדה מטה)</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-bold text-slate-700 mb-1">תאריך</p>
+                    <p className="text-slate-600">{new Date().toLocaleDateString('he-IL')}</p>
+                  </div>
                 </div>
                 <div>
                   <Label className="text-base font-medium text-slate-600 mb-2 block">שם מלא *</Label>
@@ -413,7 +413,7 @@ export default function PublicSubscriptionAgreementForm({ linkData, token }) {
 
               <Button
                 type="submit"
-                disabled={isSubmitting || !confirmedTerms || !confirmedPayment}
+                disabled={isSubmitting || !confirmedRead || !confirmedServices || !confirmedPayment || !confirmedRenewal}
                 className="w-full bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-lg py-6 disabled:opacity-50"
               >
                 {isSubmitting ? (
