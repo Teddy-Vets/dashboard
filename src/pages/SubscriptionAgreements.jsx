@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Eye, Send, Copy, Loader2, FileText, Clock, Shield, PawPrint, User } from "lucide-react";
+import { Plus, Search, Eye, Send, Copy, Loader2, FileText, Clock, Shield, PawPrint, User, Filter } from "lucide-react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,6 +15,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import EmptyState from "@/components/common/EmptyState";
 import userService from "@/components/services/userService";
 import { Link } from "react-router-dom";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const PLAN_LABELS = {
   teddy_basic: "טדי בייסיק",
@@ -35,6 +36,9 @@ export default function SubscriptionAgreementsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [clinics, setClinics] = useState([]);
+  const [clinicFilter, setClinicFilter] = useState("all");
   const [generatingLinkId, setGeneratingLinkId] = useState(null);
   const [generatedLinks, setGeneratedLinks] = useState({});
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -48,9 +52,12 @@ export default function SubscriptionAgreementsPage() {
       setCurrentUser(user);
       let data;
       if (user.role === "admin") {
-        data = await base44.entities.SubscriptionAgreement.list("-created_date", 200);
+        [data] = await Promise.all([
+          base44.entities.SubscriptionAgreement.list("-created_date", 500),
+          base44.entities.Clinic.list().then(setClinics).catch(() => {}),
+        ]);
       } else {
-        data = await base44.entities.SubscriptionAgreement.filter({ clinic_id: user.clinic_id }, "-created_date", 200);
+        data = await base44.entities.SubscriptionAgreement.filter({ clinic_id: user.clinic_id }, "-created_date", 500);
       }
       setAgreements(data);
     } catch (e) {
@@ -82,11 +89,14 @@ export default function SubscriptionAgreementsPage() {
   };
 
 
-  const filtered = agreements.filter(a =>
-    !searchQuery ||
-    a.owner_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    a.pet_name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filtered = agreements.filter(a => {
+    const matchesSearch = !searchQuery ||
+      a.owner_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      a.pet_name?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" || a.status === statusFilter;
+    const matchesClinic = clinicFilter === "all" || a.clinic_id === clinicFilter;
+    return matchesSearch && matchesStatus && matchesClinic;
+  });
 
   return (
     <div className="p-4 md:p-6 space-y-6 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 min-h-screen" dir="rtl">
@@ -136,12 +146,61 @@ export default function SubscriptionAgreementsPage() {
           </Card>
         </div>
 
-        {/* Search */}
-        <Card className="bg-white/80 shadow mb-6">
-          <CardContent className="p-4">
-            <div className="relative">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input placeholder="חיפוש לפי שם לקוח או חיה..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pr-10" />
+        {/* Filters */}
+        <Card className="bg-white/80 backdrop-blur-sm border-blue-100 shadow-lg mb-6">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-base md:text-lg flex items-center gap-2">
+              <Filter className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
+              סינון וחיפוש
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="חיפוש לפי שם לקוח או חיה..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="pr-10 text-sm md:text-base"
+                />
+              </div>
+              {currentUser?.role === 'admin' && clinics.length > 0 && (
+                <div className="md:w-64">
+                  <Select value={clinicFilter} onValueChange={setClinicFilter}>
+                    <SelectTrigger className="text-sm md:text-base">
+                      <SelectValue placeholder="כל המרפאות" />
+                    </SelectTrigger>
+                    <SelectContent dir="rtl">
+                      <SelectItem value="all">כל המרפאות</SelectItem>
+                      {clinics.map(c => (
+                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              <div className="flex gap-2 flex-wrap">
+                {Object.entries(statusConfig).map(([statusKey, { label }]) => (
+                  <Button
+                    key={statusKey}
+                    variant={statusFilter === statusKey ? "default" : "outline"}
+                    onClick={() => setStatusFilter(statusKey)}
+                    size="sm"
+                    className="text-xs md:text-sm"
+                  >
+                    {label}
+                  </Button>
+                ))}
+                <Button
+                  variant={statusFilter === "all" ? "default" : "outline"}
+                  onClick={() => setStatusFilter("all")}
+                  size="sm"
+                  className="text-xs md:text-sm"
+                >
+                  הכל
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -196,7 +255,7 @@ export default function SubscriptionAgreementsPage() {
                             </div>
                           </TableCell>
                           <TableCell><span className="text-slate-700">{PLAN_LABELS[a.selected_plan] || a.selected_plan}</span></TableCell>
-                          <TableCell><span className="text-sm text-slate-600">{a.payment_frequency === 'annual' ? 'שנתי' : 'חודשי'}</span></TableCell>
+                          <TableCell><span className="text-sm text-slate-600">{a.payment_frequency === 'monthly' ? 'חודשי' : a.payment_frequency === 'annual' ? 'שנתי חד-פעמי' : 'שנתי מתחדש'}</span></TableCell>
                           <TableCell>
                             <Badge className={`${config.color} border flex items-center gap-1 w-fit`}>
                               <StatusIcon className="w-3 h-3" />{config.label}
@@ -261,7 +320,7 @@ export default function SubscriptionAgreementsPage() {
                 <div className="space-y-1 mb-3 text-sm">
                   <div className="flex items-center gap-2"><User className="w-4 h-4 text-slate-400" /><span className="font-medium">{a.owner_name}</span></div>
                   <div className="flex items-center gap-2"><PawPrint className="w-4 h-4 text-orange-500" /><span>{a.pet_name}</span></div>
-                  <div className="text-slate-500">{PLAN_LABELS[a.selected_plan]} · {a.payment_frequency === 'annual' ? 'שנתי' : 'חודשי'}</div>
+                  <div className="text-slate-500">{PLAN_LABELS[a.selected_plan]} · {a.payment_frequency === 'monthly' ? 'חודשי' : a.payment_frequency === 'annual' ? 'שנתי חד-פעמי' : 'שנתי מתחדש'}</div>
                 </div>
                 <div className="flex gap-2 flex-wrap">
                   {a.status === 'legally_sealed' ? (
