@@ -11,12 +11,15 @@ import userService from "@/components/services/userService";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const PLANS = [
-  { value: "teddy_basic", label: "טדי בייסיק", subtitle: "כלבים", monthly: 89, annual: 82 },
-  { value: "teddy_plus", label: "טדי פלוס", subtitle: "כלבים", monthly: 129, annual: 118 },
-  { value: "teddy_platinum", label: "טדי פלטינום", subtitle: "כלבים", monthly: 169, annual: 155 },
-  { value: "teddy_royal", label: "טדי רויאל", subtitle: "חתולים", monthly: 79, annual: 72 },
-  { value: "teddy_insured", label: "טדי בטוח", subtitle: "לבעלי ביטוח פרטי", monthly: 79, annual: 72 },
+  { value: "teddy_basic", label: "טדי בייסיק", subtitle: "כלבים", monthly: 89 },
+  { value: "teddy_plus", label: "טדי פלוס", subtitle: "כלבים", monthly: 129 },
+  { value: "teddy_platinum", label: "טדי פלטינום", subtitle: "כלבים", monthly: 169 },
+  { value: "teddy_royal", label: "טדי רויאל", subtitle: "חתולים", monthly: 79 },
+  { value: "teddy_insured", label: "טדי בטוח", subtitle: "לבעלי ביטוח פרטי", monthly: 79 },
 ];
+
+const annualMonthly = (m) => Math.round(m * 11 / 12);
+const annualTotal = (m) => m * 11;
 
 const PET_TYPE_EMOJIS = { "כלב": "🐶", "חתול": "🐱", "אחר": "🦜" };
 
@@ -196,7 +199,7 @@ export default function CreateSubscriptionAgreementPage() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-slate-600">חודשי: <span className="font-bold">₪{plan.monthly}</span></p>
-                      <p className="text-sm text-slate-500">שנתי: <span className="font-semibold">₪{plan.annual}/חודש</span></p>
+                      <p className="text-sm text-slate-500">שנתי: <span className="font-semibold">₪{annualMonthly(plan.monthly)}/חודש</span></p>
                     </div>
                   </div>
                 </div>
@@ -211,11 +214,11 @@ export default function CreateSubscriptionAgreementPage() {
                   <RadioGroupItem value="monthly" id="pay-monthly" />
                 </div>
                 <div className="flex items-center gap-2 flex-row-reverse justify-end w-full">
-                  <Label htmlFor="pay-annual" className="cursor-pointer">תשלום שנתי מראש חד-פעמי</Label>
+                  <Label htmlFor="pay-annual" className="cursor-pointer">תשלום שנתי מראש חד-פעמי (חודש מתנה)</Label>
                   <RadioGroupItem value="annual" id="pay-annual" />
                 </div>
                 <div className="flex items-center gap-2 flex-row-reverse justify-end w-full">
-                  <Label htmlFor="pay-annual-recurring" className="cursor-pointer">תשלום שנתי מתחדש</Label>
+                  <Label htmlFor="pay-annual-recurring" className="cursor-pointer">תשלום שנתי מתחדש (חודש מתנה)</Label>
                   <RadioGroupItem value="annual_recurring" id="pay-annual-recurring" />
                 </div>
               </RadioGroup>
@@ -228,8 +231,8 @@ export default function CreateSubscriptionAgreementPage() {
                 <div className="mt-4 bg-purple-50 border border-purple-200 rounded-xl p-4">
                   <p className="font-bold text-purple-800">{selectedPlan.label} · {freqLabel}</p>
                   <p className="text-purple-700 text-lg font-bold mt-1">
-                    ₪{isAnnual ? selectedPlan.annual : selectedPlan.monthly} לחודש
-                    {isAnnual && <span className="text-sm font-normal mr-2">(סה״כ ₪{selectedPlan.annual * 12} לשנה)</span>}
+                    ₪{isAnnual ? annualMonthly(selectedPlan.monthly) : selectedPlan.monthly} לחודש
+                    {isAnnual && <span className="text-sm font-normal mr-2">(סה״כ ₪{annualTotal(selectedPlan.monthly)} לשנה)</span>}
                   </p>
                   {form.payment_frequency === 'annual_recurring' && (
                     <p className="text-purple-600 text-xs mt-1">החיוב יתחדש אוטומטית מדי שנה עד לביטול.</p>
