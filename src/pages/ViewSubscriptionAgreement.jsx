@@ -109,7 +109,7 @@ export default function ViewSubscriptionAgreement() {
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 text-sm">
             <p className="font-bold text-purple-800 text-base">{PLAN_LABELS[agreement.selected_plan] || agreement.selected_plan}</p>
             <p className="text-slate-600 mt-1">
-              תשלום: <span className="font-semibold">{agreement.payment_frequency === 'annual' ? 'שנתי מראש (כולל חודש מתנה)' : 'הוראת קבע חודשית'}</span>
+              תשלום: <span className="font-semibold">{agreement.payment_frequency === 'monthly' ? 'הוראת קבע חודשית' : agreement.payment_frequency === 'annual' ? 'שנתי מראש חד-פעמי' : 'שנתי מתחדש'}</span>
             </p>
           </div>
         </section>
