@@ -193,11 +193,23 @@ export default function IntakeFormsListPage() {
     if (!formsToExport.length) return;
 
     const clinicName = (id) => clinics.find(c => c.id === id)?.name || id || "";
+    const yn = (v) => v === "yes" ? "כן" : v === "no" ? "לא" : v || "";
+    const insLabel = { merpet: "מרפט", libera: "ליברה", haphoenix: "הפניקס", be_friend: "בי פרנד", hayota: "היוטה", other: "אחר" };
+    const dt = (v) => v ? format(new Date(v), "dd/MM/yyyy HH:mm") : "";
 
     const headers = [
       "תאריך יצירה", "מרפאה", "שם בעלים", "ת.ז.", "טלפון", "אימייל", "כתובת",
-      "שם חיה", "סוג", "גזע", "גיל", "מין", "מסורס/ת", "שבב", "סטטוס",
-      "ביקור ראשון", "סיבת ביקור", "ביטוח", "חברת ביטוח", "הערות צוות"
+      "חיית מחמד ראשונה", "סיפור חיית מחמד ראשונה", "מידע על חיות קודמות",
+      "שם חיה", "סוג", "גזע", "גיל", "מין", "מסורס/מעוקרת", "שבב",
+      "תמונת חיה", "פנקס חיסונים", "סיכום טיפולים קודמים",
+      "ביטוח", "חברת ביטוח", "חברת ביטוח אחרת", "סיבת אי-רכישת ביטוח", "הערות ביטוח",
+      "ביקור ראשון", "איך שמעו עלינו", "מרפאה קודמת", "שם חיה קודמת",
+      "מה אהב בווטרינר הקודם", "מה מצפה מאיתנו",
+      "בעיות רפואיות ידועות", "סוג מזון", "בעיות התנהגותיות",
+      "רמת חרדה אצל וטרינר", "הצעות להקלת חרדה",
+      "סיבת ביקור עיקרית", "פירוט סיבת ביקור", "נושאים נוספים",
+      "סטטוס", "הערות צוות", "תאריך השלמה", "נבדק על ידי", "תאריך בדיקה",
+      "אישור לקוח", "תאריך אישור"
     ];
 
     const escapeCSV = (val) => {
@@ -207,13 +219,16 @@ export default function IntakeFormsListPage() {
     };
 
     const rows = formsToExport.map(f => [
-      f.created_date ? format(new Date(f.created_date), "dd/MM/yyyy HH:mm") : "",
+      dt(f.created_date),
       clinicName(f.clinic_id),
       f.owner_name || "",
       f.owner_id_number || "",
       f.owner_phone || "",
       f.owner_email || "",
       f.address || "",
+      yn(f.first_ever_pet),
+      f.first_pet_story || "",
+      f.not_first_pet_info || "",
       f.pet_name || "",
       f.pet_type || "",
       f.pet_breed || "",
@@ -221,12 +236,35 @@ export default function IntakeFormsListPage() {
       f.pet_gender || "",
       f.pet_neutered || "",
       f.pet_microchip || "",
-      statusConfig[f.status]?.label || f.status || "",
-      f.first_visit || "",
+      f.pet_picture_url || "",
+      f.vaccine_book_url || "",
+      f.previous_treatments_file_url || "",
+      yn(f.has_insurance),
+      insLabel[f.insurance_company] || f.insurance_company || "",
+      f.insurance_company_other || "",
+      f.no_insurance_reason || "",
+      f.considering_insurance_notes || "",
+      yn(f.first_visit),
+      f.how_heard_about_us || "",
+      f.previous_clinic_name || "",
+      f.previous_pet_name || "",
+      f.prev_vet_likes || "",
+      f.needs_from_us || "",
+      f.known_medical_issues || "",
+      f.diet_food_type || "",
+      f.behavioral_issues || "",
+      f.vet_anxiety_level || "",
+      f.anxiety_help_suggestions || "",
       f.visit_reason_main || "",
-      f.has_insurance || "",
-      f.insurance_company || "",
-      f.staff_notes || ""
+      f.visit_reason_details || "",
+      f.other_topics || "",
+      statusConfig[f.status]?.label || f.status || "",
+      f.staff_notes || "",
+      dt(f.completed_at),
+      f.reviewed_by || "",
+      dt(f.reviewed_at),
+      f.client_consent === true ? "כן" : f.client_consent === false ? "לא" : "",
+      dt(f.consent_date)
     ].map(escapeCSV).join(","));
 
     const csv = "\uFEFF" + headers.join(",") + "\n" + rows.join("\n");
