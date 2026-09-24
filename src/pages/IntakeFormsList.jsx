@@ -73,7 +73,7 @@ export default function IntakeFormsListPage() {
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState([]);
   const [clinics, setClinics] = useState([]);
   const [clinicFilter, setClinicFilter] = useState("all");
   const [page, setPage] = useState(0);
@@ -133,7 +133,7 @@ export default function IntakeFormsListPage() {
       form.owner_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       form.pet_name?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesStatus = statusFilter === "all" || form.status === statusFilter;
+    const matchesStatus = statusFilter.length === 0 || statusFilter.includes(form.status);
     const matchesClinic = clinicFilter === "all" || form.clinic_id === clinicFilter;
 
     return matchesSearch && matchesStatus && matchesClinic;
@@ -429,8 +429,8 @@ export default function IntakeFormsListPage() {
                 {Object.entries(statusConfig).map(([statusKey, { label }]) => (
                   <Button
                     key={statusKey}
-                    variant={statusFilter === statusKey ? "default" : "outline"}
-                    onClick={() => setStatusFilter(statusKey)}
+                    variant={statusFilter.includes(statusKey) ? "default" : "outline"}
+                    onClick={() => setStatusFilter(prev => prev.includes(statusKey) ? prev.filter(s => s !== statusKey) : [...prev, statusKey])}
                     size="sm"
                     className="text-xs md:text-sm"
                   >
@@ -438,8 +438,8 @@ export default function IntakeFormsListPage() {
                   </Button>
                 ))}
                 <Button
-                  variant={statusFilter === "all" ? "default" : "outline"}
-                  onClick={() => setStatusFilter("all")}
+                  variant={statusFilter.length === 0 ? "default" : "outline"}
+                  onClick={() => setStatusFilter([])}
                   size="sm"
                   className="text-xs md:text-sm"
                 >
@@ -459,7 +459,7 @@ export default function IntakeFormsListPage() {
           <EmptyState
             icon={FileText}
             title="לא נמצאו טפסי היכרות"
-            description={searchQuery || statusFilter !== "all" 
+            description={searchQuery || statusFilter.length > 0
               ? "נסו לשנות את מונחי החיפוש"
               : "עדיין לא נוצרו טפסים. לחצו על הכפתור כדי ליצור טופס חדש."}
             actionLabel="הוסף טופס היכרות"
