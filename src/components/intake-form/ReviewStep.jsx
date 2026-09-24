@@ -53,7 +53,7 @@ export default function ReviewStep({ formData, updateFormData }) {
         </ReviewSection>
         
         <ReviewSection title="היסטוריה רפואית" icon={Heart}>
-          <ReviewItem label="ביקור ראשון" value={formData.firstVisit === 'yes' ? 'כן' : 'לא'} />
+          <ReviewItem label="ביקור ראשון" value={formData.firstVisit === 'yes' ? 'כן, זו הפעם הראשונה' : formData.firstVisit === 'no' ? 'לא, עוברים ממרפאה אחרת' : formData.firstVisit === 'previous_pet' ? 'לא, היתה לנו חיית מחמד בעבר' : ''} />
           <ReviewItem label="בעיות ידועות" value={formData.knownMedicalIssues} />
           <ReviewItem label="תזונה" value={formData.dietFoodType} />
           <ReviewItem label="בעיות התנהגות" value={formData.behavioralIssues} />

@@ -10,7 +10,7 @@ export default function MedicalHistoryStepFr({ formData, updateFormData }) {
     <div className="space-y-6">
       <div>
         <Label className="text-base font-medium text-slate-700 mb-4 block">
-          Est-ce la première visite chez un vétérinaire ? *
+          Est-ce votre première visite dans notre clinique ? *
         </Label>
         <RadioGroup
           value={formData.firstVisit}
@@ -26,7 +26,13 @@ export default function MedicalHistoryStepFr({ formData, updateFormData }) {
           <div className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
             <RadioGroupItem value="no" id="first-visit-no-fr" />
             <Label htmlFor="first-visit-no-fr" className="flex-1 cursor-pointer font-normal">
-              Non, nous avons déjà visité un vétérinaire
+              Non, nous changeons d'une autre clinique
+            </Label>
+          </div>
+          <div className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            <RadioGroupItem value="previous_pet" id="first-visit-previous-pet-fr" />
+            <Label htmlFor="first-visit-previous-pet-fr" className="flex-1 cursor-pointer font-normal">
+              Non, nous avons eu un animal de compagnie avant
             </Label>
           </div>
         </RadioGroup>

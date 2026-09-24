@@ -162,7 +162,7 @@ export default function ViewSubmittedIntakeForm({ formData }) {
           <div className="divide-y divide-gray-100">
             <DetailItem
               label="ביקור ראשון במרפאה"
-              value={formData.first_visit === 'yes' ? 'כן' : 'לא'}
+              value={formData.first_visit === 'yes' ? 'כן, זו הפעם הראשונה' : formData.first_visit === 'no' ? 'לא, עוברים ממרפאה אחרת' : formData.first_visit === 'previous_pet' ? 'לא, היתה לנו חיית מחמד בעבר' : undefined}
               isBadge
               badgeClass={formData.first_visit === 'yes' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}
             />

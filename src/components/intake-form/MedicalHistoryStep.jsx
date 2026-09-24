@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -14,7 +13,7 @@ export default function MedicalHistoryStep({ formData, updateFormData }) {
       <div className="space-y-3">
         <Label className="text-base font-medium text-slate-700 flex items-center gap-2">
           <span className="text-red-500">*</span>
-          האם זו הפעם הראשונה שלכם אצל וטרינר?
+          האם זו הפעם הראשונה שלכם במרפאה שלנו?
         </Label>
         <RadioGroup 
           value={formData.firstVisit} 
@@ -28,6 +27,10 @@ export default function MedicalHistoryStep({ formData, updateFormData }) {
           <div className="flex items-center justify-end space-x-2 space-x-reverse">
             <Label htmlFor="first-visit-no" className="cursor-pointer font-normal">לא, עוברים ממרפאה אחרת</Label>
             <RadioGroupItem value="no" id="first-visit-no" />
+          </div>
+          <div className="flex items-center justify-end space-x-2 space-x-reverse">
+            <Label htmlFor="first-visit-previous-pet" className="cursor-pointer font-normal">לא, היתה לנו חיית מחמד בעבר</Label>
+            <RadioGroupItem value="previous_pet" id="first-visit-previous-pet" />
           </div>
         </RadioGroup>
       </div>

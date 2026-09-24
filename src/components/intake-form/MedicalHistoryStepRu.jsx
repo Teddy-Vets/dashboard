@@ -13,7 +13,7 @@ export default function MedicalHistoryStepRu({ formData, updateFormData }) {
       <div className="space-y-3">
         <Label className="text-base font-medium text-slate-700 flex items-center gap-2">
           <span className="text-red-500">*</span>
-          Это ваш первый раз у ветеринара?
+          Это ваш первый раз в нашей клинике?
         </Label>
         <RadioGroup 
           value={formData.firstVisit} 
@@ -27,6 +27,10 @@ export default function MedicalHistoryStepRu({ formData, updateFormData }) {
           <div className="flex items-center justify-start space-x-2">
             <RadioGroupItem value="no" id="first-visit-no" />
             <Label htmlFor="first-visit-no" className="cursor-pointer font-normal">Нет, переходим из другой клиники</Label>
+          </div>
+          <div className="flex items-center justify-start space-x-2">
+            <RadioGroupItem value="previous_pet" id="first-visit-previous-pet" />
+            <Label htmlFor="first-visit-previous-pet" className="cursor-pointer font-normal">Нет, у нас был питомец раньше</Label>
           </div>
         </RadioGroup>
       </div>

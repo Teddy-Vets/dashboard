@@ -10,7 +10,7 @@ export default function MedicalHistoryStepAr({ formData, updateFormData }) {
     <div className="space-y-6">
       <div>
         <Label className="text-base font-medium text-slate-700 mb-4 block">
-          هل هذه أول زيارة للطبيب البيطري؟ *
+          هل هذه أول زيارة لعيادتنا؟ *
         </Label>
         <RadioGroup
           value={formData.firstVisit}
@@ -26,7 +26,13 @@ export default function MedicalHistoryStepAr({ formData, updateFormData }) {
           <div className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
             <RadioGroupItem value="no" id="first-visit-no-ar" />
             <Label htmlFor="first-visit-no-ar" className="flex-1 cursor-pointer font-normal">
-              لا، زرنا طبيباً بيطرياً من قبل
+              لا، ننتقل من عيادة أخرى
+            </Label>
+          </div>
+          <div className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            <RadioGroupItem value="previous_pet" id="first-visit-previous-pet-ar" />
+            <Label htmlFor="first-visit-previous-pet-ar" className="flex-1 cursor-pointer font-normal">
+              لا، كان لدينا حيوان أليف من قبل
             </Label>
           </div>
         </RadioGroup>
