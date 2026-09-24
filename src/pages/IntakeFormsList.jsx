@@ -21,7 +21,8 @@ import {
   Share2,
   User,
   PawPrint,
-  Trash2
+  Trash2,
+  Download
 } from "lucide-react";
 import {
   AlertDialog,
@@ -187,6 +188,57 @@ export default function IntakeFormsListPage() {
     navigate(createPageUrl('ViewIntakeForm', { id: form.id }));
   };
 
+  const handleExportCSV = () => {
+    const formsToExport = filteredForms;
+    if (!formsToExport.length) return;
+
+    const clinicName = (id) => clinics.find(c => c.id === id)?.name || id || "";
+
+    const headers = [
+      "תאריך יצירה", "מרפאה", "שם בעלים", "ת.ז.", "טלפון", "אימייל", "כתובת",
+      "שם חיה", "סוג", "גזע", "גיל", "מין", "מסורס/ת", "שבב", "סטטוס",
+      "ביקור ראשון", "סיבת ביקור", "ביטוח", "חברת ביטוח", "הערות צוות"
+    ];
+
+    const escapeCSV = (val) => {
+      if (val === null || val === undefined) return "";
+      const s = String(val).replace(/"/g, '""');
+      return /[",\n]/.test(s) ? `"${s}"` : s;
+    };
+
+    const rows = formsToExport.map(f => [
+      f.created_date ? format(new Date(f.created_date), "dd/MM/yyyy HH:mm") : "",
+      clinicName(f.clinic_id),
+      f.owner_name || "",
+      f.owner_id_number || "",
+      f.owner_phone || "",
+      f.owner_email || "",
+      f.address || "",
+      f.pet_name || "",
+      f.pet_type || "",
+      f.pet_breed || "",
+      f.pet_age || "",
+      f.pet_gender || "",
+      f.pet_neutered || "",
+      f.pet_microchip || "",
+      statusConfig[f.status]?.label || f.status || "",
+      f.first_visit || "",
+      f.visit_reason_main || "",
+      f.has_insurance || "",
+      f.insurance_company || "",
+      f.staff_notes || ""
+    ].map(escapeCSV).join(","));
+
+    const csv = "\uFEFF" + headers.join(",") + "\n" + rows.join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `טפסי_היכרות_${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   // Mobile Card Component
   const IntakeFormMobileCard = ({ form, index }) => {
     const config = statusConfig[form.status] || statusConfig.draft;
@@ -289,13 +341,23 @@ export default function IntakeFormsListPage() {
     <div className="p-4 md:p-6 space-y-4 md:space-y-6 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Header - Responsive */}
-        <div className="mb-4 md:mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2">
-            טפסי היכרות
-          </h1>
-          <p className="text-sm md:text-base text-slate-600">
-            ניהול, צפייה ושליחה של טפסי היכרות ללקוחות חדשים
-          </p>
+        <div className="mb-4 md:mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2">
+              טפסי היכרות
+            </h1>
+            <p className="text-sm md:text-base text-slate-600">
+              ניהול, צפייה ושליחה של טפסי היכרות ללקוחות חדשים
+            </p>
+          </div>
+          <Button
+            onClick={handleExportCSV}
+            disabled={isLoading || !filteredForms.length}
+            className="bg-green-600 hover:bg-green-700 text-white gap-2 self-start md:self-auto"
+          >
+            <Download className="w-4 h-4" />
+            ייצוא ל-CSV ({filteredForms.length})
+          </Button>
         </div>
 
         {/* Stats - Responsive Grid */}
