@@ -219,12 +219,38 @@ export default function useStatsData({ range, clinicFilter }) {
           counts[type.key] = { current: secondaryTotals[index] || 0, previous: 0 };
         });
 
+        const intakeWeekRows = weekStatusAgg?.rows || [];
+        const intakeStatusMap = new Map();
+        intakeWeekRows.forEach((row) => {
+          intakeStatusMap.set(row.status, (intakeStatusMap.get(row.status) || 0) + (row.count || 0));
+        });
+        const intakeStatusRows = Array.from(intakeStatusMap.entries()).map(([status, count]) => ({ status, count }));
+
+        const sentPerClinic = new Map();
+        const returnedPerClinic = new Map();
+        const reviewedPerClinic = new Map();
+        (clinicStatusAgg?.rows || []).forEach((row) => {
+          if (!row.clinic_id) return;
+          const count = row.count || 0;
+          sentPerClinic.set(row.clinic_id, (sentPerClinic.get(row.clinic_id) || 0) + count);
+          if (WEEKLY_FUNNEL.returnedStatuses.includes(row.status)) {
+            returnedPerClinic.set(row.clinic_id, (returnedPerClinic.get(row.clinic_id) || 0) + count);
+          }
+          if (WEEKLY_FUNNEL.reviewedStatuses.includes(row.status)) {
+            reviewedPerClinic.set(row.clinic_id, (reviewedPerClinic.get(row.clinic_id) || 0) + count);
+          }
+        });
+
         let clinicComparison = [];
         if (isAdmin && clinicFilter === 'all') {
-          const comparisonEntities = ['IntakeForm', 'ConsentForm', 'AppointmentRequest', 'SubscriptionAgreement'];
+          const comparisonEntities = [
+            { entity: 'ConsentForm', field: 'consent' },
+            { entity: 'AppointmentRequest', field: 'appointment' },
+            { entity: 'SubscriptionAgreement', field: 'subscription' },
+          ];
           const comparisonResults = await Promise.all(
-            comparisonEntities.map((entity) =>
-              base44.entities[entity].aggregate({ query: periodQuery, groupBy: 'clinic_id' })
+            comparisonEntities.map((item) =>
+              base44.entities[item.entity].aggregate({ query: periodQuery, groupBy: 'clinic_id' })
             )
           );
           const rowsByClinic = new Map();
@@ -232,17 +258,16 @@ export default function useStatsData({ range, clinicFilter }) {
             rowsByClinic.set(clinic.id, {
               clinicId: clinic.id,
               name: clinic.name?.trim() || 'ללא שם',
-              intake: 0,
+              intake: sentPerClinic.get(clinic.id) || 0,
               consent: 0,
               appointment: 0,
               subscription: 0,
             });
           });
-          comparisonEntities.forEach((entity, entityIndex) => {
-            const field = FORM_TYPES[entityIndex].key;
+          comparisonEntities.forEach((item, entityIndex) => {
             (comparisonResults[entityIndex]?.rows || []).forEach((row) => {
               const rowData = rowsByClinic.get(row.clinic_id);
-              if (rowData) rowData[field] += row.count || 0;
+              if (rowData) rowData[item.field] += row.count || 0;
             });
           });
           clinicComparison = Array.from(rowsByClinic.values())
@@ -251,7 +276,7 @@ export default function useStatsData({ range, clinicFilter }) {
         }
 
         const statusRows = {
-          IntakeForm: intakeStatusResult?.rows || [],
+          IntakeForm: intakeStatusRows,
           ConsentForm: consentStatusResult?.rows || [],
           AnxietyQuestionnaire: anxietyStatusResult?.rows || [],
         };
@@ -288,34 +313,21 @@ export default function useStatsData({ range, clinicFilter }) {
           reviewed: 0,
         }));
         const weeklyMap = new Map(weekly.map((row) => [row.weekStart, row]));
-        const applyWeekly = (aggregate, field) => {
-          (aggregate?.rows || []).forEach((row) => {
-            const key = weekKey(row.created_date);
-            const target = key ? weeklyMap.get(key) : null;
-            if (target) target[field] += row.count || 0;
-          });
-        };
-        applyWeekly(weekOpenedAgg, 'sent');
-        applyWeekly(weekReturnedAgg, 'returned');
-        applyWeekly(weekReviewedAgg, 'reviewed');
+        intakeWeekRows.forEach((row) => {
+          const key = weekKey(row.created_date);
+          const target = key ? weeklyMap.get(key) : null;
+          if (!target) return;
+          const count = row.count || 0;
+          target.sent += count;
+          if (WEEKLY_FUNNEL.returnedStatuses.includes(row.status)) target.returned += count;
+          if (WEEKLY_FUNNEL.reviewedStatuses.includes(row.status)) target.reviewed += count;
+        });
 
         const newClientsPerClinic = new Map();
         countRecords.forEach((record) => {
           if (!record.clinic_id) return;
           newClientsPerClinic.set(record.clinic_id, (newClientsPerClinic.get(record.clinic_id) || 0) + (record.new_clients || 0));
         });
-
-        const clinicCounts = (result) => {
-          const map = new Map();
-          (result?.rows || []).forEach((row) => {
-            if (!row.clinic_id) return;
-            map.set(row.clinic_id, row.count || 0);
-          });
-          return map;
-        };
-        const sentPerClinic = clinicCounts(intakeByClinicResult);
-        const returnedPerClinic = clinicCounts(intakeReturnedByClinicResult);
-        const reviewedPerClinic = clinicCounts(intakeReviewedByClinicResult);
 
         const newClientsByClinic = clinicFilter === 'all'
           ? visibleClinics
@@ -344,7 +356,7 @@ export default function useStatsData({ range, clinicFilter }) {
           pets: petsCount || 0,
           petTypes: petTypeResult?.rows || [],
           visitTypes: visitTypeResult?.rows || [],
-          intakeStatuses: intakeStatusResult?.rows || [],
+          intakeStatuses: intakeStatusRows,
           appointmentStatuses: appointmentStatusResult?.rows || [],
           subscriptionPlans: planResult?.rows || [],
           emergencySeverities: severityResult?.rows || [],
@@ -357,6 +369,8 @@ export default function useStatsData({ range, clinicFilter }) {
           },
         };
     };
+
+    let rateLimitRetried = false;
 
     const load = async () => {
       setIsLoading(true);
@@ -385,6 +399,12 @@ export default function useStatsData({ range, clinicFilter }) {
         }
         applyPayload(await shared);
       } catch (loadError) {
+        const message = String(loadError?.message || '');
+        if (!cancelled && /rate limit/i.test(message) && !rateLimitRetried) {
+          rateLimitRetried = true;
+          window.setTimeout(() => { if (!cancelled) load(); }, 5000);
+          return;
+        }
         if (!cancelled) setError(loadError);
       } finally {
         if (!cancelled) setIsLoading(false);
