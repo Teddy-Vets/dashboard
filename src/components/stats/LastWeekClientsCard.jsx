@@ -12,6 +12,13 @@ const percentText = (part, whole) => {
   return value === null ? '—' : `${value}%`;
 };
 
+const percentClass = (value) => {
+  if (value === null) return 'text-slate-300';
+  if (value > 95) return 'text-emerald-600 font-medium';
+  if (value < 85) return 'text-red-600 font-medium';
+  return 'text-orange-500 font-medium';
+};
+
 const COLUMNS = [
   { key: 'newClients', label: 'לקוחות חדשים' },
   { key: 'sent', label: 'טפסי היכרות שנשלחו', basis: 'newClients' },
@@ -97,7 +104,9 @@ export default function LastWeekClientsCard({ lastWeek }) {
                           {formatNumber(row[column.key])}
                         </div>
                         {column.basis && (
-                          <div className={`text-[11px] font-normal ${percentage === '—' ? 'text-slate-300' : 'text-slate-500'}`}>
+                          <div
+                            className={`text-[11px] ${percentClass(percentOf(row[column.key], row[column.basis]))}`}
+                          >
                             {percentage}
                           </div>
                         )}
@@ -116,7 +125,7 @@ export default function LastWeekClientsCard({ lastWeek }) {
                     <td key={column.key} className="px-3 py-2 text-center">
                       <div>{formatNumber(totals[column.key])}</div>
                       {column.basis && (
-                        <div className={`text-[11px] font-normal ${percentage === '—' ? 'text-slate-400' : 'text-slate-500'}`}>
+                        <div className={`text-[11px] ${percentClass(percentOf(totals[column.key], totals[column.basis]))}`}>
                           {percentage}
                         </div>
                       )}
