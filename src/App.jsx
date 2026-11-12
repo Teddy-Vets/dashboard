@@ -63,6 +63,7 @@ const AuthenticatedApp = () => {
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
+        <Route path="/StatsDashboard" element={<StatsDashboard />} />
         <Route path="/SubscriptionAgreements" element={<SubscriptionAgreements />} />
         <Route path="/CreateSubscriptionAgreement" element={<CreateSubscriptionAgreement />} />
         <Route path="/PublicSubscriptionAgreement" element={<PublicSubscriptionAgreement />} />

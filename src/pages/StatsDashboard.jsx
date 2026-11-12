@@ -1,256 +1,295 @@
-import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
+import React, { useMemo, useState } from 'react';
+import { format } from 'date-fns';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend
-} from 'recharts';
-import { TrendingUp, PawPrint, ClipboardList } from 'lucide-react';
-import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns';
+  AlertTriangle,
+  Building2,
+  Calendar,
+  ClipboardCheck,
+  CreditCard,
+  FileText,
+  PawPrint,
+  RefreshCw,
+  Smile,
+  UserPlus,
+  Users,
+} from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+import ErrorMessage from '@/components/common/ErrorMessage';
+import useStatsData from '@/hooks/useStatsData';
+import StatCards from '@/components/stats/StatCards';
+import MiniStats from '@/components/stats/MiniStats';
+import FormsTrend from '@/components/stats/FormsTrend';
+import PetTypeChart from '@/components/stats/PetTypeChart';
+import HorizontalBarCard from '@/components/stats/HorizontalBarCard';
+import ClinicComparison from '@/components/stats/ClinicComparison';
+import {
+  APPOINTMENT_STATUS_COLORS,
+  APPOINTMENT_STATUS_LABELS,
+  INTAKE_STATUS_COLORS,
+  INTAKE_STATUS_LABELS,
+  VISIT_TYPE_COLORS,
+  VISIT_TYPE_LABELS,
+  PLAN_COLORS,
+  PLAN_LABELS,
+  RANGE_OPTIONS,
+  SEVERITY_COLORS,
+  SEVERITY_LABELS,
+} from '@/components/stats/statsConfig';
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+function StatsSkeleton() {
+  return (
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {Array(4).fill(0).map((_, index) => (
+          <Card key={index} className="border-slate-100 bg-white p-5">
+            <Skeleton className="mb-3 h-4 w-24" />
+            <Skeleton className="h-8 w-16" />
+          </Card>
+        ))}
+      </div>
+      <Card className="border-slate-100 bg-white p-6">
+        <Skeleton className="h-[280px] w-full" />
+      </Card>
+      <div className="grid gap-5 lg:grid-cols-2">
+        <Card className="border-slate-100 bg-white p-6">
+          <Skeleton className="h-[240px] w-full" />
+        </Card>
+        <Card className="border-slate-100 bg-white p-6">
+          <Skeleton className="h-[240px] w-full" />
+        </Card>
+      </div>
+    </div>
+  );
+}
 
 export default function StatsDashboard() {
-  const [intakeForms, setIntakeForms] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [range, setRange] = useState('6m');
+  const [clinicFilter, setClinicFilter] = useState('all');
+  const { data, clinics, isLoading, error, reload } = useStatsData({ range, clinicFilter });
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  const periodLabel = data
+    ? `מציג נתונים מ-${format(data.period.start, 'dd/MM/yyyy')} ועד היום`
+    : '';
 
-  const loadData = async () => {
-    setIsLoading(true);
-    try {
-      const currentUser = await base44.auth.me();
-      setUser(currentUser);
+  const statItems = useMemo(() => {
+    if (!data) return [];
+    return [
+      { key: 'intake', label: 'טפסי היכרות', value: data.counts.intake.current, previous: data.counts.intake.previous, icon: FileText, color: 'blue' },
+      { key: 'consent', label: 'טפסי הסכמה', value: data.counts.consent.current, previous: data.counts.consent.previous, icon: ClipboardCheck, color: 'purple' },
+      { key: 'appointment', label: 'בקשות תור', value: data.counts.appointment.current, previous: data.counts.appointment.previous, icon: Calendar, color: 'green' },
+      { key: 'subscription', label: 'הסכמי מנוי', value: data.counts.subscription.current, previous: data.counts.subscription.previous, icon: CreditCard, color: 'amber' },
+    ];
+  }, [data]);
 
-      let forms;
-      if (currentUser?.role === 'admin') {
-        forms = await base44.entities.IntakeForm.list('-created_date', 500);
-      } else {
-        forms = await base44.entities.IntakeForm.filter(
-          { clinic_id: currentUser?.clinic_id },
-          '-created_date',
-          500
-        );
-      }
-      setIntakeForms(forms || []);
-    } catch (err) {
-      console.error('Error loading stats:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const miniItems = useMemo(() => {
+    if (!data) return [];
+    return [
+      { key: 'clients', label: 'לקוחות רשומים', value: data.clients, icon: Users, iconBg: 'bg-blue-100', iconText: 'text-blue-600' },
+      { key: 'pets', label: 'חיות מחמד', value: data.pets, icon: PawPrint, iconBg: 'bg-emerald-100', iconText: 'text-emerald-600' },
+      { key: 'anxiety', label: 'שאלוני חרדה בתקופה', value: data.counts.anxiety.current, icon: Smile, iconBg: 'bg-pink-100', iconText: 'text-pink-600' },
+      { key: 'emergency', label: 'קריאות חירום בתקופה', value: data.counts.emergency.current, icon: AlertTriangle, iconBg: 'bg-rose-100', iconText: 'text-rose-600' },
+    ];
+  }, [data]);
 
-  // גרף 1: לקוחות חדשים לפי חודש (6 חודשים אחרונים)
-  const getNewClientsPerMonth = () => {
-    const months = [];
-    for (let i = 5; i >= 0; i--) {
-      const date = subMonths(new Date(), i);
-      const start = startOfMonth(date);
-      const end = endOfMonth(date);
-      const count = intakeForms.filter(f => {
-        const created = new Date(f.created_date);
-        return created >= start && created <= end;
-      }).length;
-      months.push({
-        name: format(date, 'MM/yy'),
-        טפסים: count,
-      });
-    }
-    return months;
-  };
-
-  // גרף 2: תפוצת סוגי חיות המחמד
-  const getPetTypeDistribution = () => {
-    const counts = {};
-    intakeForms.forEach(f => {
-      const type = f.pet_type || 'לא צוין';
-      counts[type] = (counts[type] || 0) + 1;
+  const visitTypeData = useMemo(() => {
+    if (!data) return [];
+    const rows = data.visitTypes || [];
+    const known = Object.keys(VISIT_TYPE_LABELS).map((key) => {
+      const row = rows.find((item) => item.first_visit === key);
+      return { name: VISIT_TYPE_LABELS[key], value: row?.count || 0, color: VISIT_TYPE_COLORS[key] };
     });
-    return Object.entries(counts)
-      .map(([name, value]) => ({ name, value }))
+    const extra = rows
+      .filter((row) => !VISIT_TYPE_LABELS[row.first_visit])
+      .map((row) => ({
+        name: row.first_visit || 'לא צוין',
+        value: row.count || 0,
+        color: '#94a3b8',
+      }));
+    return [...known, ...extra];
+  }, [data]);
+
+  const intakeStatusData = useMemo(() => {
+    if (!data) return [];
+    const rows = data.intakeStatuses || [];
+    const known = Object.keys(INTAKE_STATUS_LABELS).map((status) => {
+      const row = rows.find((item) => item.status === status);
+      return { name: INTAKE_STATUS_LABELS[status], value: row?.count || 0, color: INTAKE_STATUS_COLORS[status] };
+    });
+    const extra = rows
+      .filter((row) => !INTAKE_STATUS_LABELS[row.status])
+      .map((row) => ({ name: row.status || 'לא צוין', value: row.count || 0, color: '#94a3b8' }));
+    return [...known, ...extra];
+  }, [data]);
+
+  const intakeCompletion = useMemo(() => {
+    const total = intakeStatusData.reduce((sum, item) => sum + item.value, 0);
+    const filled = intakeStatusData
+      .filter((item) => ['ממתין לבדיקה', 'נבדק', 'הושלם'].includes(item.name))
+      .reduce((sum, item) => sum + item.value, 0);
+    return total ? Math.round((filled / total) * 100) : 0;
+  }, [intakeStatusData]);
+
+  const appointmentStatusData = useMemo(() => {
+    if (!data) return [];
+    return Object.keys(APPOINTMENT_STATUS_LABELS).map((status) => {
+      const row = (data.appointmentStatuses || []).find((item) => item.status === status);
+      return {
+        name: APPOINTMENT_STATUS_LABELS[status],
+        value: row?.count || 0,
+        color: APPOINTMENT_STATUS_COLORS[status],
+      };
+    });
+  }, [data]);
+
+  const subscriptionPlanData = useMemo(() => {
+    if (!data) return [];
+    return (data.subscriptionPlans || [])
+      .map((row) => ({
+        name: PLAN_LABELS[row.selected_plan] || row.selected_plan || 'לא צוין',
+        value: row.count || 0,
+        color: PLAN_COLORS[row.selected_plan] || '#94a3b8',
+      }))
       .sort((a, b) => b.value - a.value);
-  };
+  }, [data]);
 
-  // גרף 3: סיבות ביקור נפוצות
-  const getTopVisitReasons = () => {
-    const counts = {};
-    intakeForms.forEach(f => {
-      if (f.visit_reason_main) {
-        // פיצול אם יש פסיקים
-        const reasons = f.visit_reason_main.split(',').map(r => r.trim());
-        reasons.forEach(r => {
-          if (r) counts[r] = (counts[r] || 0) + 1;
-        });
-      }
-    });
-    return Object.entries(counts)
-      .map(([name, value]) => ({ name: name.length > 20 ? name.slice(0, 20) + '...' : name, fullName: name, value }))
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 8);
-  };
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg text-sm">
-          <p className="font-semibold text-gray-800">{payload[0]?.payload?.fullName || label}</p>
-          <p className="text-blue-600">{payload[0]?.value} טפסים</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const PieTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg text-sm">
-          <p className="font-semibold">{payload[0].name}</p>
-          <p className="text-blue-600">{payload[0].value} ({((payload[0].value / intakeForms.length) * 100).toFixed(1)}%)</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <LoadingSpinner size="xl" />
-      </div>
-    );
-  }
-
-  const newClientsData = getNewClientsPerMonth();
-  const petTypeData = getPetTypeDistribution();
-  const visitReasonsData = getTopVisitReasons();
-  const totalForms = intakeForms.length;
-  const thisMonthForms = newClientsData[newClientsData.length - 1]?.טפסים || 0;
+  const emergencySeverityData = useMemo(() => {
+    if (!data) return [];
+    return (data.emergencySeverities || []).map((row) => ({
+      name: SEVERITY_LABELS[row.severity] || row.severity || 'לא צוין',
+      value: row.count || 0,
+      color: SEVERITY_COLORS[row.severity] || '#94a3b8',
+    }));
+  }, [data]);
 
   return (
-    <div className="p-4 sm:p-6 bg-slate-50 min-h-screen" dir="rtl">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 p-4 md:p-6">
+      <div className="mx-auto max-w-7xl space-y-5">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h1 className="mb-1 text-2xl font-bold text-slate-800 md:text-3xl">סטטיסטיקות</h1>
+            <p className="text-sm text-slate-600 md:text-base">
+              ניתוח נתוני הטפסים, התורים והמנויים של המרפאה
+            </p>
+            {periodLabel && <p className="mt-1 text-xs text-slate-500">{periodLabel}</p>}
+          </div>
 
-        {/* כותרת */}
-        <div className="mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">סטטיסטיקות</h1>
-          <p className="text-slate-500 mt-1">ניתוח נתוני טפסי ההיכרות של המרפאה</p>
+          <div className="flex flex-wrap items-center gap-2">
+            {clinics.length > 1 && (
+              <div className="flex min-w-[180px] items-center gap-2">
+                <Building2 className="h-4 w-4 shrink-0 text-blue-500" />
+                <Select value={clinicFilter} onValueChange={setClinicFilter}>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="בחירת מרפאה" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">
+                      {data?.isAdmin ? 'כל המרפאות' : 'כל המרפאות שלי'}
+                    </SelectItem>
+                    {clinics.map((clinic) => (
+                      <SelectItem key={clinic.id} value={clinic.id}>
+                        {clinic.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <Select value={range} onValueChange={setRange}>
+              <SelectTrigger className="w-[170px] bg-white">
+                <SelectValue placeholder="תקופה" />
+              </SelectTrigger>
+              <SelectContent>
+                {RANGE_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Button variant="outline" onClick={reload} disabled={isLoading} className="gap-2 bg-white">
+              <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+              רענון
+            </Button>
+          </div>
         </div>
 
-        {/* כרטיסי סיכום */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-          <Card className="bg-white border-blue-100">
-            <CardContent className="p-4">
-              <p className="text-xs text-slate-500">סה"כ טפסים</p>
-              <p className="text-3xl font-bold text-blue-600">{totalForms}</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-white border-green-100">
-            <CardContent className="p-4">
-              <p className="text-xs text-slate-500">החודש</p>
-              <p className="text-3xl font-bold text-green-600">{thisMonthForms}</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-white border-purple-100 col-span-2 sm:col-span-1">
-            <CardContent className="p-4">
-              <p className="text-xs text-slate-500">סוגי חיות שונות</p>
-              <p className="text-3xl font-bold text-purple-600">{petTypeData.length}</p>
-            </CardContent>
-          </Card>
-        </div>
+        {error ? (
+          <ErrorMessage error={error} onRetry={reload} />
+        ) : isLoading && !data ? (
+          <StatsSkeleton />
+        ) : data ? (
+          <>
+            <StatCards items={statItems} />
+            <MiniStats items={miniItems} />
 
-        {/* גרף 1: לקוחות חדשים לפי חודש */}
-        <Card className="mb-6 bg-white shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-slate-800">
-              <TrendingUp className="w-5 h-5 text-blue-500" />
-              לקוחות חדשים לפי חודש (6 חודשים אחרונים)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={newClientsData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="טפסים" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+            <FormsTrend buckets={data.buckets} />
 
-        {/* גרפים 2+3 בשורה */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid gap-5 lg:grid-cols-2">
+              <PetTypeChart rows={data.petTypes} />
+              <HorizontalBarCard
+                title="סוג הביקור"
+                subtitle="לקוח חדש מול לקוח חוזר, לפי טפסים שמולאו"
+                icon={UserPlus}
+                iconClassName="text-purple-500"
+                data={visitTypeData}
+                yAxisWidth={150}
+                barColor="#8b5cf6"
+                emptyText="לא מולאו טפסי היכרות בתקופה זו"
+              />
+            </div>
 
-          {/* גרף 2: תפוצת סוגי חיות */}
-          <Card className="bg-white shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-slate-800">
-                <PawPrint className="w-5 h-5 text-green-500" />
-                תפוצת סוגי חיות המחמד
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {petTypeData.length === 0 ? (
-                <p className="text-center text-slate-400 py-12">אין נתונים להצגה</p>
-              ) : (
-                <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={petTypeData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={90}
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      labelLine={false}
-                    >
-                      {petTypeData.map((_, index) => (
-                        <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<PieTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              )}
-            </CardContent>
-          </Card>
+            <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+              <HorizontalBarCard
+                title="סטטוס טפסי היכרות"
+                subtitle={`${intakeCompletion}% מהטפסים בתקופה מולאו על ידי הלקוחות`}
+                icon={FileText}
+                iconClassName="text-blue-500"
+                data={intakeStatusData}
+                yAxisWidth={130}
+                emptyText="לא נפתחו טפסי היכרות בתקופה זו"
+              />
+              <HorizontalBarCard
+                title="סטטוס בקשות תור"
+                subtitle="מצב הטיפול בכל בקשה שנפתחה"
+                icon={Calendar}
+                iconClassName="text-emerald-500"
+                data={appointmentStatusData}
+                yAxisWidth={130}
+                emptyText="לא נפתחו בקשות תור בתקופה זו"
+              />
+              <HorizontalBarCard
+                title="התפלגות מסלולי מנוי"
+                subtitle="לפי הסכמי מנוי בתקופה"
+                icon={CreditCard}
+                iconClassName="text-amber-500"
+                data={subscriptionPlanData}
+                yAxisWidth={130}
+                emptyText="לא נחתמו הסכמי מנוי בתקופה זו"
+              />
+            </div>
 
-          {/* גרף 3: סיבות ביקור נפוצות */}
-          <Card className="bg-white shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-slate-800">
-                <ClipboardList className="w-5 h-5 text-purple-500" />
-                סיבות ביקור נפוצות
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {visitReasonsData.length === 0 ? (
-                <p className="text-center text-slate-400 py-12">אין נתונים להצגה</p>
-              ) : (
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart
-                    data={visitReasonsData}
-                    layout="vertical"
-                    margin={{ top: 5, right: 10, left: 5, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-                    <XAxis type="number" tick={{ fontSize: 11 }} allowDecimals={false} />
-                    <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={100} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Bar dataKey="value" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              )}
-            </CardContent>
-          </Card>
+            {data.counts.emergency.current > 0 && (
+              <HorizontalBarCard
+                title="קריאות חירום לפי דחיפות"
+                subtitle="התפלגות דירוג הטריאז' בתקופה"
+                icon={AlertTriangle}
+                iconClassName="text-rose-500"
+                data={emergencySeverityData}
+                yAxisWidth={110}
+                emptyText="אין קריאות חירום בתקופה זו"
+              />
+            )}
 
-        </div>
+            {data.isAdmin && clinicFilter === 'all' && (
+              <ClinicComparison rows={data.clinicComparison} periodLabel={periodLabel} />
+            )}
+          </>
+        ) : null}
       </div>
     </div>
   );
