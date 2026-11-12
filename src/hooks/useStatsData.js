@@ -80,6 +80,11 @@ function weekKey(value) {
   return toDateKey(new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay()));
 }
 
+function currentWeekKey() {
+  const now = new Date();
+  return toDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()));
+}
+
 function buildWeekBuckets(start, end) {
   const buckets = [];
   const first = new Date(start.getFullYear(), start.getMonth(), start.getDate() - start.getDay());
@@ -304,14 +309,17 @@ export default function useStatsData({ range, clinicFilter }) {
           newClientsByWeek.set(key, (newClientsByWeek.get(key) || 0) + (record.new_clients || 0));
         });
 
-        const weekly = buildWeekBuckets(start, end).map((bucket) => ({
-          weekStart: bucket.key,
-          label: bucket.label,
-          newClients: newClientsByWeek.get(bucket.key) || 0,
-          sent: 0,
-          returned: 0,
-          reviewed: 0,
-        }));
+        const activeWeek = currentWeekKey();
+        const weekly = buildWeekBuckets(start, end)
+          .filter((bucket) => bucket.key !== activeWeek)
+          .map((bucket) => ({
+            weekStart: bucket.key,
+            label: bucket.label,
+            newClients: newClientsByWeek.get(bucket.key) || 0,
+            sent: 0,
+            returned: 0,
+            reviewed: 0,
+          }));
         const weeklyMap = new Map(weekly.map((row) => [row.weekStart, row]));
         intakeWeekRows.forEach((row) => {
           const key = weekKey(row.created_date);
