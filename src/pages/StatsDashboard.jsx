@@ -28,6 +28,7 @@ import ClinicComparison from '@/components/stats/ClinicComparison';
 import FormFunnelCard from '@/components/stats/FormFunnelCard';
 import WeeklyClientsCard from '@/components/stats/WeeklyClientsCard';
 import NewClientsByClinicCard from '@/components/stats/NewClientsByClinicCard';
+import WeeklyClientsMatrixCard from '@/components/stats/WeeklyClientsMatrixCard';
 import {
   APPOINTMENT_STATUS_COLORS,
   APPOINTMENT_STATUS_LABELS,
@@ -244,6 +245,15 @@ export default function StatsDashboard() {
 
             {data.newClientsByClinic?.length > 1 && (
               <NewClientsByClinicCard rows={data.newClientsByClinic} periodLabel={periodLabel} />
+            )}
+
+            {clinicFilter === 'all' && clinics.length > 1 && (
+              <WeeklyClientsMatrixCard
+                weeks={data.weekly}
+                records={data.weeklyRecords}
+                clinics={clinics}
+                periodLabel={periodLabel}
+              />
             )}
 
             <FormsTrend buckets={data.buckets} />
