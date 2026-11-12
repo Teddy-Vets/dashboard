@@ -6,7 +6,16 @@ import { buildMatrixCsv } from '@/components/stats/weeklyMatrixCsv';
 
 const formatNumber = (value) => new Intl.NumberFormat('he-IL').format(value || 0);
 
-export default function WeeklyClientsMatrixCard({ weeks = [], records = [], clinics = [], periodLabel }) {
+export default function WeeklyClientsMatrixCard({
+  weeks = [],
+  records = [],
+  clinics = [],
+  periodLabel,
+  title = 'לקוחות חדשים לפי שבוע — כל המרפאות',
+  description = 'טבלה אחת לכל המרפאות, שבוע בכל שורה. ניתן להוריד אותה ולשלוח למרפאות',
+  fileName = 'לקוחות-חדשים-כל-המרפאות.csv',
+  showTotals = true,
+}) {
   const { clinicColumns, rows, clinicTotals, grandTotal } = useMemo(() => {
     const clinicColumns = clinics.map((clinic) => ({ id: clinic.id, name: clinic.name?.trim() || 'ללא שם' }));
     const valueMap = new Map();
@@ -40,7 +49,7 @@ export default function WeeklyClientsMatrixCard({ weeks = [], records = [], clin
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'לקוחות-חדשים-כל-המרפאות.csv';
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -54,10 +63,10 @@ export default function WeeklyClientsMatrixCard({ weeks = [], records = [], clin
           <div>
             <CardTitle className="flex items-center gap-2 text-base font-semibold text-slate-800">
               <Building2 className="h-5 w-5 text-indigo-500" />
-              לקוחות חדשים לפי שבוע — כל המרפאות
+              {title}
             </CardTitle>
             <CardDescription className="mt-1">
-              טבלה אחת לכל המרפאות, שבוע בכל שורה. ניתן להוריד אותה ולשלוח למרפאות
+              {description}
             </CardDescription>
           </div>
           <Button type="button" variant="outline" size="sm" className="gap-1" onClick={handleDownload} disabled={!rows.length}>
@@ -105,7 +114,7 @@ export default function WeeklyClientsMatrixCard({ weeks = [], records = [], clin
                 ))
               )}
             </tbody>
-            {rows.length > 0 && (
+            {showTotals && rows.length > 0 && (
               <tfoot className="sticky bottom-0 z-20">
                 <tr className="border-t-2 border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800">
                   <td className="sticky right-0 bg-slate-50 px-3 py-2 text-right">סה"כ</td>

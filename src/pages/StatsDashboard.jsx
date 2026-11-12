@@ -248,12 +248,23 @@ export default function StatsDashboard() {
             )}
 
             {clinicFilter === 'all' && clinics.length > 1 && (
-              <WeeklyClientsMatrixCard
-                weeks={data.weekly}
-                records={data.weeklyRecords}
-                clinics={clinics}
-                periodLabel={periodLabel}
-              />
+              <>
+                <WeeklyClientsMatrixCard
+                  weeks={data.weekly}
+                  records={data.weeklyRecords}
+                  clinics={clinics}
+                  periodLabel={periodLabel}
+                />
+                <WeeklyClientsMatrixCard
+                  weeks={data.weekly.slice(0, 1)}
+                  records={data.weeklyRecords}
+                  clinics={clinics}
+                  title="לקוחות חדשים — השבוע האחרון"
+                  description="כל המרפאות, השבוע האחרון בלבד"
+                  fileName="לקוחות-חדשים-השבוע-האחרון.csv"
+                  showTotals={false}
+                />
+              </>
             )}
 
             <FormsTrend buckets={data.buckets} />
