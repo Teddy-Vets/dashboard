@@ -5,9 +5,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { buildTemplateCsv, parseTemplateCsv } from '@/components/stats/weeklyClientsCsv';
+import { buildTemplateCsv, parseTemplateCsv, formatDate } from '@/components/stats/weeklyClientsCsv';
 
 const pct = (part, whole) => (whole ? Math.round((part / whole) * 100) : 0);
+
+function buildYearWeeks() {
+  const year = new Date().getFullYear();
+  const firstOfYear = new Date(year, 0, 1);
+  const cursor = new Date(year, 0, 1 + ((7 - firstOfYear.getDay()) % 7));
+  const weeks = [];
+  while (cursor.getFullYear() === year) {
+    weeks.push({ key: formatDate(cursor) });
+    cursor.setDate(cursor.getDate() + 7);
+  }
+  return weeks;
+}
 
 function WeekRow({ row, canEdit, onSave }) {
   const [value, setValue] = useState(row.newClients || '');
@@ -73,9 +85,9 @@ export default function WeeklyClientsCard({ rows = [], canEdit, onSave, clinics 
   const [isImporting, setIsImporting] = useState(false);
 
   const handleDownload = () => {
-    if (!clinics.length || !rows.length) return;
+    if (!clinics.length) return;
 
-    const csv = buildTemplateCsv({ clinics, weeks: [...rows].reverse(), records: weeklyRecords });
+    const csv = buildTemplateCsv({ clinics, weeks: buildYearWeeks(), records: weeklyRecords });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -145,7 +157,7 @@ export default function WeeklyClientsCard({ rows = [], canEdit, onSave, clinics 
               size="sm"
               className="gap-1"
               onClick={handleDownload}
-              disabled={!clinics.length || !rows.length}
+              disabled={!clinics.length}
             >
               <Download className="h-4 w-4" />
               הורדת קובץ

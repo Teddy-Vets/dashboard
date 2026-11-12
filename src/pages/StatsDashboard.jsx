@@ -235,7 +235,7 @@ export default function StatsDashboard() {
             <WeeklyClientsCard
               rows={data.weekly}
               clinics={clinicFilter === 'all' ? clinics : clinics.filter((clinic) => clinic.id === clinicFilter)}
-              weeklyRecords={data.weeklyRecords}
+              weeklyRecords={data.yearWeeklyRecords || data.weeklyRecords}
               canEdit={Boolean(entryClinicId)}
               onSave={(weekStart, value) => updateWeeklyCount({ clinicId: entryClinicId, weekStart, value })}
               onImport={importWeeklyCounts}

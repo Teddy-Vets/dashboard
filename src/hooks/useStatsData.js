@@ -172,6 +172,7 @@ export default function useStatsData({ range, clinicFilter }) {
           weekReturnedAgg,
           weekReviewedAgg,
           weeklyCountResult,
+          yearCountResult,
         ] = await Promise.all([
           Promise.all(FORM_TYPES.map((type) => base44.entities[type.entity].count(previousQuery))),
           Promise.all(SECONDARY_TYPES.map((type) => base44.entities[type.entity].count(periodQuery))),
@@ -197,6 +198,9 @@ export default function useStatsData({ range, clinicFilter }) {
           base44.entities.WeeklyClientCount.filter({
             week_start: { $gte: toDateKey(start), $lte: toDateKey(end) },
             ...(clinicFilter && clinicFilter !== 'all' ? { clinic_id: clinicFilter } : {}),
+          }),
+          base44.entities.WeeklyClientCount.filter({
+            week_start: { $gte: `${end.getFullYear()}-01-01`, $lte: `${end.getFullYear()}-12-31` },
           }),
         ]);
 
@@ -311,6 +315,7 @@ export default function useStatsData({ range, clinicFilter }) {
           funnels,
           weekly: weekly.reverse(),
           weeklyRecords: countRecords,
+          yearWeeklyRecords: yearCountResult || [],
         });
       } catch (loadError) {
         if (!cancelled) setError(loadError);
