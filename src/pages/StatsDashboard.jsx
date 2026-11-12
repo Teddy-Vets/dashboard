@@ -70,7 +70,7 @@ function StatsSkeleton() {
 export default function StatsDashboard() {
   const [range, setRange] = useState('6m');
   const [clinicFilter, setClinicFilter] = useState('all');
-  const { data, clinics, isLoading, error, reload, updateWeeklyCount } = useStatsData({ range, clinicFilter });
+  const { data, clinics, isLoading, error, reload, updateWeeklyCount, importWeeklyCounts } = useStatsData({ range, clinicFilter });
   const entryClinicId = clinicFilter !== 'all' ? clinicFilter : (clinics.length === 1 ? clinics[0].id : null);
 
   const periodLabel = data
@@ -234,8 +234,11 @@ export default function StatsDashboard() {
 
             <WeeklyClientsCard
               rows={data.weekly}
+              clinics={clinicFilter === 'all' ? clinics : clinics.filter((clinic) => clinic.id === clinicFilter)}
+              weeklyRecords={data.weeklyRecords}
               canEdit={Boolean(entryClinicId)}
               onSave={(weekStart, value) => updateWeeklyCount({ clinicId: entryClinicId, weekStart, value })}
+              onImport={importWeeklyCounts}
             />
 
             <FormsTrend buckets={data.buckets} />

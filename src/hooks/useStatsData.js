@@ -306,6 +306,7 @@ export default function useStatsData({ range, clinicFilter }) {
           clinicComparison,
           funnels,
           weekly: weekly.reverse(),
+          weeklyRecords: countRecords,
         });
       } catch (loadError) {
         if (!cancelled) setError(loadError);
@@ -336,5 +337,41 @@ export default function useStatsData({ range, clinicFilter }) {
     } : prev);
   }, [weeklyRecords]);
 
-  return { data, clinics, user, isLoading, error, reload, updateWeeklyCount };
+  const importWeeklyCounts = useCallback(async (entries = []) => {
+    if (!entries.length) return { created: 0, updated: 0 };
+
+    const clinicIds = Array.from(new Set(entries.map((entry) => entry.clinic_id)));
+    const weeks = Array.from(new Set(entries.map((entry) => entry.week_start)));
+
+    const response = await base44.entities.WeeklyClientCount.filter({
+      clinic_id: { $in: clinicIds },
+      week_start: { $in: weeks },
+    });
+    const existing = Array.isArray(response) ? response : (response?.items || []);
+    const existingMap = new Map(existing.map((record) => [`${record.clinic_id}|${record.week_start}`, record]));
+
+    const toCreate = [];
+    const toUpdate = [];
+    entries.forEach((entry) => {
+      const found = existingMap.get(`${entry.clinic_id}|${entry.week_start}`);
+      if (found) {
+        toUpdate.push({
+          id: found.id,
+          clinic_id: entry.clinic_id,
+          week_start: entry.week_start,
+          new_clients: entry.new_clients,
+        });
+      } else {
+        toCreate.push(entry);
+      }
+    });
+
+    if (toCreate.length) await base44.entities.WeeklyClientCount.bulkCreate(toCreate);
+    if (toUpdate.length) await base44.entities.WeeklyClientCount.bulkUpdate(toUpdate);
+
+    reload();
+    return { created: toCreate.length, updated: toUpdate.length };
+  }, [reload]);
+
+  return { data, clinics, user, isLoading, error, reload, updateWeeklyCount, importWeeklyCounts };
 }

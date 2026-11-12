@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { CalendarPlus, Info } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { CalendarPlus, Download, Info, Upload } from 'lucide-react';
+import { toast } from 'sonner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { buildTemplateCsv, parseTemplateCsv } from '@/components/stats/weeklyClientsCsv';
 
 const pct = (part, whole) => (whole ? Math.round((part / whole) * 100) : 0);
 
@@ -65,7 +68,53 @@ function WeekRow({ row, canEdit, onSave }) {
   );
 }
 
-export default function WeeklyClientsCard({ rows = [], canEdit, onSave }) {
+export default function WeeklyClientsCard({ rows = [], canEdit, onSave, clinics = [], weeklyRecords = [], onImport }) {
+  const fileInputRef = useRef(null);
+  const [isImporting, setIsImporting] = useState(false);
+
+  const handleDownload = () => {
+    if (!clinics.length || !rows.length) return;
+
+    const csv = buildTemplateCsv({ clinics, weeks: [...rows].reverse(), records: weeklyRecords });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'לקוחות-חדשים-לפי-שבוע.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleFile = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file || !onImport) return;
+
+    const parsed = parseTemplateCsv(await file.text(), clinics);
+
+    if (parsed.unknownClinics.length) {
+      toast.error(`לא נמצאו מרפאות בשם: ${parsed.unknownClinics.join(', ')}`);
+      return;
+    }
+    if (!parsed.entries.length) {
+      toast.error('לא נמצאו שורות עם מספר לקוחות לייבוא');
+      return;
+    }
+    if (!window.confirm(`לייבא ${parsed.entries.length} שורות? שבועות קיימים יתעדכנו.`)) return;
+
+    setIsImporting(true);
+    try {
+      const result = await onImport(parsed.entries);
+      toast.success(`יובאו ${result.created + result.updated} שבועות (${result.created} חדשים, ${result.updated} עודכנו)`);
+    } catch (error) {
+      toast.error('הייבוא נכשל. בדקו שהקובץ נשמר בפורמט CSV.');
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   const totals = rows.reduce(
     (acc, row) => ({
       newClients: acc.newClients + (row.newClients || 0),
@@ -79,13 +128,48 @@ export default function WeeklyClientsCard({ rows = [], canEdit, onSave }) {
   return (
     <Card className="border-slate-100 bg-white">
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-base text-slate-800">
-          <CalendarPlus className="h-4 w-4 text-emerald-500" />
-          לקוחות חדשים לפי שבוע
-        </CardTitle>
-        <CardDescription>
-          הזינו כמה לקוחות חדשים התקבלו בכל שבוע, ותראו לכמה מהם נשלח טופס היכרות, כמה החזירו אותו וכמה נבדקו
-        </CardDescription>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <CardTitle className="flex items-center gap-2 text-base text-slate-800">
+              <CalendarPlus className="h-4 w-4 text-emerald-500" />
+              לקוחות חדשים לפי שבוע
+            </CardTitle>
+            <CardDescription className="mt-1">
+              הזינו כמה לקוחות חדשים התקבלו בכל שבוע, או הורידו קובץ אקסל ל-{clinics.length > 1 ? 'כל המרפאות' : 'מרפאה'} ומלאו את המספרים
+            </CardDescription>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-1"
+              onClick={handleDownload}
+              disabled={!clinics.length || !rows.length}
+            >
+              <Download className="h-4 w-4" />
+              הורדת קובץ
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-1"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isImporting || !clinics.length}
+            >
+              {isImporting ? <LoadingSpinner size="sm" /> : <Upload className="h-4 w-4" />}
+              ייבוא קובץ
+            </Button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv,text/csv,.txt"
+              className="hidden"
+              onChange={handleFile}
+            />
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         {!canEdit && (
