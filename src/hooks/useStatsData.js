@@ -13,6 +13,10 @@ export function getRangeBounds(range, now = new Date()) {
     const start = startOfDay(subDays(now, 29));
     return { start, end: now, prevStart: subDays(start, 30), unit: 'day' };
   }
+  if (range === 'year') {
+    const start = startOfMonth(new Date(now.getFullYear(), 0, 1));
+    return { start, end: now, prevStart: subMonths(start, 12), unit: 'month' };
+  }
   const months = range === '3m' ? 3 : range === '12m' ? 12 : 6;
   const start = startOfMonth(subMonths(now, months - 1));
   return { start, end: now, prevStart: startOfMonth(subMonths(start, months)), unit: 'month' };

@@ -1,6 +1,7 @@
 const pad = (value) => String(value).padStart(2, '0');
+const DAY_MS = 24 * 60 * 60 * 1000;
 
-const HEADER = ['מרפאה', 'תאריך תחילת שבוע (YYYY-MM-DD)', 'לקוחות חדשים'];
+const HEADER = ['שבוע', 'חודש', 'תאריך התחלה', 'תאריך סיום', 'מרפאה', 'לקוחות חדשים'];
 
 function parseDateValue(raw) {
   const text = String(raw || '').trim();
@@ -23,7 +24,18 @@ export function toWeekStart(raw) {
   const date = parseDateValue(raw);
   if (!date) return null;
   const start = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
-  return `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`;
+  return formatDate(start);
+}
+
+export function formatDate(date) {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function weekOfYear(date) {
+  const firstOfYear = new Date(date.getFullYear(), 0, 1);
+  const firstSunday = new Date(date.getFullYear(), 0, 1 + ((7 - firstOfYear.getDay()) % 7));
+  const diffDays = Math.round((date.getTime() - firstSunday.getTime()) / DAY_MS);
+  return Math.max(1, Math.floor(diffDays / 7) + 1);
 }
 
 function csvCell(value) {
@@ -38,37 +50,74 @@ export function buildTemplateCsv({ clinics = [], weeks = [], records = [] }) {
   });
 
   const lines = [HEADER.join(',')];
-  clinics.forEach((clinic) => {
-    weeks.forEach((week) => {
+  weeks.forEach((week) => {
+    const start = parseDateValue(week.key);
+    if (!start) return;
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
+    const weekNumber = weekOfYear(start);
+    const month = start.getMonth() + 1;
+
+    clinics.forEach((clinic) => {
       const value = valueMap.get(`${clinic.id}|${week.key}`);
-      lines.push([csvCell(clinic.name), week.key, value === undefined ? '' : String(value)].join(','));
+      lines.push([
+        weekNumber,
+        month,
+        week.key,
+        formatDate(end),
+        csvCell(clinic.name),
+        value === undefined ? '' : String(value),
+      ].join(','));
     });
   });
 
   return '\uFEFF' + lines.join('\r\n');
 }
 
+function detectColumns(headerCells) {
+  const clinicIndex = headerCells.findIndex((cell) => cell === 'מרפאה' || /clinic/i.test(cell));
+  const valueIndex = headerCells.findIndex((cell) => cell.includes('לקוחות') || /new_clients/i.test(cell));
+  const dateIndex = headerCells.findIndex((cell) => cell.startsWith('תאריך') || /week_start/i.test(cell));
+
+  if (clinicIndex >= 0 && valueIndex >= 0 && dateIndex >= 0) {
+    return { clinicIndex, valueIndex, dateIndex };
+  }
+  return null;
+}
+
 export function parseTemplateCsv(text, clinics = []) {
   const byName = new Map();
   const byId = new Map();
   clinics.forEach((clinic) => {
-    byName.set(clinic.name.trim().toLowerCase(), clinic.id);
+    byName.set(String(clinic.name || '').trim().toLowerCase(), clinic.id);
     byId.set(clinic.id, clinic.id);
   });
 
   const entries = [];
   const unknownClinics = new Set();
   let skipped = 0;
+  let columns = null;
 
   String(text || '')
     .replace(/^\uFEFF/, '')
     .split(/\r?\n/)
     .forEach((line) => {
       if (!line.trim()) return;
-      if (line.includes('לקוחות חדשים') || line.includes('new_clients')) return;
 
       const cells = line.split(/[,\t;]/).map((cell) => cell.replace(/^"|"$/g, '').trim());
-      const [clinicRaw, weekRaw, valueRaw] = cells;
+
+      if (!columns) {
+        const detected = detectColumns(cells);
+        if (detected) {
+          columns = detected;
+          return;
+        }
+        columns = { clinicIndex: 0, valueIndex: 2, dateIndex: 1 };
+      }
+
+      const clinicRaw = cells[columns.clinicIndex];
+      const weekRaw = cells[columns.dateIndex];
+      const valueRaw = cells[columns.valueIndex];
+
       if (!clinicRaw || !weekRaw) {
         skipped += 1;
         return;

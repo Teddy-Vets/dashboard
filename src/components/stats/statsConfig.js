@@ -42,6 +42,7 @@ export const RANGE_OPTIONS = [
   { value: '3m', label: '3 חודשים' },
   { value: '6m', label: '6 חודשים' },
   { value: '12m', label: '12 חודשים' },
+  { value: 'year', label: 'מתחילת השנה' },
 ];
 
 export const INTAKE_STATUS_LABELS = {
