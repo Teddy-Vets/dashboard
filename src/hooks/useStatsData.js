@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import userService from '@/components/services/userService';
 import { startOfDay, startOfMonth, subDays, subMonths } from 'date-fns';
-import { FORM_TYPES, SECONDARY_TYPES } from '@/components/stats/statsConfig';
+import { FORM_FUNNELS, FORM_TYPES, SECONDARY_TYPES } from '@/components/stats/statsConfig';
+
+const WEEKLY_FUNNEL = FORM_FUNNELS.find((item) => item.key === 'intake') || { returnedStatuses: [], reviewedStatuses: [] };
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -61,9 +63,33 @@ function buildBuckets(start, end, unit) {
 
 const sumRows = (rows) => (rows || []).reduce((sum, row) => sum + (row.count || 0), 0);
 
+const toDateKey = (date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+
+function weekKey(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return toDateKey(new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay()));
+}
+
+function buildWeekBuckets(start, end) {
+  const buckets = [];
+  const first = new Date(start.getFullYear(), start.getMonth(), start.getDate() - start.getDay());
+  const last = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+  for (let cursor = first; cursor <= last; cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 7)) {
+    const weekEnd = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 6);
+    buckets.push({
+      key: toDateKey(cursor),
+      label: `${pad(cursor.getDate())}/${pad(cursor.getMonth() + 1)}-${pad(weekEnd.getDate())}/${pad(weekEnd.getMonth() + 1)}`,
+    });
+  }
+  return buckets;
+}
+
 export default function useStatsData({ range, clinicFilter }) {
   const [data, setData] = useState(null);
   const [clinics, setClinics] = useState([]);
+  const [weeklyRecords, setWeeklyRecords] = useState([]);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -136,6 +162,12 @@ export default function useStatsData({ range, clinicFilter }) {
           appointmentStatusResult,
           planResult,
           severityResult,
+          consentStatusResult,
+          anxietyStatusResult,
+          weekOpenedAgg,
+          weekReturnedAgg,
+          weekReviewedAgg,
+          weeklyCountResult,
         ] = await Promise.all([
           Promise.all(FORM_TYPES.map((type) => base44.entities[type.entity].count(previousQuery))),
           Promise.all(SECONDARY_TYPES.map((type) => base44.entities[type.entity].count(periodQuery))),
@@ -147,6 +179,21 @@ export default function useStatsData({ range, clinicFilter }) {
           base44.entities.AppointmentRequest.aggregate({ query: periodQuery, groupBy: 'status' }),
           base44.entities.SubscriptionAgreement.aggregate({ query: periodQuery, groupBy: 'selected_plan' }),
           base44.entities.EmergencyTriage.aggregate({ query: periodQuery, groupBy: 'severity' }),
+          base44.entities.ConsentForm.aggregate({ query: periodQuery, groupBy: 'status' }),
+          base44.entities.AnxietyQuestionnaire.aggregate({ query: periodQuery, groupBy: 'status' }),
+          base44.entities.IntakeForm.aggregate({ query: periodQuery, dateBucket: { field: 'created_date', unit: 'week' } }),
+          base44.entities.IntakeForm.aggregate({
+            query: { ...periodQuery, status: { $in: WEEKLY_FUNNEL.returnedStatuses } },
+            dateBucket: { field: 'created_date', unit: 'week' },
+          }),
+          base44.entities.IntakeForm.aggregate({
+            query: { ...periodQuery, status: { $in: WEEKLY_FUNNEL.reviewedStatuses } },
+            dateBucket: { field: 'created_date', unit: 'week' },
+          }),
+          base44.entities.WeeklyClientCount.filter({
+            week_start: { $gte: toDateKey(start), $lte: toDateKey(end) },
+            ...(clinicFilter && clinicFilter !== 'all' ? { clinic_id: clinicFilter } : {}),
+          }),
         ]);
 
         const counts = {};
@@ -191,6 +238,57 @@ export default function useStatsData({ range, clinicFilter }) {
 
         if (cancelled) return;
 
+        const statusRows = {
+          IntakeForm: intakeStatusResult?.rows || [],
+          ConsentForm: consentStatusResult?.rows || [],
+          AnxietyQuestionnaire: anxietyStatusResult?.rows || [],
+        };
+
+        const funnels = FORM_FUNNELS.map((item) => {
+          const rows = statusRows[item.entity] || [];
+          const countStatuses = (statuses) =>
+            rows.filter((row) => statuses.includes(row.status)).reduce((sum, row) => sum + (row.count || 0), 0);
+
+          return {
+            key: item.key,
+            label: item.label,
+            color: item.color,
+            sent: sumRows(rows),
+            returned: countStatuses(item.returnedStatuses),
+            reviewed: countStatuses(item.reviewedStatuses),
+          };
+        });
+
+        const countRecords = Array.isArray(weeklyCountResult) ? weeklyCountResult : (weeklyCountResult?.items || []);
+        const newClientsByWeek = new Map();
+        countRecords.forEach((record) => {
+          const key = record.week_start;
+          if (!key) return;
+          newClientsByWeek.set(key, (newClientsByWeek.get(key) || 0) + (record.new_clients || 0));
+        });
+
+        const weekly = buildWeekBuckets(start, end).map((bucket) => ({
+          weekStart: bucket.key,
+          label: bucket.label,
+          newClients: newClientsByWeek.get(bucket.key) || 0,
+          sent: 0,
+          returned: 0,
+          reviewed: 0,
+        }));
+        const weeklyMap = new Map(weekly.map((row) => [row.weekStart, row]));
+        const applyWeekly = (aggregate, field) => {
+          (aggregate?.rows || []).forEach((row) => {
+            const key = weekKey(row.created_date);
+            const target = key ? weeklyMap.get(key) : null;
+            if (target) target[field] += row.count || 0;
+          });
+        };
+        applyWeekly(weekOpenedAgg, 'sent');
+        applyWeekly(weekReturnedAgg, 'returned');
+        applyWeekly(weekReviewedAgg, 'reviewed');
+
+        setWeeklyRecords(countRecords);
+
         setData({
           isAdmin,
           range,
@@ -206,6 +304,8 @@ export default function useStatsData({ range, clinicFilter }) {
           subscriptionPlans: planResult?.rows || [],
           emergencySeverities: severityResult?.rows || [],
           clinicComparison,
+          funnels,
+          weekly: weekly.reverse(),
         });
       } catch (loadError) {
         if (!cancelled) setError(loadError);
@@ -218,5 +318,23 @@ export default function useStatsData({ range, clinicFilter }) {
     return () => { cancelled = true; };
   }, [range, clinicFilter, reloadToken]);
 
-  return { data, clinics, user, isLoading, error, reload };
+  const updateWeeklyCount = useCallback(async ({ clinicId, weekStart, value }) => {
+    const numeric = Number(value) || 0;
+    const existing = weeklyRecords.find((record) => record.clinic_id === clinicId && record.week_start === weekStart);
+
+    if (existing) {
+      await base44.entities.WeeklyClientCount.update(existing.id, { new_clients: numeric });
+      setWeeklyRecords((prev) => prev.map((record) => (record.id === existing.id ? { ...record, new_clients: numeric } : record)));
+    } else {
+      const created = await base44.entities.WeeklyClientCount.create({ clinic_id: clinicId, week_start: weekStart, new_clients: numeric });
+      setWeeklyRecords((prev) => [...prev, created]);
+    }
+
+    setData((prev) => prev ? {
+      ...prev,
+      weekly: prev.weekly.map((row) => (row.weekStart === weekStart ? { ...row, newClients: numeric } : row)),
+    } : prev);
+  }, [weeklyRecords]);
+
+  return { data, clinics, user, isLoading, error, reload, updateWeeklyCount };
 }

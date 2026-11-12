@@ -25,6 +25,8 @@ import FormsTrend from '@/components/stats/FormsTrend';
 import PetTypeChart from '@/components/stats/PetTypeChart';
 import HorizontalBarCard from '@/components/stats/HorizontalBarCard';
 import ClinicComparison from '@/components/stats/ClinicComparison';
+import FormFunnelCard from '@/components/stats/FormFunnelCard';
+import WeeklyClientsCard from '@/components/stats/WeeklyClientsCard';
 import {
   APPOINTMENT_STATUS_COLORS,
   APPOINTMENT_STATUS_LABELS,
@@ -68,7 +70,8 @@ function StatsSkeleton() {
 export default function StatsDashboard() {
   const [range, setRange] = useState('6m');
   const [clinicFilter, setClinicFilter] = useState('all');
-  const { data, clinics, isLoading, error, reload } = useStatsData({ range, clinicFilter });
+  const { data, clinics, isLoading, error, reload, updateWeeklyCount } = useStatsData({ range, clinicFilter });
+  const entryClinicId = clinicFilter !== 'all' ? clinicFilter : (clinics.length === 1 ? clinics[0].id : null);
 
   const periodLabel = data
     ? `מציג נתונים מ-${format(data.period.start, 'dd/MM/yyyy')} ועד היום`
@@ -226,6 +229,14 @@ export default function StatsDashboard() {
           <>
             <StatCards items={statItems} />
             <MiniStats items={miniItems} />
+
+            <FormFunnelCard rows={data.funnels} />
+
+            <WeeklyClientsCard
+              rows={data.weekly}
+              canEdit={Boolean(entryClinicId)}
+              onSave={(weekStart, value) => updateWeeklyCount({ clinicId: entryClinicId, weekStart, value })}
+            />
 
             <FormsTrend buckets={data.buckets} />
 

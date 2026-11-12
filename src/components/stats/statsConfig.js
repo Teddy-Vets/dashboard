@@ -10,6 +10,33 @@ export const SECONDARY_TYPES = [
   { key: 'emergency', entity: 'EmergencyTriage', label: 'קריאות חירום', color: '#ef4444' },
 ];
 
+export const FORM_FUNNELS = [
+  {
+    key: 'intake',
+    entity: 'IntakeForm',
+    label: 'טפסי היכרות',
+    color: '#3b82f6',
+    returnedStatuses: ['submitted', 'reviewed', 'completed'],
+    reviewedStatuses: ['reviewed', 'completed'],
+  },
+  {
+    key: 'consent',
+    entity: 'ConsentForm',
+    label: 'טפסי הסכמה',
+    color: '#8b5cf6',
+    returnedStatuses: ['signed', 'completed', 'legally_sealed'],
+    reviewedStatuses: ['completed', 'legally_sealed'],
+  },
+  {
+    key: 'anxiety',
+    entity: 'AnxietyQuestionnaire',
+    label: 'שאלוני חרדה',
+    color: '#ec4899',
+    returnedStatuses: ['completed', 'reviewed'],
+    reviewedStatuses: ['reviewed'],
+  },
+];
+
 export const RANGE_OPTIONS = [
   { value: '30d', label: '30 ימים אחרונים' },
   { value: '3m', label: '3 חודשים' },
