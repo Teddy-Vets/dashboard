@@ -5,11 +5,18 @@ import { Button } from '@/components/ui/button';
 
 const formatNumber = (value) => new Intl.NumberFormat('he-IL').format(value || 0);
 
+const percentOf = (part, whole) => (whole > 0 ? Math.round(((part || 0) / whole) * 100) : null);
+
+const percentText = (part, whole) => {
+  const value = percentOf(part, whole);
+  return value === null ? '—' : `${value}%`;
+};
+
 const COLUMNS = [
   { key: 'newClients', label: 'לקוחות חדשים' },
-  { key: 'sent', label: 'טפסי היכרות שנשלחו' },
-  { key: 'returned', label: 'הוחזרו ע"י הלקוח' },
-  { key: 'reviewed', label: 'נבדקו במרפאה' },
+  { key: 'sent', label: 'טפסי היכרות שנשלחו', basis: 'newClients' },
+  { key: 'returned', label: 'הוחזרו ע"י הלקוח', basis: 'sent' },
+  { key: 'reviewed', label: 'נבדקו במרפאה', basis: 'returned' },
 ];
 
 function buildCsv(rows, totals) {
@@ -82,28 +89,47 @@ export default function LastWeekClientsCard({ lastWeek }) {
               {lastWeek.rows.map((row) => (
                 <tr key={row.clinicId} className="border-t border-slate-100 hover:bg-teal-50/30">
                   <td className="sticky right-0 bg-white px-3 py-2 text-right font-medium text-slate-700">{row.name}</td>
-                  {COLUMNS.map((column) => (
-                    <td
-                      key={column.key}
-                      className={`px-3 py-2 text-center ${row[column.key] ? 'text-slate-700' : 'text-slate-300'}`}
-                    >
-                      {formatNumber(row[column.key])}
-                    </td>
-                  ))}
+                  {COLUMNS.map((column) => {
+                    const percentage = column.basis ? percentText(row[column.key], row[column.basis]) : null;
+                    return (
+                      <td key={column.key} className="px-3 py-2 text-center">
+                        <div className={row[column.key] ? 'text-slate-700' : 'text-slate-300'}>
+                          {formatNumber(row[column.key])}
+                        </div>
+                        {column.basis && (
+                          <div className={`text-[11px] font-normal ${percentage === '—' ? 'text-slate-300' : 'text-slate-500'}`}>
+                            {percentage}
+                          </div>
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
             <tfoot className="sticky bottom-0 z-20">
               <tr className="border-t-2 border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800">
                 <td className="sticky right-0 bg-slate-50 px-3 py-2 text-right">סה"כ</td>
-                {COLUMNS.map((column) => (
-                  <td key={column.key} className="px-3 py-2 text-center">
-                    {formatNumber(totals[column.key])}
-                  </td>
-                ))}
+                {COLUMNS.map((column) => {
+                  const percentage = column.basis ? percentText(totals[column.key], totals[column.basis]) : null;
+                  return (
+                    <td key={column.key} className="px-3 py-2 text-center">
+                      <div>{formatNumber(totals[column.key])}</div>
+                      {column.basis && (
+                        <div className={`text-[11px] font-normal ${percentage === '—' ? 'text-slate-400' : 'text-slate-500'}`}>
+                          {percentage}
+                        </div>
+                      )}
+                    </td>
+                  );
+                })}
               </tr>
             </tfoot>
           </table>
+        </div>
+        <div className="border-t border-slate-100 bg-slate-50/60 px-4 py-2 text-[11px] leading-relaxed text-slate-500">
+          האחוזים מחושבים ביחס לשלב הקודם: אחוז הלקוחות החדשים שנשלח להם טופס היכרות, אחוז הטפסים שהוחזרו על ידי הלקוח מתוך
+          הטפסים שנשלחו, ואחוז הטפסים שנבדקו במרפאה מתוך הטפסים שהוחזרו. כשאין נתון בשלב הקודם מוצג "—".
         </div>
       </CardContent>
     </Card>
