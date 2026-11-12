@@ -2,9 +2,17 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import userService from '@/components/services/userService';
 import { startOfDay, startOfMonth, subDays, subMonths } from 'date-fns';
-import { FORM_FUNNELS, FORM_TYPES, SECONDARY_TYPES } from '@/components/stats/statsConfig';
+import { FORM_FUNNELS, FORM_TYPES } from '@/components/stats/statsConfig';
 
 const WEEKLY_FUNNEL = FORM_FUNNELS.find((item) => item.key === 'intake') || { returnedStatuses: [], reviewedStatuses: [] };
+
+// כל סוג טופס נשלף בשאילתה אחת מרוכזת (מגמה + סטטוסים + מרפאות + מסלולים)
+const FORM_GROUP_BY = {
+  intake: ['clinic_id', 'status'],
+  consent: ['clinic_id', 'status'],
+  appointment: ['clinic_id', 'status'],
+  subscription: ['clinic_id', 'status', 'selected_plan'],
+};
 
 // מטמון קצר כדי למנוע שליפה חוזרת של אותן סטטיסטיקות בכל מעבר בין סינונים
 const STATS_CACHE_TTL = 3 * 60 * 1000;
@@ -146,19 +154,12 @@ export default function useStatsData({ range, clinicFilter }) {
 
         const { start, end, prevStart, unit } = getRangeBounds(range);
         const periodQuery = buildQuery(clinicFilter, start, end);
-        const previousQuery = buildQuery(clinicFilter, prevStart, start);
+        const extendedQuery = buildQuery(clinicFilter, prevStart, end);
         const clinicQuery = buildQuery(clinicFilter, null, null);
         const lastWeekStart = weekStartDate(-1);
-        const currentWeekStart = weekStartDate(0);
-
-        const trendAggregates = await Promise.all(
-          FORM_TYPES.map((type) =>
-            base44.entities[type.entity].aggregate({
-              query: periodQuery,
-              dateBucket: { field: 'created_date', unit },
-            })
-          )
-        );
+        const lastWeekKey = toDateKey(lastWeekStart);
+        const [lastWeekBucket] = buildWeekBuckets(lastWeekStart, lastWeekStart);
+        const periodStartKey = bucketKey(start.toISOString(), unit) || '';
 
         const buckets = buildBuckets(start, end, unit);
         const bucketMap = new Map(buckets.map((bucket) => [bucket.key, bucket]));
@@ -166,140 +167,132 @@ export default function useStatsData({ range, clinicFilter }) {
           FORM_TYPES.forEach((type) => { bucket[type.key] = 0; });
         });
 
+        // שאילתה אחת לכל סוג טופס: מגמה בתקופה, מול התקופה הקודמת, סטטוסים ופילוח מרפאות
+        const formAggregates = await Promise.all(
+          FORM_TYPES.map((type) =>
+            base44.entities[type.entity].aggregate({
+              query: extendedQuery,
+              groupBy: FORM_GROUP_BY[type.key] || ['clinic_id', 'status'],
+              dateBucket: { field: 'created_date', unit },
+            })
+          )
+        );
+
+        const statusPerType = {};
+        const clinicPerType = {};
+        const clinicStatusPerType = {};
+        const planTotals = new Map();
+        const previousTotals = [];
+
         const totals = FORM_TYPES.map((type, index) => {
-          const rows = trendAggregates[index]?.rows || [];
+          const rows = formAggregates[index]?.rows || [];
+          const statusMap = new Map();
+          const clinicMap = new Map();
+          const clinicStatusMap = new Map();
+          let current = 0;
+          let previous = 0;
+
           rows.forEach((row) => {
-            const key = bucketKey(row.created_date, unit);
-            const bucket = key ? bucketMap.get(key) : null;
-            if (bucket) bucket[type.key] += row.count || 0;
+            const count = row.count || 0;
+            const key = row.created_date ? bucketKey(row.created_date, unit) : null;
+            if (key && key < periodStartKey) {
+              previous += count;
+              return;
+            }
+            current += count;
+            const bucket = bucketMap.get(key);
+            if (bucket) bucket[type.key] += count;
+            if (row.status) {
+              statusMap.set(row.status, (statusMap.get(row.status) || 0) + count);
+              if (row.clinic_id) {
+                const statuses = clinicStatusMap.get(row.clinic_id) || new Map();
+                statuses.set(row.status, (statuses.get(row.status) || 0) + count);
+                clinicStatusMap.set(row.clinic_id, statuses);
+              }
+            }
+            if (row.clinic_id) clinicMap.set(row.clinic_id, (clinicMap.get(row.clinic_id) || 0) + count);
+            if (row.selected_plan) planTotals.set(row.selected_plan, (planTotals.get(row.selected_plan) || 0) + count);
           });
-          return { key: type.key, current: sumRows(rows) };
+
+          statusPerType[type.key] = Array.from(statusMap.entries()).map(([status, count]) => ({ status, count }));
+          clinicPerType[type.key] = clinicMap;
+          clinicStatusPerType[type.key] = clinicStatusMap;
+          previousTotals[index] = previous;
+          return { key: type.key, current };
         });
 
         const [
-          previousTotals,
-          secondaryTotals,
-          clientsCount,
-          petsCount,
+          weeklyIntakeAgg,
           petTypeResult,
           visitTypeResult,
-          appointmentStatusResult,
-          planResult,
-          severityResult,
-          consentStatusResult,
-          anxietyStatusResult,
-          weekStatusAgg,
-          weeklyCountResult,
+          anxietyResult,
+          emergencyResult,
+          clientsCount,
+          petsCount,
           yearCountResult,
-          clinicStatusAgg,
-          lastWeekStatusAgg,
         ] = await Promise.all([
-          Promise.all(FORM_TYPES.map((type) => base44.entities[type.entity].count(previousQuery))),
-          Promise.all(SECONDARY_TYPES.map((type) => base44.entities[type.entity].count(periodQuery))),
-          base44.entities.Client.count(clinicQuery),
-          base44.entities.Pet.count(clinicQuery),
-          base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: 'pet_type' }),
-          base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: 'first_visit' }),
-          base44.entities.AppointmentRequest.aggregate({ query: periodQuery, groupBy: 'status' }),
-          base44.entities.SubscriptionAgreement.aggregate({ query: periodQuery, groupBy: 'selected_plan' }),
-          base44.entities.EmergencyTriage.aggregate({ query: periodQuery, groupBy: 'severity' }),
-          base44.entities.ConsentForm.aggregate({ query: periodQuery, groupBy: 'status' }),
-          base44.entities.AnxietyQuestionnaire.aggregate({ query: periodQuery, groupBy: 'status' }),
           base44.entities.IntakeForm.aggregate({
             query: periodQuery,
-            groupBy: 'status',
+            groupBy: ['clinic_id', 'status'],
             dateBucket: { field: 'created_date', unit: 'week' },
           }),
+          base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: 'pet_type' }),
+          base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: 'first_visit' }),
+          base44.entities.AnxietyQuestionnaire.aggregate({ query: periodQuery, groupBy: 'status' }),
+          base44.entities.EmergencyTriage.aggregate({ query: periodQuery, groupBy: 'severity' }),
+          base44.entities.Client.count(clinicQuery),
+          base44.entities.Pet.count(clinicQuery),
           base44.entities.WeeklyClientCount.filter({
-            week_start: { $gte: toDateKey(start), $lte: toDateKey(end) },
-            ...(clinicFilter && clinicFilter !== 'all' ? { clinic_id: clinicFilter } : {}),
-          }),
-          base44.entities.WeeklyClientCount.filter({
-            week_start: { $gte: `${end.getFullYear()}-01-01`, $lte: `${end.getFullYear()}-12-31` },
-          }),
-          clinicFilter === 'all'
-            ? base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: ['clinic_id', 'status'] })
-            : null,
-          base44.entities.IntakeForm.aggregate({
-            query: {
-              created_date: {
-                $gte: lastWeekStart.toISOString(),
-                $lt: currentWeekStart.toISOString(),
-              },
+            week_start: {
+              $gte: toDateKey(start) < `${end.getFullYear()}-01-01` ? toDateKey(start) : `${end.getFullYear()}-01-01`,
+              $lte: `${end.getFullYear()}-12-31`,
             },
-            groupBy: ['clinic_id', 'status'],
           }),
         ]);
 
         const counts = {};
         FORM_TYPES.forEach((type, index) => {
-          const current = totals.find((item) => item.key === type.key)?.current || 0;
-          counts[type.key] = { current, previous: previousTotals[index] || 0 };
+          counts[type.key] = { current: totals[index]?.current || 0, previous: previousTotals[index] || 0 };
         });
-        SECONDARY_TYPES.forEach((type, index) => {
-          counts[type.key] = { current: secondaryTotals[index] || 0, previous: 0 };
-        });
+        counts.anxiety = { current: sumRows(anxietyResult?.rows || []), previous: 0 };
+        counts.emergency = { current: sumRows(emergencyResult?.rows || []), previous: 0 };
 
-        const intakeWeekRows = weekStatusAgg?.rows || [];
-        const intakeStatusMap = new Map();
-        intakeWeekRows.forEach((row) => {
-          intakeStatusMap.set(row.status, (intakeStatusMap.get(row.status) || 0) + (row.count || 0));
-        });
-        const intakeStatusRows = Array.from(intakeStatusMap.entries()).map(([status, count]) => ({ status, count }));
+        const intakeStatusRows = statusPerType.intake || [];
+        const weeklyIntakeRows = weeklyIntakeAgg?.rows || [];
 
-        const sentPerClinic = new Map();
-        const returnedPerClinic = new Map();
-        const reviewedPerClinic = new Map();
-        (clinicStatusAgg?.rows || []).forEach((row) => {
-          if (!row.clinic_id) return;
-          const count = row.count || 0;
-          sentPerClinic.set(row.clinic_id, (sentPerClinic.get(row.clinic_id) || 0) + count);
-          if (WEEKLY_FUNNEL.returnedStatuses.includes(row.status)) {
-            returnedPerClinic.set(row.clinic_id, (returnedPerClinic.get(row.clinic_id) || 0) + count);
-          }
-          if (WEEKLY_FUNNEL.reviewedStatuses.includes(row.status)) {
-            reviewedPerClinic.set(row.clinic_id, (reviewedPerClinic.get(row.clinic_id) || 0) + count);
-          }
-        });
+        const clinicFunnel = (clinicId) => {
+          const statuses = clinicStatusPerType.intake?.get(clinicId);
+          const result = { sent: 0, returned: 0, reviewed: 0 };
+          if (!statuses) return result;
+          statuses.forEach((count, status) => {
+            result.sent += count;
+            if (WEEKLY_FUNNEL.returnedStatuses.includes(status)) result.returned += count;
+            if (WEEKLY_FUNNEL.reviewedStatuses.includes(status)) result.reviewed += count;
+          });
+          return result;
+        };
 
         let clinicComparison = [];
         if (isAdmin && clinicFilter === 'all') {
-          const comparisonEntities = [
-            { entity: 'ConsentForm', field: 'consent' },
-            { entity: 'AppointmentRequest', field: 'appointment' },
-            { entity: 'SubscriptionAgreement', field: 'subscription' },
-          ];
-          const comparisonResults = await Promise.all(
-            comparisonEntities.map((item) =>
-              base44.entities[item.entity].aggregate({ query: periodQuery, groupBy: 'clinic_id' })
-            )
-          );
-          const rowsByClinic = new Map();
-          allClinics.forEach((clinic) => {
-            rowsByClinic.set(clinic.id, {
-              clinicId: clinic.id,
-              name: clinic.name?.trim() || 'ללא שם',
-              intake: sentPerClinic.get(clinic.id) || 0,
-              consent: 0,
-              appointment: 0,
-              subscription: 0,
-            });
-          });
-          comparisonEntities.forEach((item, entityIndex) => {
-            (comparisonResults[entityIndex]?.rows || []).forEach((row) => {
-              const rowData = rowsByClinic.get(row.clinic_id);
-              if (rowData) rowData[item.field] += row.count || 0;
-            });
-          });
-          clinicComparison = Array.from(rowsByClinic.values())
-            .map((row) => ({ ...row, total: row.intake + row.consent + row.appointment + row.subscription }))
+          clinicComparison = allClinics
+            .map((clinic) => {
+              const row = {
+                clinicId: clinic.id,
+                name: clinic.name?.trim() || 'ללא שם',
+                intake: clinicPerType.intake?.get(clinic.id) || 0,
+                consent: clinicPerType.consent?.get(clinic.id) || 0,
+                appointment: clinicPerType.appointment?.get(clinic.id) || 0,
+                subscription: clinicPerType.subscription?.get(clinic.id) || 0,
+              };
+              return { ...row, total: row.intake + row.consent + row.appointment + row.subscription };
+            })
             .sort((a, b) => b.total - a.total);
         }
 
         const statusRows = {
           IntakeForm: intakeStatusRows,
-          ConsentForm: consentStatusResult?.rows || [],
-          AnxietyQuestionnaire: anxietyStatusResult?.rows || [],
+          ConsentForm: statusPerType.consent || [],
+          AnxietyQuestionnaire: anxietyResult?.rows || [],
         };
 
         const funnels = FORM_FUNNELS.map((item) => {
@@ -317,7 +310,12 @@ export default function useStatsData({ range, clinicFilter }) {
           };
         });
 
-        const countRecords = Array.isArray(weeklyCountResult) ? weeklyCountResult : (weeklyCountResult?.items || []);
+        const yearRecords = Array.isArray(yearCountResult) ? yearCountResult : (yearCountResult?.items || []);
+        const periodFrom = toDateKey(start);
+        const periodTo = toDateKey(end);
+        const countRecords = yearRecords.filter(
+          (record) => record.week_start && record.week_start >= periodFrom && record.week_start <= periodTo
+        );
         const newClientsByWeek = new Map();
         countRecords.forEach((record) => {
           const key = record.week_start;
@@ -337,7 +335,7 @@ export default function useStatsData({ range, clinicFilter }) {
             reviewed: 0,
           }));
         const weeklyMap = new Map(weekly.map((row) => [row.weekStart, row]));
-        intakeWeekRows.forEach((row) => {
+        weeklyIntakeRows.forEach((row) => {
           const key = weekKey(row.created_date);
           const target = key ? weeklyMap.get(key) : null;
           if (!target) return;
@@ -355,19 +353,19 @@ export default function useStatsData({ range, clinicFilter }) {
 
         const newClientsByClinic = clinicFilter === 'all'
           ? visibleClinics
-              .map((clinic) => ({
-                clinicId: clinic.id,
-                name: clinic.name?.trim() || 'ללא שם',
-                newClients: newClientsPerClinic.get(clinic.id) || 0,
-                sent: sentPerClinic.get(clinic.id) || 0,
-                returned: returnedPerClinic.get(clinic.id) || 0,
-                reviewed: reviewedPerClinic.get(clinic.id) || 0,
-              }))
+              .map((clinic) => {
+                const funnel = clinicFunnel(clinic.id);
+                return {
+                  clinicId: clinic.id,
+                  name: clinic.name?.trim() || 'ללא שם',
+                  newClients: newClientsPerClinic.get(clinic.id) || 0,
+                  sent: funnel.sent,
+                  returned: funnel.returned,
+                  reviewed: funnel.reviewed,
+                };
+              })
               .sort((a, b) => b.newClients - a.newClients || a.name.localeCompare(b.name, 'he'))
           : [];
-
-        const lastWeekKey = toDateKey(lastWeekStart);
-        const [lastWeekBucket] = buildWeekBuckets(lastWeekStart, lastWeekStart);
 
         const lastWeekClients = new Map();
         countRecords.forEach((record) => {
@@ -376,8 +374,8 @@ export default function useStatsData({ range, clinicFilter }) {
         });
 
         const lastWeekFunnel = new Map();
-        (lastWeekStatusAgg?.rows || []).forEach((row) => {
-          if (!row.clinic_id) return;
+        weeklyIntakeRows.forEach((row) => {
+          if (!row.clinic_id || weekKey(row.created_date) !== lastWeekKey) return;
           const entry = lastWeekFunnel.get(row.clinic_id) || { sent: 0, returned: 0, reviewed: 0 };
           const count = row.count || 0;
           entry.sent += count;
@@ -407,7 +405,7 @@ export default function useStatsData({ range, clinicFilter }) {
         return {
           user: currentUser,
           clinics: visibleClinics,
-          weeklyRecords: countRecords,
+          weeklyRecords: yearRecords,
           data: {
           isAdmin,
           range,
@@ -419,14 +417,14 @@ export default function useStatsData({ range, clinicFilter }) {
           petTypes: petTypeResult?.rows || [],
           visitTypes: visitTypeResult?.rows || [],
           intakeStatuses: intakeStatusRows,
-          appointmentStatuses: appointmentStatusResult?.rows || [],
-          subscriptionPlans: planResult?.rows || [],
-          emergencySeverities: severityResult?.rows || [],
+          appointmentStatuses: statusPerType.appointment || [],
+          subscriptionPlans: Array.from(planTotals.entries()).map(([selected_plan, count]) => ({ selected_plan, count })),
+          emergencySeverities: emergencyResult?.rows || [],
           clinicComparison,
           funnels,
           weekly: weekly.reverse(),
           weeklyRecords: countRecords,
-          yearWeeklyRecords: yearCountResult || [],
+          yearWeeklyRecords: yearRecords,
           newClientsByClinic,
           lastWeek,
           },
@@ -465,7 +463,9 @@ export default function useStatsData({ range, clinicFilter }) {
         const message = String(loadError?.message || '');
         if (!cancelled && /rate limit/i.test(message) && !rateLimitRetried) {
           rateLimitRetried = true;
-          window.setTimeout(() => { if (!cancelled) load(); }, 5000);
+          const match = message.match(/retry after (\d+)\s*s/i);
+          const waitSeconds = Math.min(Math.max(Number(match?.[1] || 20) + 2, 5), 65);
+          window.setTimeout(() => { if (!cancelled) load(); }, waitSeconds * 1000);
           return;
         }
         if (!cancelled) setError(loadError);
