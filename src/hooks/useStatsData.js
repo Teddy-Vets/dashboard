@@ -81,8 +81,12 @@ function weekKey(value) {
 }
 
 function currentWeekKey() {
+  return toDateKey(weekStartDate(0));
+}
+
+function weekStartDate(offsetWeeks = 0) {
   const now = new Date();
-  return toDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()));
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + offsetWeeks * 7);
 }
 
 function buildWeekBuckets(start, end) {
@@ -144,6 +148,8 @@ export default function useStatsData({ range, clinicFilter }) {
         const periodQuery = buildQuery(clinicFilter, start, end);
         const previousQuery = buildQuery(clinicFilter, prevStart, start);
         const clinicQuery = buildQuery(clinicFilter, null, null);
+        const lastWeekStart = weekStartDate(-1);
+        const currentWeekStart = weekStartDate(0);
 
         const trendAggregates = await Promise.all(
           FORM_TYPES.map((type) =>
@@ -186,6 +192,7 @@ export default function useStatsData({ range, clinicFilter }) {
           weeklyCountResult,
           yearCountResult,
           clinicStatusAgg,
+          lastWeekStatusAgg,
         ] = await Promise.all([
           Promise.all(FORM_TYPES.map((type) => base44.entities[type.entity].count(previousQuery))),
           Promise.all(SECONDARY_TYPES.map((type) => base44.entities[type.entity].count(periodQuery))),
@@ -213,6 +220,15 @@ export default function useStatsData({ range, clinicFilter }) {
           clinicFilter === 'all'
             ? base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: ['clinic_id', 'status'] })
             : null,
+          base44.entities.IntakeForm.aggregate({
+            query: {
+              created_date: {
+                $gte: lastWeekStart.toISOString(),
+                $lt: currentWeekStart.toISOString(),
+              },
+            },
+            groupBy: ['clinic_id', 'status'],
+          }),
         ]);
 
         const counts = {};
@@ -350,6 +366,44 @@ export default function useStatsData({ range, clinicFilter }) {
               .sort((a, b) => b.newClients - a.newClients || a.name.localeCompare(b.name, 'he'))
           : [];
 
+        const lastWeekKey = toDateKey(lastWeekStart);
+        const [lastWeekBucket] = buildWeekBuckets(lastWeekStart, lastWeekStart);
+
+        const lastWeekClients = new Map();
+        countRecords.forEach((record) => {
+          if (record.week_start !== lastWeekKey || !record.clinic_id) return;
+          lastWeekClients.set(record.clinic_id, (lastWeekClients.get(record.clinic_id) || 0) + (record.new_clients || 0));
+        });
+
+        const lastWeekFunnel = new Map();
+        (lastWeekStatusAgg?.rows || []).forEach((row) => {
+          if (!row.clinic_id) return;
+          const entry = lastWeekFunnel.get(row.clinic_id) || { sent: 0, returned: 0, reviewed: 0 };
+          const count = row.count || 0;
+          entry.sent += count;
+          if (WEEKLY_FUNNEL.returnedStatuses.includes(row.status)) entry.returned += count;
+          if (WEEKLY_FUNNEL.reviewedStatuses.includes(row.status)) entry.reviewed += count;
+          lastWeekFunnel.set(row.clinic_id, entry);
+        });
+
+        const lastWeek = {
+          weekStart: lastWeekKey,
+          label: lastWeekBucket?.label || lastWeekKey,
+          rows: visibleClinics
+            .map((clinic) => {
+              const funnel = lastWeekFunnel.get(clinic.id) || { sent: 0, returned: 0, reviewed: 0 };
+              return {
+                clinicId: clinic.id,
+                name: clinic.name?.trim() || 'ללא שם',
+                newClients: lastWeekClients.get(clinic.id) || 0,
+                sent: funnel.sent,
+                returned: funnel.returned,
+                reviewed: funnel.reviewed,
+              };
+            })
+            .sort((a, b) => b.newClients - a.newClients || b.sent - a.sent || a.name.localeCompare(b.name, 'he')),
+        };
+
         return {
           user: currentUser,
           clinics: visibleClinics,
@@ -374,6 +428,7 @@ export default function useStatsData({ range, clinicFilter }) {
           weeklyRecords: countRecords,
           yearWeeklyRecords: yearCountResult || [],
           newClientsByClinic,
+          lastWeek,
           },
         };
     };

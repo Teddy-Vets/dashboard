@@ -29,6 +29,7 @@ import FormFunnelCard from '@/components/stats/FormFunnelCard';
 import WeeklyClientsCard from '@/components/stats/WeeklyClientsCard';
 import NewClientsByClinicCard from '@/components/stats/NewClientsByClinicCard';
 import WeeklyClientsMatrixCard from '@/components/stats/WeeklyClientsMatrixCard';
+import LastWeekClientsCard from '@/components/stats/LastWeekClientsCard';
 import {
   APPOINTMENT_STATUS_COLORS,
   APPOINTMENT_STATUS_LABELS,
@@ -255,15 +256,7 @@ export default function StatsDashboard() {
                   clinics={clinics}
                   periodLabel={periodLabel}
                 />
-                <WeeklyClientsMatrixCard
-                  weeks={data.weekly.slice(0, 1)}
-                  records={data.weeklyRecords}
-                  clinics={clinics}
-                  title="לקוחות חדשים — השבוע האחרון"
-                  description="כל המרפאות, השבוע האחרון בלבד"
-                  fileName="לקוחות-חדשים-השבוע-האחרון.csv"
-                  showTotals={false}
-                />
+                <LastWeekClientsCard lastWeek={data.lastWeek} />
               </>
             )}
 
