@@ -27,6 +27,7 @@ import HorizontalBarCard from '@/components/stats/HorizontalBarCard';
 import ClinicComparison from '@/components/stats/ClinicComparison';
 import FormFunnelCard from '@/components/stats/FormFunnelCard';
 import WeeklyClientsCard from '@/components/stats/WeeklyClientsCard';
+import NewClientsByClinicCard from '@/components/stats/NewClientsByClinicCard';
 import {
   APPOINTMENT_STATUS_COLORS,
   APPOINTMENT_STATUS_LABELS,
@@ -240,6 +241,10 @@ export default function StatsDashboard() {
               onSave={(weekStart, value) => updateWeeklyCount({ clinicId: entryClinicId, weekStart, value })}
               onImport={importWeeklyCounts}
             />
+
+            {data.newClientsByClinic?.length > 1 && (
+              <NewClientsByClinicCard rows={data.newClientsByClinic} periodLabel={periodLabel} />
+            )}
 
             <FormsTrend buckets={data.buckets} />
 

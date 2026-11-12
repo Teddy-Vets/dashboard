@@ -74,7 +74,7 @@ function WeekRow({ row, canEdit, onSave }) {
       </td>
       <td className="py-2 text-center">
         <span className="font-semibold text-slate-700">{row.reviewed}</span>
-        {row.newClients > 0 && <span className="ms-1 text-xs text-slate-400">{pct(row.reviewed, row.newClients)}%</span>}
+        {row.returned > 0 && <span className="ms-1 text-xs text-slate-400">{pct(row.reviewed, row.returned)}%</span>}
       </td>
     </tr>
   );

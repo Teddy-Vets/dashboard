@@ -173,6 +173,9 @@ export default function useStatsData({ range, clinicFilter }) {
           weekReviewedAgg,
           weeklyCountResult,
           yearCountResult,
+          intakeByClinicResult,
+          intakeReturnedByClinicResult,
+          intakeReviewedByClinicResult,
         ] = await Promise.all([
           Promise.all(FORM_TYPES.map((type) => base44.entities[type.entity].count(previousQuery))),
           Promise.all(SECONDARY_TYPES.map((type) => base44.entities[type.entity].count(periodQuery))),
@@ -201,6 +204,15 @@ export default function useStatsData({ range, clinicFilter }) {
           }),
           base44.entities.WeeklyClientCount.filter({
             week_start: { $gte: `${end.getFullYear()}-01-01`, $lte: `${end.getFullYear()}-12-31` },
+          }),
+          base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: 'clinic_id' }),
+          base44.entities.IntakeForm.aggregate({
+            query: { ...periodQuery, status: { $in: WEEKLY_FUNNEL.returnedStatuses } },
+            groupBy: 'clinic_id',
+          }),
+          base44.entities.IntakeForm.aggregate({
+            query: { ...periodQuery, status: { $in: WEEKLY_FUNNEL.reviewedStatuses } },
+            groupBy: 'clinic_id',
           }),
         ]);
 
@@ -295,6 +307,37 @@ export default function useStatsData({ range, clinicFilter }) {
         applyWeekly(weekReturnedAgg, 'returned');
         applyWeekly(weekReviewedAgg, 'reviewed');
 
+        const newClientsPerClinic = new Map();
+        countRecords.forEach((record) => {
+          if (!record.clinic_id) return;
+          newClientsPerClinic.set(record.clinic_id, (newClientsPerClinic.get(record.clinic_id) || 0) + (record.new_clients || 0));
+        });
+
+        const clinicCounts = (result) => {
+          const map = new Map();
+          (result?.rows || []).forEach((row) => {
+            if (!row.clinic_id) return;
+            map.set(row.clinic_id, row.count || 0);
+          });
+          return map;
+        };
+        const sentPerClinic = clinicCounts(intakeByClinicResult);
+        const returnedPerClinic = clinicCounts(intakeReturnedByClinicResult);
+        const reviewedPerClinic = clinicCounts(intakeReviewedByClinicResult);
+
+        const newClientsByClinic = clinicFilter === 'all'
+          ? visibleClinics
+              .map((clinic) => ({
+                clinicId: clinic.id,
+                name: clinic.name?.trim() || 'ללא שם',
+                newClients: newClientsPerClinic.get(clinic.id) || 0,
+                sent: sentPerClinic.get(clinic.id) || 0,
+                returned: returnedPerClinic.get(clinic.id) || 0,
+                reviewed: reviewedPerClinic.get(clinic.id) || 0,
+              }))
+              .sort((a, b) => b.newClients - a.newClients || a.name.localeCompare(b.name, 'he'))
+          : [];
+
         setWeeklyRecords(countRecords);
 
         setData({
@@ -316,6 +359,7 @@ export default function useStatsData({ range, clinicFilter }) {
           weekly: weekly.reverse(),
           weeklyRecords: countRecords,
           yearWeeklyRecords: yearCountResult || [],
+          newClientsByClinic,
         });
       } catch (loadError) {
         if (!cancelled) setError(loadError);
