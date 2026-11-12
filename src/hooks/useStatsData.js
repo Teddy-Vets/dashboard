@@ -1,10 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import userService from '@/components/services/userService';
 import { startOfDay, startOfMonth, subDays, subMonths } from 'date-fns';
 import { FORM_FUNNELS, FORM_TYPES, SECONDARY_TYPES } from '@/components/stats/statsConfig';
 
 const WEEKLY_FUNNEL = FORM_FUNNELS.find((item) => item.key === 'intake') || { returnedStatuses: [], reviewedStatuses: [] };
+
+// מטמון קצר כדי למנוע שליפה חוזרת של אותן סטטיסטיקות בכל מעבר בין סינונים
+const STATS_CACHE_TTL = 3 * 60 * 1000;
+const statsCache = new Map();
+const statsInFlight = new Map();
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -98,19 +103,27 @@ export default function useStatsData({ range, clinicFilter }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [reloadToken, setReloadToken] = useState(0);
+  const forceReloadRef = useRef(false);
 
-  const reload = useCallback(() => setReloadToken((value) => value + 1), []);
+  const reload = useCallback(() => {
+    forceReloadRef.current = true;
+    setReloadToken((value) => value + 1);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
+    const cacheKey = `${range}|${clinicFilter}`;
 
-    const load = async () => {
-      setIsLoading(true);
-      setError(null);
+    const applyPayload = (payload) => {
+      if (cancelled || !payload) return;
+      setUser(payload.user);
+      setClinics(payload.clinics);
+      setWeeklyRecords(payload.weeklyRecords);
+      setData(payload.data);
+    };
 
-      try {
+    const runLoad = async () => {
         const currentUser = await userService.getCurrentUser();
-        if (!cancelled) setUser(currentUser);
         const isAdmin = currentUser?.role === 'admin';
 
         const clinicsResponse = await base44.entities.Clinic.list({ sort: 'name', limit: 100 });
@@ -121,9 +134,6 @@ export default function useStatsData({ range, clinicFilter }) {
         const visibleClinics = isAdmin
           ? allClinics
           : allClinics.filter((clinic) => userClinicIds.includes(clinic.id));
-
-        if (cancelled) return;
-        setClinics(visibleClinics);
 
         const { start, end, prevStart, unit } = getRangeBounds(range);
         const periodQuery = buildQuery(clinicFilter, start, end);
@@ -162,20 +172,15 @@ export default function useStatsData({ range, clinicFilter }) {
           petsCount,
           petTypeResult,
           visitTypeResult,
-          intakeStatusResult,
           appointmentStatusResult,
           planResult,
           severityResult,
           consentStatusResult,
           anxietyStatusResult,
-          weekOpenedAgg,
-          weekReturnedAgg,
-          weekReviewedAgg,
+          weekStatusAgg,
           weeklyCountResult,
           yearCountResult,
-          intakeByClinicResult,
-          intakeReturnedByClinicResult,
-          intakeReviewedByClinicResult,
+          clinicStatusAgg,
         ] = await Promise.all([
           Promise.all(FORM_TYPES.map((type) => base44.entities[type.entity].count(previousQuery))),
           Promise.all(SECONDARY_TYPES.map((type) => base44.entities[type.entity].count(periodQuery))),
@@ -183,19 +188,14 @@ export default function useStatsData({ range, clinicFilter }) {
           base44.entities.Pet.count(clinicQuery),
           base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: 'pet_type' }),
           base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: 'first_visit' }),
-          base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: 'status' }),
           base44.entities.AppointmentRequest.aggregate({ query: periodQuery, groupBy: 'status' }),
           base44.entities.SubscriptionAgreement.aggregate({ query: periodQuery, groupBy: 'selected_plan' }),
           base44.entities.EmergencyTriage.aggregate({ query: periodQuery, groupBy: 'severity' }),
           base44.entities.ConsentForm.aggregate({ query: periodQuery, groupBy: 'status' }),
           base44.entities.AnxietyQuestionnaire.aggregate({ query: periodQuery, groupBy: 'status' }),
-          base44.entities.IntakeForm.aggregate({ query: periodQuery, dateBucket: { field: 'created_date', unit: 'week' } }),
           base44.entities.IntakeForm.aggregate({
-            query: { ...periodQuery, status: { $in: WEEKLY_FUNNEL.returnedStatuses } },
-            dateBucket: { field: 'created_date', unit: 'week' },
-          }),
-          base44.entities.IntakeForm.aggregate({
-            query: { ...periodQuery, status: { $in: WEEKLY_FUNNEL.reviewedStatuses } },
+            query: periodQuery,
+            groupBy: 'status',
             dateBucket: { field: 'created_date', unit: 'week' },
           }),
           base44.entities.WeeklyClientCount.filter({
@@ -205,15 +205,9 @@ export default function useStatsData({ range, clinicFilter }) {
           base44.entities.WeeklyClientCount.filter({
             week_start: { $gte: `${end.getFullYear()}-01-01`, $lte: `${end.getFullYear()}-12-31` },
           }),
-          base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: 'clinic_id' }),
-          base44.entities.IntakeForm.aggregate({
-            query: { ...periodQuery, status: { $in: WEEKLY_FUNNEL.returnedStatuses } },
-            groupBy: 'clinic_id',
-          }),
-          base44.entities.IntakeForm.aggregate({
-            query: { ...periodQuery, status: { $in: WEEKLY_FUNNEL.reviewedStatuses } },
-            groupBy: 'clinic_id',
-          }),
+          clinicFilter === 'all'
+            ? base44.entities.IntakeForm.aggregate({ query: periodQuery, groupBy: ['clinic_id', 'status'] })
+            : null,
         ]);
 
         const counts = {};
@@ -255,8 +249,6 @@ export default function useStatsData({ range, clinicFilter }) {
             .map((row) => ({ ...row, total: row.intake + row.consent + row.appointment + row.subscription }))
             .sort((a, b) => b.total - a.total);
         }
-
-        if (cancelled) return;
 
         const statusRows = {
           IntakeForm: intakeStatusResult?.rows || [],
@@ -338,9 +330,11 @@ export default function useStatsData({ range, clinicFilter }) {
               .sort((a, b) => b.newClients - a.newClients || a.name.localeCompare(b.name, 'he'))
           : [];
 
-        setWeeklyRecords(countRecords);
-
-        setData({
+        return {
+          user: currentUser,
+          clinics: visibleClinics,
+          weeklyRecords: countRecords,
+          data: {
           isAdmin,
           range,
           period: { start, end },
@@ -360,7 +354,36 @@ export default function useStatsData({ range, clinicFilter }) {
           weeklyRecords: countRecords,
           yearWeeklyRecords: yearCountResult || [],
           newClientsByClinic,
-        });
+          },
+        };
+    };
+
+    const load = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      const cached = statsCache.get(cacheKey);
+      const force = forceReloadRef.current;
+      forceReloadRef.current = false;
+
+      if (cached && !force && Date.now() - cached.time < STATS_CACHE_TTL) {
+        applyPayload(cached.payload);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        let shared = statsInFlight.get(cacheKey);
+        if (!shared) {
+          shared = runLoad()
+            .then((payload) => {
+              statsCache.set(cacheKey, { time: Date.now(), payload });
+              return payload;
+            })
+            .finally(() => statsInFlight.delete(cacheKey));
+          statsInFlight.set(cacheKey, shared);
+        }
+        applyPayload(await shared);
       } catch (loadError) {
         if (!cancelled) setError(loadError);
       } finally {
@@ -384,6 +407,7 @@ export default function useStatsData({ range, clinicFilter }) {
       setWeeklyRecords((prev) => [...prev, created]);
     }
 
+    statsCache.clear();
     setData((prev) => prev ? {
       ...prev,
       weekly: prev.weekly.map((row) => (row.weekStart === weekStart ? { ...row, newClients: numeric } : row)),
@@ -422,6 +446,7 @@ export default function useStatsData({ range, clinicFilter }) {
     if (toCreate.length) await base44.entities.WeeklyClientCount.bulkCreate(toCreate);
     if (toUpdate.length) await base44.entities.WeeklyClientCount.bulkUpdate(toUpdate);
 
+    statsCache.clear();
     reload();
     return { created: toCreate.length, updated: toUpdate.length };
   }, [reload]);
