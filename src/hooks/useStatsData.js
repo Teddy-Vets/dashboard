@@ -322,8 +322,12 @@ export default function useStatsData({ range, clinicFilter }) {
         });
 
         const activeWeek = currentWeekKey();
+        // השבוע הנוכחי מוצג ברגע שיש לו נתונים בקובץ המיובא
+        const hasActiveWeekData = countRecords.some(
+          (record) => record.week_start === activeWeek && (record.new_clients || 0) > 0
+        );
         const weekly = buildWeekBuckets(start, end)
-          .filter((bucket) => bucket.key !== activeWeek)
+          .filter((bucket) => bucket.key !== activeWeek || hasActiveWeekData)
           .map((bucket) => ({
             weekStart: bucket.key,
             label: bucket.label,
