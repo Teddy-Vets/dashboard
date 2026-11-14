@@ -157,8 +157,6 @@ export default function useStatsData({ range, clinicFilter }) {
         const extendedQuery = buildQuery(clinicFilter, prevStart, end);
         const clinicQuery = buildQuery(clinicFilter, null, null);
         const lastWeekStart = weekStartDate(-1);
-        const lastWeekKey = toDateKey(lastWeekStart);
-        const [lastWeekBucket] = buildWeekBuckets(lastWeekStart, lastWeekStart);
         const periodStartKey = bucketKey(start.toISOString(), unit) || '';
 
         const buckets = buildBuckets(start, end, unit);
@@ -366,6 +364,18 @@ export default function useStatsData({ range, clinicFilter }) {
               })
               .sort((a, b) => b.newClients - a.newClients || a.name.localeCompare(b.name, 'he'))
           : [];
+
+        // השבוע האחרון שמופיעים בו נתונים בקובץ שמיובא (למשל השבוע הנוכחי שהוזן עכשיו)
+        const lastDataWeekKey = countRecords.reduce(
+          (latest, record) =>
+            record.week_start && (record.new_clients || 0) > 0 && record.week_start > latest
+              ? record.week_start
+              : latest,
+          ''
+        );
+        const lastWeekKey = lastDataWeekKey || toDateKey(lastWeekStart);
+        const lastWeekDate = new Date(`${lastWeekKey}T00:00:00`);
+        const [lastWeekBucket] = buildWeekBuckets(lastWeekDate, lastWeekDate);
 
         const lastWeekClients = new Map();
         countRecords.forEach((record) => {
