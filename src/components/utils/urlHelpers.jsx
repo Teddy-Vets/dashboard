@@ -113,10 +113,13 @@ export const copyToClipboard = async (text) => {
 /**
  * פתיחת שיתוף בווטסאפ
  */
-export const shareViaWhatsApp = (url, message = '') => {
-  const text = message ? message : url;
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}\n\n${encodeURIComponent(url)}`;
-  window.open(whatsappUrl, '_blank');
+export const shareViaWhatsApp = (url, message = '', phone = '') => {
+  const text = message ? `${message}\n\n${url}` : url;
+  // מספר ישראלי: מסירים תווים שאינם ספרות וממירים 0 מוביל ל-972
+  let digits = String(phone || '').replace(/\D/g, '');
+  if (digits.startsWith('0')) digits = `972${digits.slice(1)}`;
+  const target = digits ? digits : '';
+  window.open(`https://wa.me/${target}?text=${encodeURIComponent(text)}`, '_blank');
 };
 
 /**

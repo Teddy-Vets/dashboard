@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { IntakeForm, Client, Pet, User, Clinic } from "@/entities/all";
+import { User, Clinic } from "@/entities/all";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,10 +8,10 @@ import { motion } from "framer-motion";
 import { Send, CheckCircle, Copy, Share2, Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-import { createFormLink } from "@/functions/createFormLink";
+import { createIntakeLink } from "@/functions/createIntakeLink";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ErrorMessage from "@/components/common/ErrorMessage";
-import { getEntityList, createEntity } from "@/components/utils/apiHelpers";
+import { getEntityList } from "@/components/utils/apiHelpers";
 import { copyToClipboard, shareViaWhatsApp, shareViaEmail } from "@/components/utils/urlHelpers";
 import userService from "@/components/services/userService";
 
@@ -55,9 +55,11 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
           setFormData(prev => ({ ...prev, clinicId: allClinics[0].id }));
         }
       } else if (user.clinic_id) {
-        const userClinic = await getEntityList(Clinic, { id: user.clinic_id }, '-created_date', null, 'Clinic');
-        setClinics(userClinic);
+        // המרפאה של המשתמש נקבעת לפי החשבון; טעינת פרטי המרפאה היא בגדר רשות בלבד
         setFormData(prev => ({ ...prev, clinicId: user.clinic_id }));
+        const userClinic = await getEntityList(Clinic, { id: user.clinic_id }, '-created_date', null, 'Clinic')
+          .catch(() => []);
+        setClinics(userClinic || []);
       }
     } catch (error) {
       console.error("Error loading user and clinics:", error);
@@ -109,34 +111,19 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
         }
       }
 
-      // יצירת טופס היכרות טיוטה עם מינימום פרטים
-      const intakeData = {
+      // יצירת טופס ההיכרות והקישור המאובטח בצד השרת
+      const linkResponse = await createIntakeLink({
+        clinic_id: targetClinicId,
         owner_name: formData.ownerName || '',
         owner_id_number: formData.ownerIdNumber || '',
         owner_phone: formData.phone || '',
         owner_email: formData.email || '',
-        pet_name: formData.petName || '',
-        clinic_id: targetClinicId,
-        status: 'draft',
-        staff_notes: `טופס נוצר ע"י ${currentUser.full_name} ונשלח ללקוח למילוי מלא`
-      };
-
-      const intakeForm = await createEntity(IntakeForm, intakeData, 'IntakeForm');
-
-      // יצירת קישור מאובטח
-      const linkResponse = await createFormLink({
-        form_type: 'intake',
-        clinic_id: targetClinicId,
-        form_id: intakeForm.id,
-        metadata: {
-          owner_name: formData.ownerName,
-          pet_name: formData.petName
-        }
+        pet_name: formData.petName || ''
       });
 
       const token = linkResponse.data?.token;
       if (!token) {
-        throw new Error("לא התקבל טוקן מהשרת.");
+        throw new Error(linkResponse.data?.error || "לא התקבל טוקן מהשרת.");
       }
 
       const url = `${window.location.origin}/PublicForm?t=${token}&lang=${formData.language}`;
@@ -171,7 +158,7 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
     };
     
     const message = messages[formData.language] || messages.he;
-    shareViaWhatsApp(publicUrl, message);
+    shareViaWhatsApp(publicUrl, message, formData.phone);
   };
 
   const handleShareEmail = () => {
@@ -293,21 +280,29 @@ export default function IntakeFormFlow({ onSuccess, clinicId, prefilledData = {}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-base font-medium text-slate-700">בחירת סניף המרפאה *</Label>
-                  <Select
-                    value={formData.clinicId}
-                    onValueChange={(value) => updateFormData('clinicId', value)}
-                    disabled={clinics.length === 0}
-                    dir="rtl"
-                  >
-                    <SelectTrigger className="mt-2">
-                      <SelectValue placeholder="בחר מרפאה" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {clinics.map((clinic) => (
-                        <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  {currentUser?.role === 'admin' ? (
+                    <Select
+                      value={formData.clinicId}
+                      onValueChange={(value) => updateFormData('clinicId', value)}
+                      disabled={clinics.length === 0}
+                      dir="rtl"
+                    >
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="בחר מרפאה" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {clinics.map((clinic) => (
+                          <SelectItem key={clinic.id} value={clinic.id}>{clinic.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      readOnly
+                      value={clinics[0]?.name || 'המרפאה המשויכת לחשבון'}
+                      className="mt-2 bg-slate-50"
+                    />
+                  )}
                 </div>
                 <div>
                   <Label className="text-base font-medium text-slate-700">שם הבעלים *</Label>
